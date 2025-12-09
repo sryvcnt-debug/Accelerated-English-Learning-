@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accelerated English Learning - Global</title>
+    <style>
+        :root { --primary: #2563eb; --primary-dark: #1e40af; --secondary: #475569; --accent: #f59e0b; --bg: #f8fafc; --card: #ffffff; --danger: #dc2626; --success: #16a34a; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: var(--bg); color: #1e293b; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        
+        /* PANTALLAS */
+        .screen { width: 100%; max-width: 600px; display: none; animation: fadeIn 0.4s ease-out; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* HEADER & CARDS */
+        .header-branding { text-align: center; margin-bottom: 20px; }
+        .header-branding h1 { color: var(--primary); margin: 0; font-size: 2.2rem; letter-spacing: -1px; }
+        .card { background: var(--card); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; border: 1px solid #e2e8f0; position: relative; }
+
+        /* BOTONES */
+        button { border: none; padding: 12px 20px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; margin-bottom: 10px; }
+        .btn-google { background: #ffffff; color: #333; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-google:hover { background: #f1f1f1; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-secondary { background: #e2e8f0; color: var(--secondary); }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        /* MENU GRID */
+        .grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 20px 0; }
+        .category-btn { background: white; border: 2px solid #e2e8f0; color: var(--secondary); padding: 15px; height: 100%; }
+        .category-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .category-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* JUEGO UI */
+        .stat-bar { display: flex; justify-content: space-between; background: #f1f5f9; padding: 10px 15px; border-radius: 10px; margin-bottom: 20px; font-weight: bold; color: var(--secondary); font-size: 0.9rem; }
+        .word-area { margin: 30px 0; }
+        .big-word { font-size: 2.5rem; font-weight: 800; color: #0f172a; display: block; }
+        .pronunciation { font-family: 'Courier New', monospace; color: var(--danger); font-size: 1.2rem; min-height: 25px; margin-top: 5px; }
+        .audio-icon { cursor: pointer; font-size: 1.5rem; background: #eff6ff; border-radius: 50%; padding: 10px; display: inline-block; margin-top: 10px; border: 1px solid #bfdbfe; }
+        
+        input[type="text"] { width: 100%; padding: 12px; font-size: 1rem; border: 2px solid #cbd5e1; border-radius: 10px; box-sizing: border-box; margin-bottom: 15px; }
+        
+        /* FEEDBACK & RANKING */
+        .feedback { padding: 15px; border-radius: 8px; margin-top: 15px; display: none; text-align: left; }
+        .fb-correct { background: #dcfce7; color: #14532d; border: 1px solid #bbf7d0; }
+        .fb-wrong { background: #fee2e2; color: #7f1d1d; border: 1px solid #fecaca; }
+        .leaderboard-container { max-height: 350px; overflow-y: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th { background: #f1f5f9; position: sticky; top: 0; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #f1f5f9; }
+        .rank-1 { color: #d97706; font-weight: bold; }
+        .user-highlight { background-color: #eff6ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header-branding">
+        <h1>Accelerated English Learning</h1>
+        <p>Aprende Inglés Jugando</p>
+    </div>
+
+    <div id="screen-login" class="screen active">
+        <div class="card">
+            <h2>Bienvenido</h2>
+            <p>Conéctate para guardar tu progreso en la nube y competir con otros usuarios.</p>
+            <br>
+            <button onclick="loginWithGoogle()" class="btn-google">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+                Iniciar sesión con Google
+            </button>
+            <p id="login-status" style="font-size:0.8rem; color:grey; margin-top:10px;"></p>
+        </div>
+    </div>
+
+    <div id="screen-menu" class="screen">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="font-weight: bold; color: var(--primary);">Hola, <span id="display-username">User</span> 👋</span>
+                <a onclick="doLogout()" style="font-size: 0.8rem; color: var(--danger); cursor: pointer;">Cerrar sesión</a>
+            </div>
+
+            <h3 style="color: var(--secondary); margin: 0;">1. Elige Categoría</h3>
+            <div class="grid-menu" id="category-grid"></div>
+
+            <h3 style="color: var(--secondary); margin: 0;">2. Elige Modo</h3>
+            <div class="grid-menu" style="grid-template-columns: 1fr 1fr;">
+                <button onclick="startGame('study')" class="btn-secondary">📖 Estudio</button>
+                <button onclick="startGame('time_es')" class="btn-secondary">⏱️ Contra (ES)</button>
+                <button onclick="startGame('time_en')" class="btn-secondary">⏱️ Contra (EN)</button>
+                <button onclick="startGame('survival_es')" class="btn-secondary">🔥 Superv. (ES)</button>
+                <button onclick="startGame('survival_en')" class="btn-secondary">🔥 Superv. (EN)</button>
+            </div>
+
+            <button class="btn-primary" style="margin-top: 10px; background: var(--accent);" onclick="showLeaderboard()">🏆 Ranking Global (Nube)</button>
+        </div>
+    </div>
+
+    <div id="screen-game" class="screen">
+        <div class="stat-bar">
+            <span id="game-mode-display">Modo</span>
+            <span>Pts: <span id="current-score">0</span></span>
+            <span id="timer-display">--:--</span>
+        </div>
+        <div class="card">
+            <div class="word-area">
+                <span id="question-text" class="big-word">...</span>
+                <span id="audio-btn" class="audio-icon" onclick="playAudio()">🔊</span>
+            </div>
+            <div id="pronunciation-display" class="pronunciation"></div>
+            <input type="text" id="game-input" placeholder="Tu respuesta..." autocomplete="off">
+            <button id="action-btn" class="btn-primary" onclick="handleGameAction()">Comprobar</button>
+            <div id="feedback-area" class="feedback"></div>
+            <div id="assoc-area" style="background: #fffbeb; color: #92400e; padding: 10px; border-radius: 8px; margin-top: 10px; font-style: italic; display: none;"></div>
+            <div style="margin-top: 20px;">
+                <button onclick="endGame(false)" style="background: none; color: #94a3b8; font-size: 0.9rem; width: auto;">Salir al menú</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-leaderboard" class="screen">
+        <div class="card">
+            <h2>🏆 Top Global (Tiempo Real)</h2>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <select id="lb-category" onchange="renderLeaderboard()" style="padding: 8px; border-radius: 8px; width: 50%;"></select>
+                <select id="lb-mode" onchange="renderLeaderboard()" style="padding: 8px; border-radius: 8px; width: 50%;">
+                    <option value="time_es">⏱️ Contra (ES)</option>
+                    <option value="time_en">⏱️ Contra (EN)</option>
+                    <option value="survival_es">🔥 Superv. (ES)</option>
+                    <option value="survival_en">🔥 Superv. (EN)</option>
+                </select>
+            </div>
+            <div class="leaderboard-container">
+                <table id="lb-table">
+                    <thead><tr><th width="15%">#</th><th>Usuario</th><th width="25%" style="text-align: right;">Puntos</th></tr></thead>
+                    <tbody id="lb-body"></tbody>
+                </table>
+            </div>
+            <button class="btn-secondary" onclick="showScreen('menu')">🔙 Volver</button>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // --- CONFIGURACIÓN FIREBASE (CORREGIDA DESDE TU CAPTURA) ---
+    // NOTA: He corregido la API Key que tenía errores en tu versión anterior.
+    const firebaseConfig = {
+      apiKey: "AIzaSyCf3MmJBeGF-naQLTUJAdb8ZbIQ3RuGYFqU",
+      authDomain: "accelerated-english-learning.firebaseapp.com",
+      projectId: "accelerated-english-learning",
+      storageBucket: "accelerated-english-learning.firebasestorage.app",
+      messagingSenderId: "402812678910",
+      appId: "1:402812678910:web:5d5ee00a39b9ffa5dcebaf",
+      measurementId: "G-07Y2XT3YK3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+    let currentUserData = null;
+
+    // --- BASE DE DATOS COMPLETA (Extraída del PDF) ---
+    const database = [
+        // CAPÍTULO 4: VERBOS
+        { cat: 'verbs', en: 'Be', pron: 'bi:', es: 'Ser / Estar', assoc: "Todo el mundo conoce la frase: «tu bi o no tu bi»." },
+        { cat: 'verbs', en: 'Have', pron: 'ha:f', es: 'Haber / Tener', assoc: "Haber es similar a have. Tener un haba." },
+        { cat: 'verbs', en: 'There is', pron: 'de*is', es: 'Hay', assoc: "Hay un payaso que hace reír. Ay, qué de risa me da." },
+        { cat: 'verbs', en: 'Want', pron: 'waont', es: 'Querer', assoc: "Todos los boxeadores quieren un guante de oro." },
+        { cat: 'verbs', en: 'Wish', pron: 'wish', es: 'Desear', assoc: "Una boda francesa: «Deseas a...» «Wi» (Oui / Sí)." },
+        { cat: 'verbs', en: 'Love', pron: 'laof', es: 'Amar', assoc: "Amar a un lobo." },
+        { cat: 'verbs', en: 'Help', pron: 'help', es: 'Ayudar', assoc: "Ayudarse para andar con un bote de gel." },
+        { cat: 'verbs', en: 'Try', pron: 't*ai', es: 'Intentar', assoc: "Suele haber tres intentos para todo." },
+        { cat: 'verbs', en: 'Get', pron: 'get', es: 'Conseguir', assoc: "Conseguir cosas por la jeta." },
+        { cat: 'verbs', en: 'Ask for', pron: 'ásk fo*', es: 'Pedir', assoc: "Estar siempre pidiendo es un asco." },
+        { cat: 'verbs', en: 'Need', pron: 'ni:d', es: 'Necesitar', assoc: "Necesitar un nido para un pajarito inglés." },
+        { cat: 'verbs', en: 'Live', pron: 'lif', es: 'Vivir', assoc: "Hay que vivir libre y levitando." },
+        { cat: 'verbs', en: 'Be born', pron: 'bibó*n', es: 'Nacer', assoc: "Nace un pequeño bribón." },
+        { cat: 'verbs', en: 'Grow', pron: 'gróu', es: 'Crecer', assoc: "Un ogro muy malo que crece sin parar." },
+        { cat: 'verbs', en: 'Die', pron: 'da:i', es: 'Morir', assoc: "Inevitablemente hay que morir un día u otro." },
+        { cat: 'verbs', en: 'Feel', pron: 'fi:l', es: 'Sentir', assoc: "Todo el mundo siente feeling por alguien." },
+        { cat: 'verbs', en: 'Hurt', pron: 'heo*t', es: 'Doler', assoc: "Es doloroso que te hurten tras darte un flechazo." },
+        { cat: 'verbs', en: 'Cure', pron: 'kiu*', es: 'Curar', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'See', pron: 'si:', es: 'Ver', assoc: "¿A un ciego le gustaría ver-see? Si." },
+        { cat: 'verbs', en: 'Look', pron: 'louk', es: 'Mirar', assoc: "Un loco que te mira con ojos de ido." },
+        { cat: 'verbs', en: 'Hear', pron: 'híae*', es: 'Oír', assoc: "Un caballo relincha «híiaa» al oír el disparo." },
+        { cat: 'verbs', en: 'Listen', pron: 'leísen', es: 'Escuchar', assoc: "Si no puedes escuchar, estás listo (lisen)." },
+        { cat: 'verbs', en: 'Like', pron: 'laik', es: 'Gustar', assoc: "A los vegetarianos les gusta el liquen (laik)." },
+        { cat: 'verbs', en: 'Touch', pron: 'taoch', es: 'Tocar', assoc: "Te touca tachar, es tu turno." },
+        { cat: 'verbs', en: 'Smell', pron: 'smel', es: 'Oler', assoc: "Cuando algo huele mal, es mal (smel) olor." },
+        { cat: 'verbs', en: 'Speak', pron: 'spik', es: 'Hablar', assoc: "Al que habla mucho se le dice que cierre su pico." },
+        { cat: 'verbs', en: 'Say', pron: 'sei', es: 'Decir', assoc: "Alguien con una saya tiene cosas que decir." },
+        { cat: 'verbs', en: 'Read', pron: '*i:d', es: 'Leer', assoc: "Leer a través de una red (rid)." },
+        { cat: 'verbs', en: 'Write', pron: 'wrait', es: 'Escribir', assoc: "Escribir rápido estando muy irritado." },
+        { cat: 'verbs', en: 'Erase', pron: 'i*éis', es: 'Borrar', assoc: "Érase una vez el hombre... «Iréis a borrar»." },
+        { cat: 'verbs', en: 'Sign', pron: 'sain', es: 'Firmar', assoc: "Tras poner las señas se firma con nuestro signo." },
+        { cat: 'verbs', en: 'Can', pron: 'kaen', es: 'Poder', assoc: "Un can con mucho poder te puede morder." },
+        { cat: 'verbs', en: 'Do', pron: 'du', es: 'Hacer', assoc: "Hacer dos cosas al mismo tiempo." },
+        { cat: 'verbs', en: 'Work', pron: 'weo*k', es: 'Trabajar', assoc: "Mucha gente trabaja con el word en el ordenador." },
+        { cat: 'verbs', en: 'Make', pron: 'méik', es: 'Fabricar', assoc: "Una pequeña fábrica que fabrica maquetas." },
+        { cat: 'verbs', en: 'Build', pron: 'bi:ld', es: 'Construir', assoc: "Un constructor vil deja una casa a medio construir." },
+        { cat: 'verbs', en: 'Demolish', pron: 'demólish', es: 'Derribar', assoc: "Similar a demoler." },
+        { cat: 'verbs', en: 'Eliminate', pron: 'elimineit', es: 'Eliminar', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Fill', pron: 'fil', es: 'Llenar', assoc: "Si está lleno, es porque ya no cabe ni el filo de un cuchillo." },
+        { cat: 'verbs', en: 'Empty', pron: 'émpti', es: 'Vaciar', assoc: "La grada se vacía ante un empate a cero." },
+        { cat: 'verbs', en: 'Think', pron: 'zink', es: 'Pensar', assoc: "Pensar al contarse los cinco (zink) dedos." },
+        { cat: 'verbs', en: 'Imagine', pron: 'imállin', es: 'Imaginar', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Believe', pron: 'beilif', es: 'Creer', assoc: "Gente rezando (creyentes) con velas (beilif)." },
+        { cat: 'verbs', en: 'Know', pron: 'nou', es: 'Saber', assoc: "Un sabio dice: «Que no, que no. No sabes nada»." },
+        { cat: 'verbs', en: 'Meet', pron: 'mi:t', es: 'Conocer', assoc: "Todo el mundo desearía conocer a su mito." },
+        { cat: 'verbs', en: 'Remember', pron: 'rimémbe*', es: 'Recordar', assoc: "Recordar al miembro que falta (remembrar)." },
+        { cat: 'verbs', en: 'Forget', pron: 'fo*gét', es: 'Olvidar', assoc: "Hay que olvidarse del fuego (forget)." },
+        { cat: 'verbs', en: 'Study', pron: 'Stádi', es: 'Estudiar', assoc: "Estudiar en un estadio." },
+        { cat: 'verbs', en: 'Pay attention', pron: 'Pei aténsheon', es: 'Atender', assoc: "La madre se pone a tender la ropa. «Pon atención»." },
+        { cat: 'verbs', en: 'Understand', pron: 'ande*stánd', es: 'Comprender', assoc: "Con prendas prendidas, ponte a andar al stand." },
+        { cat: 'verbs', en: 'Learn', pron: 'leo:*n', es: 'Aprender', assoc: "Un león aprendiendo a cazar." },
+        { cat: 'verbs', en: 'Memorize', pron: 'mémorais', es: 'Memorizar', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Teach', pron: 'ti:ch', es: 'Enseñar', assoc: "Un vendedor enseña solamente los techos." },
+        { cat: 'verbs', en: 'Explain', pron: 'Explain', es: 'Explicar', assoc: "Explicar en una explanada." },
+        { cat: 'verbs', en: 'Be right', pron: 'bi rait', es: 'Acertar', assoc: "Acertó al virar (bi rait) el coche a tiempo." },
+        { cat: 'verbs', en: 'Be wrong', pron: 'bi wronk', es: 'Equivocar', assoc: "Al que se equivoca, un tirón de orejas hasta quedarse ronco." },
+        { cat: 'verbs', en: 'Go', pron: 'gou', es: 'Ir', assoc: "Si meten otro gol, ya nos podemos ir." },
+        { cat: 'verbs', en: 'Arrive', pron: 'arráif', es: 'Llegar', assoc: "Llegar arriba antes que el ascensor." },
+        { cat: 'verbs', en: 'Return', pron: 'Riteón', es: 'Volver', assoc: "En un reto, 2 pistoleros se vuelven." },
+        { cat: 'verbs', en: 'Come', pron: 'kam', es: 'Venir', assoc: "Una madre llamando: «Venir a comer»." },
+        { cat: 'verbs', en: 'Go in', pron: 'Gou in', es: 'Entrar', assoc: "In implica hacia dentro (entrar)." },
+        { cat: 'verbs', en: 'Go out', pron: 'gou áut', es: 'Salir', assoc: "Out implica hacia fuera (salir)." },
+        { cat: 'verbs', en: 'Take out', pron: 'téikaut', es: 'Sacar', assoc: "Sacar punta a un taco mientras sale (out)." },
+        { cat: 'verbs', en: 'Walk', pron: 'wo:lk', es: 'Andar', assoc: "Andando con un walkie talkie." },
+        { cat: 'verbs', en: 'Run', pron: 'rran', es: 'Correr', assoc: "Veo correr ranas (run)." },
+        { cat: 'verbs', en: 'Jump', pron: 'Ilamp', es: 'Saltar', assoc: "Un paracaidista dice: «Yupi» (yump) y salta." },
+        { cat: 'verbs', en: 'Dance', pron: 'daens', es: 'Bailar', assoc: "Bailar es danzar." },
+        { cat: 'verbs', en: 'Stop', pron: 'sto:p', es: 'Parar', assoc: "Stop es señal de parar." },
+        { cat: 'verbs', en: 'Wait', pron: 'weit', es: 'Esperar', assoc: "Te espera la persona más guay (weit)." },
+        { cat: 'verbs', en: 'Cross', pron: 'kro:s', es: 'Cruzar', assoc: "Corredores de cros cruzan entre cruces." },
+        { cat: 'verbs', en: 'Continue', pron: 'kontíniu', es: 'Continuar', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Travel', pron: 'travl', es: 'Viajar', assoc: "Niños traviesos (travel) viajando." },
+        { cat: 'verbs', en: 'Go up', pron: 'gou áp', es: 'Subir', assoc: "Up = aupa (arriba)." },
+        { cat: 'verbs', en: 'Go down', pron: 'gou dáun', es: 'Bajar', assoc: "Uno tan gordo (daun) que solo puede bajar." },
+        { cat: 'verbs', en: 'Get in', pron: 'gétin', es: 'Montar (vehículo)', assoc: "La geta en él habrás de entrar." },
+        { cat: 'verbs', en: 'Get out', pron: 'gétaut', es: 'Bajar (vehículo)', assoc: "Sacar la geta out (fuera)." },
+        { cat: 'verbs', en: 'Drive', pron: 'draif', es: 'Conducir', assoc: "Conducir para driblar (draif)." },
+        { cat: 'verbs', en: 'Last', pron: 'last', es: 'Durar', assoc: "Duran lasta que se agotan." },
+        { cat: 'verbs', en: 'Take (time)', pron: 'téik', es: 'Tardar', assoc: "Tarda mucho y golpea con un taco (teik)." },
+        { cat: 'verbs', en: 'Tire', pron: 'tái*', es: 'Cansar', assoc: "Un asno cansado que no puede tirar más." },
+        { cat: 'verbs', en: 'Rest', pron: 'rrest', es: 'Descansar', assoc: "Descansar cuando se echa el resto." },
+        { cat: 'verbs', en: 'Go to bed', pron: 'gou tu bed', es: 'Acostar', assoc: "Ir a la bed (cama)." },
+        { cat: 'verbs', en: 'Sleep', pron: 'slip', es: 'Dormir', assoc: "Dormir con un slip gigante." },
+        { cat: 'verbs', en: 'Wake up', pron: 'wéikap', es: 'Despertar', assoc: "«Qué guay, capullo (weikap), despierta»." },
+        { cat: 'verbs', en: 'Get up', pron: 'gétap', es: 'Levantar', assoc: "Levantar solo la geta (getap)." },
+        { cat: 'verbs', en: 'Dress', pron: 'dress', es: 'Vestir', assoc: "Los tres (dress) mosqueteros se visten." },
+        { cat: 'verbs', en: 'Wash', pron: 'waosh', es: 'Asear', assoc: "Asearse con guasa (wash)." },
+        { cat: 'verbs', en: 'Clean', pron: 'klin', es: 'Limpiar', assoc: "Un clan (clin) limpiando una casa." },
+        { cat: 'verbs', en: 'Stain', pron: 'stéin', es: 'Manchar', assoc: "Stalin con una gran mancha." },
+        { cat: 'verbs', en: 'Eat', pron: 'i:t', es: 'Comer', assoc: "Comer en un italiano (it)." },
+        { cat: 'verbs', en: 'Have (drink)', pron: 'ha:f', es: 'Tomar', assoc: "Un ave tomando una copa." },
+        { cat: 'verbs', en: 'Have breakfast', pron: 'haf brékfast', es: 'Desayunar', assoc: "Desayunar brecas (breakfast)." },
+        { cat: 'verbs', en: 'Have lunch', pron: 'haf lanch', es: 'Almorzar', assoc: "Almorzar en una lancha." },
+        { cat: 'verbs', en: 'Have dinner', pron: 'haf dine*', es: 'Cenar', assoc: "Cenar con el dinero (diner) ganado." },
+        { cat: 'verbs', en: 'Drink', pron: 'drink', es: 'Beber', assoc: "Drenar (drink) el agua de un camello." },
+        { cat: 'verbs', en: 'Buy', pron: 'bá:i', es: 'Comprar', assoc: "Comprar buitres (bai) en un comercio." },
+        { cat: 'verbs', en: 'Rent', pron: 'rrent', es: 'Alquilar', assoc: "Aquiles haciendo la declaración de la renta." },
+        { cat: 'verbs', en: 'Be useful', pron: 'bi iúsfl', es: 'Valer / Servir', assoc: "Ser útil (useful)." },
+        { cat: 'verbs', en: 'Cost', pron: 'ko:st', es: 'Costar', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Pay', pron: 'péi', es: 'Pagar', assoc: "Pagar un peine (pei)." },
+        { cat: 'verbs', en: 'Owe', pron: 'ó:u', es: 'Deber', assoc: "Exclamar «oou» al ver lo que debe." },
+        { cat: 'verbs', en: 'Get paid', pron: 'get péid', es: 'Cobrar', assoc: "Un guepardo (get paid) cobrándose una pieza." },
+        { cat: 'verbs', en: 'Spend', pron: 'spend', es: 'Gastar', assoc: "Alguien se despendola (spend) y gasta mucho." },
+        { cat: 'verbs', en: 'Give', pron: 'giv', es: 'Dar', assoc: "Dar a un camello y le sale una giba (giv)." },
+        { cat: 'verbs', en: 'Take away', pron: 'téikawéi', es: 'Quitar', assoc: "Quitar con un taco agua (teik a wei)." },
+        { cat: 'verbs', en: 'Receive', pron: 'risív', es: 'Recibir', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Lose', pron: 'lu:s', es: 'Perder', assoc: "Perder una losa (lus)." },
+        { cat: 'verbs', en: 'Look for', pron: 'luk fo*', es: 'Buscar', assoc: "Buscar como un loco four (4) tréboles." },
+        { cat: 'verbs', en: 'Find', pron: 'faind', es: 'Encontrar', assoc: "Al fin (faind) encontré la aguja." },
+        { cat: 'verbs', en: 'Show', pron: 'shou', es: 'Mostrar', assoc: "Mostrar haciendo un show." },
+        { cat: 'verbs', en: 'Change', pron: 'chéinsh', es: 'Cambiar', assoc: "Cambiar lo que está changao." },
+        { cat: 'verbs', en: 'Return', pron: 'ritó*n', es: 'Devolver', assoc: "Retornar al videoclub." },
+        { cat: 'verbs', en: 'Take', pron: 'teik', es: 'Coger', assoc: "Coger un taco (teik) de billar." },
+        { cat: 'verbs', en: 'Leave', pron: 'li:f', es: 'Dejar', assoc: "Le a ve (leave) la puerta para dejar libre a la liebre." },
+        { cat: 'verbs', en: 'Use', pron: 'iu:s', es: 'Utilizar', assoc: "Usar." },
+        { cat: 'verbs', en: 'Throw', pron: 'zrou', es: 'Tirar', assoc: "Un zorro (zrou) tirando colillas." },
+        { cat: 'verbs', en: 'Fall', pron: 'fao:ll', es: 'Caer', assoc: "Caer la fallera al fallarle el pie." },
+        { cat: 'verbs', en: 'Pick up', pron: 'píkap', es: 'Recoger', assoc: "Recoger una pica (pikap)." },
+        { cat: 'verbs', en: 'Take', pron: 'téik', es: 'Llevar', assoc: "Llevar un taco (teik)." },
+        { cat: 'verbs', en: 'Bring', pron: 'brin', es: 'Traer', assoc: "Traer copas para brindar (brin)." },
+        { cat: 'verbs', en: 'Send', pron: 'send', es: 'Enviar', assoc: "Enviar por una senda (send)." },
+        { cat: 'verbs', en: 'Weigh', pron: 'wéi', es: 'Pesar', assoc: "¡Qué way (wei), he perdido peso!" },
+        { cat: 'verbs', en: 'Calculate', pron: 'kálciuleit', es: 'Calcular', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Add', pron: 'ae:d', es: 'Sumar / Añadir', assoc: "Un hada (ad) añade cosas." },
+        { cat: 'verbs', en: 'Subtract', pron: 'sobtrákt', es: 'Restar', assoc: "Sustraer." },
+        { cat: 'verbs', en: 'Multiply', pron: 'móltiplai', es: 'Multiplicar', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Divide', pron: 'diváid', es: 'Dividir', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Put', pron: 'put', es: 'Poner', assoc: "Cuanto más pu... sea la gallina, más huevos pone." },
+        { cat: 'verbs', en: 'Place', pron: 'pleis', es: 'Colocar', assoc: "Colocar piezas en una plaza (pleis)." },
+        { cat: 'verbs', en: 'Join', pron: 'Iloin', es: 'Juntar', assoc: "Yo intento (I loin) juntar imanes." },
+        { cat: 'verbs', en: 'Separate', pron: 'sépereit', es: 'Separar', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Lack', pron: 'lack', es: 'Faltar', assoc: "Tras la falta se echa laca (lack)." },
+        { cat: 'verbs', en: 'Be left over', pron: 'bi léftouve*', es: 'Sobrar', assoc: "Una persona vil estorba (sobra)." },
+        { cat: 'verbs', en: 'Allow', pron: 'aeláu', es: 'Permitir', assoc: "Permite todo y dice ¿aló? (alau)." },
+        { cat: 'verbs', en: 'Withstand', pron: 'wizstáend', es: 'Aguantar', assoc: "Aguantar un paquete de winston en un stand." },
+        { cat: 'verbs', en: 'Bother', pron: 'bádea:', es: 'Molestar', assoc: "Una mosca molesta en un badén (bader)." },
+        { cat: 'verbs', en: 'Begin', pron: 'bigín', es: 'Empezar', assoc: "Empezar una carrera en una vega (bigin)." },
+        { cat: 'verbs', en: 'End', pron: 'end', es: 'Terminar', assoc: "Termina en una hendidura (end)." },
+        { cat: 'verbs', en: 'Count', pron: 'káunt', es: 'Contar', assoc: "Es muy similar." },
+        { cat: 'verbs', en: 'Measure', pron: 'méshea*', es: 'Medir', assoc: "Medir con mesura (mesher)." },
+        { cat: 'verbs', en: 'Open', pron: 'oupen', es: 'Abrir', assoc: "Abrir el open de golf." },
+        { cat: 'verbs', en: 'Close', pron: 'klous', es: 'Cerrar', assoc: "Cerrar la clase (clous)." },
+        { cat: 'verbs', en: 'Call', pron: 'kao:l', es: 'Llamar', assoc: "Llamar a un timbre con cal (col)." },
+        { cat: 'verbs', en: 'Solve', pron: 'sao:If', es: 'Solucionar', assoc: "Solventar." },
+        { cat: 'verbs', en: 'Fix', pron: 'fix', es: 'Arreglar', assoc: "El que arregla es muy fixno (fino)." },
+        { cat: 'verbs', en: 'Destroy', pron: 'destrói', es: 'Estropear', assoc: "De estropear se pasa a destruir." },
+        { cat: 'verbs', en: 'Break', pron: 'breik', es: 'Romper', assoc: "Romper con una broca (breik)." },
+        { cat: 'verbs', en: 'Cut', pron: 'kat', es: 'Cortar', assoc: "Cortar un kit kat." },
+        { cat: 'verbs', en: 'Stick', pron: 'stik', es: 'Pegar', assoc: "Pegar estirando el pegamento." },
+
+        // CAPÍTULO 5: SUSTANTIVOS
+        { cat: 'nouns', en: 'Documentation', pron: 'dakiumentéishon', es: 'Documentación', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Passport', pron: 'pásport', es: 'Pasaporte', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Police', pron: 'polís', es: 'Policía', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Customs', pron: 'kaóstoms', es: 'Aduana', assoc: "Declarar una moto custom." },
+        { cat: 'nouns', en: 'Baggage', pron: 'bágech', es: 'Equipaje', assoc: "Una persona vaga con su equipaje." },
+        { cat: 'nouns', en: 'Suitcase', pron: 'sútkeis', es: 'Maleta', assoc: "Una maleta surca (sut) casas (keis)." },
+        { cat: 'nouns', en: 'Briefcase', pron: 'brífkeis', es: 'Maletín', assoc: "Jugar a la brisca en casa (briskeis)." },
+        { cat: 'nouns', en: 'Travel bag', pron: 'trávl bá:k', es: 'Bolsa de viaje', assoc: "Travel=viajar, bag=bolsa" },
+        { cat: 'nouns', en: 'Package', pron: 'pákech', es: 'Paquete', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Bag', pron: 'bá:k', es: 'Bolso', assoc: "Una vaca (bak) con bolso." },
+        { cat: 'nouns', en: 'Laptop computer', pron: 'láptop compíu te*', es: 'Ordenador portátil', assoc: "Al portátil se pega una lapa" },
+        { cat: 'nouns', en: 'Video camera', pron: 'vídeo cáme ra', es: 'Cámara de vídeo', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Camera', pron: 'cáme ra', es: 'Cámara de fotos', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Line', pron: 'lá:in', es: 'Cola (Fila)', assoc: "No pisen la línea." },
+        { cat: 'nouns', en: 'Control', pron: 'keontról', es: 'Control', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Help', pron: 'help', es: 'Ayuda', assoc: "Ayuda con el gel." },
+        { cat: 'nouns', en: 'Entrance', pron: 'éntrens', es: 'Entrada', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Exit', pron: 'éxit', es: 'Salida', assoc: "Éxito al salir." },
+        { cat: 'nouns', en: 'Right', pron: 'rait', es: 'Derecha', assoc: "De-right-cha." },
+        { cat: 'nouns', en: 'Left', pron: 'left', es: 'Izquierda', assoc: "Estar alefta (alerta) por la izquierda." },
+        { cat: 'nouns', en: 'Airport', pron: 'é*po*t', es: 'Aeropuerto', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Gate', pron: 'géit', es: 'Puerta de embarque', assoc: "Un gato (geit) anuncia la puerta." },
+        { cat: 'nouns', en: 'Port', pron: 'po:*t', es: 'Puerto', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Train station', pron: 'trein stéisheon', es: 'Estación de tren', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Bus station', pron: 'básteisheon', es: 'Estación de bus', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Subway station', pron: 'sábwei stéisheon', es: 'Estación de metro', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Plane', pron: 'plein', es: 'Avión', assoc: "Un avión planea." },
+        { cat: 'nouns', en: 'Flight', pron: 'flait', es: 'Vuelo', assoc: "En el vuelo se flirtea (flait)." },
+        { cat: 'nouns', en: 'Ship', pron: 'shep', es: 'Barco', assoc: "Barco con forma de chip." },
+        { cat: 'nouns', en: 'Train', pron: 'trein', es: 'Tren', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Subway', pron: 'sábwei', es: 'Metro', assoc: "Bajo (sub) el camino (way)." },
+        { cat: 'nouns', en: 'Streetcar', pron: 'strítka:*', es: 'Tranvía', assoc: "Vagón (car) de calle (street)" },
+        { cat: 'nouns', en: 'Car (train)', pron: 'ka:*', es: 'Vagón', assoc: "Vagón arrastrado como un carro" },
+        { cat: 'nouns', en: 'Bus', pron: 'bas', es: 'Autobús', assoc: "Bas-tante gente." },
+        { cat: 'nouns', en: 'Taxi', pron: 'táxi', es: 'Taxi', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Car', pron: 'ka:*', es: 'Coche', assoc: "Coche caro (car)." },
+        { cat: 'nouns', en: 'Garage', pron: 'gará:sh', es: 'Garaje', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Motorcycle', pron: 'móto*saikl', es: 'Moto', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Bicycle', pron: 'baísikl', es: 'Bicicleta', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Freeway', pron: 'fríwei', es: 'Autopista', assoc: "Autopista libre (free)" },
+        { cat: 'nouns', en: 'Road', pron: 'ro:ud', es: 'Carretera', assoc: "Ruta para rodar." },
+        { cat: 'nouns', en: 'Way', pron: 'wei', es: 'Camino', assoc: "Camino guay (wei)." },
+        { cat: 'nouns', en: 'Gas station', pron: 'gásteisheon', es: 'Gasolinera', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Stop', pron: 'sto:p', es: 'Parada', assoc: "Señal de stop." },
+        { cat: 'nouns', en: 'Platform', pron: 'plátfo*m', es: 'Andén', assoc: "Plataforma de plata" },
+        { cat: 'nouns', en: 'Track', pron: 'trak', es: 'Vía', assoc: "Traca de fuegos artificiales en la vía" },
+        { cat: 'nouns', en: 'Timetable', pron: 'táimteibl', es: 'Horario', assoc: "Tiempo en una tabla" },
+        { cat: 'nouns', en: 'Ticket', pron: 'tiket', es: 'Billete', assoc: "Ticket es universal." },
+        { cat: 'nouns', en: 'Seat', pron: 'si:t', es: 'Asiento', assoc: "Seat 600 con un gran asiento." },
+        { cat: 'nouns', en: 'First class', pron: 'fe*st kla:s', es: 'Primera clase', assoc: "Primera clase" },
+        { cat: 'nouns', en: 'Second class', pron: 'sékond kla:s', es: 'Segunda clase', assoc: "Segunda clase" },
+        { cat: 'nouns', en: 'Cabin', pron: 'káben', es: 'Camarote', assoc: "Cabina de teléfono" },
+        { cat: 'nouns', en: 'Hotel', pron: 'houtél', es: 'Hotel', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Room', pron: 'ru:m', es: 'Habitación', assoc: "Vacas rumiando (rum) en la habitación." },
+        { cat: 'nouns', en: 'Number', pron: 'námbe*', es: 'Número', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Key', pron: 'ki:', es: 'Llave', assoc: "Gallo: «ki ki» (llave)." },
+        { cat: 'nouns', en: 'Elevator', pron: 'éleveiteo*', es: 'Ascensor', assoc: "Elevar." },
+        { cat: 'nouns', en: 'Stairs', pron: 'sté:rs', es: 'Escaleras', assoc: "Escaleras con estera (sters)." },
+        { cat: 'nouns', en: 'Floor', pron: 'flo:*', es: 'Planta / Piso', assoc: "Planta llena de flores (flor)." },
+        { cat: 'nouns', en: 'Hallway', pron: 'hálwei', es: 'Pasillo', assoc: "El pasillo es el camino del hall" },
+        { cat: 'nouns', en: 'Living room', pron: 'livin rum', es: 'Salón', assoc: "Habitación donde se vive (living)." },
+        { cat: 'nouns', en: 'Furniture', pron: 'fó*nitiu*', es: 'Mueble', assoc: "Muebles fornidos." },
+        { cat: 'nouns', en: 'Sofa', pron: 'sóufa', es: 'Sofá', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Seat', pron: 'si:t', es: 'Sillón', assoc: "Es en realidad un gran sillón" },
+        { cat: 'nouns', en: 'Chair', pron: 'che:*', es: 'Silla', assoc: "Silla baila cha cha cha (che)." },
+        { cat: 'nouns', en: 'Table', pron: 'téibl', es: 'Mesa', assoc: "Una tabla vieja." },
+        { cat: 'nouns', en: 'Rug', pron: 'rag', es: 'Alfombra', assoc: "Alfombra con arrugas (rag)." },
+        { cat: 'nouns', en: 'Telephone', pron: 'télefon', es: 'Teléfono', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Television', pron: 'télevisheon', es: 'Televisión', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Radio', pron: 'reídio', es: 'Radio', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Remote control', pron: 'rimót contról', es: 'Mando a distancia', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Batteries', pron: 'báteris', es: 'Pilas', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Electricity', pron: 'electrísiti', es: 'Electricidad', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Lamp', pron: 'laemp', es: 'Lámpara', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Balcony', pron: 'bálconi', es: 'Balcón', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Sunlight', pron: 'sánlait', es: 'Luz', assoc: "Sun (sol) + Light (luz)." },
+        { cat: 'nouns', en: 'Bedroom', pron: 'bédrum', es: 'Dormitorio', assoc: "Bed + Room." },
+        { cat: 'nouns', en: 'Curtain', pron: 'có*taen', es: 'Cortina', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Closet', pron: 'klaóset', es: 'Armario', assoc: "Armario con corsé (closet)." },
+        { cat: 'nouns', en: 'Bed', pron: 'be:d', es: 'Cama', assoc: "Una boda (bed) en la cama." },
+        { cat: 'nouns', en: 'Sheet', pron: 'shi:t', es: 'Sábana', assoc: "Ella (she) cubierta con sábana." },
+        { cat: 'nouns', en: 'Blanket', pron: 'blánket', es: 'Manta', assoc: "Blanca (blanket) manta." },
+        { cat: 'nouns', en: 'Comforter', pron: 'kómfo*te*', es: 'Edredón', assoc: "Edredón confortable" },
+        { cat: 'nouns', en: 'Bathroom', pron: 'bázrum', es: 'Baño', assoc: "Bath = baño." },
+        { cat: 'nouns', en: 'Sink', pron: 'sink', es: 'Lavabo', assoc: "Lavabo sin grifo" },
+        { cat: 'nouns', en: 'Shower', pron: 'shawe*', es: 'Ducha', assoc: "Sale una soga (shauer) de la ducha." },
+        { cat: 'nouns', en: 'Soap', pron: 'soup', es: 'Jabón', assoc: "Dar jabón a la sopa (soup)." },
+        { cat: 'nouns', en: 'Towel', pron: 'táuel', es: 'Toalla', assoc: "Torre (tauel) de toallas." },
+        { cat: 'nouns', en: 'Toilet paper', pron: 'tóilet peipe*', es: 'Papel higiénico', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Toothbrush', pron: 'tuz brash', es: 'Cepillo dental', assoc: "Cepillarse con el cepillo dental todos los dientes brus camente" },
+        { cat: 'nouns', en: 'Toothpaste', pron: 'tuz peist', es: 'Pasta dental', assoc: "Es muy similar: diente (tooth), y pasta (paste)" },
+        { cat: 'nouns', en: 'Kitchen', pron: 'kíchen', es: 'Cocina', assoc: "Cocinero cachas (kichen)." },
+        { cat: 'nouns', en: 'Stove', pron: 'stó:uf', es: 'Cocina (fogón)', assoc: "Estorba (stouf)." },
+        { cat: 'nouns', en: 'Refrigerator', pron: 'rifrillireiteo*', es: 'Frigorífico', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Washing machine', pron: 'wáshin mashín', es: 'Lavadora', assoc: "Wash = lavar." },
+        { cat: 'nouns', en: 'Microwave', pron: 'máicroweif', es: 'Microondas', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Dishwasher', pron: 'díshwashe*', es: 'Lavavajillas', assoc: "Dish=plato, wash=lavar" },
+        { cat: 'nouns', en: 'Pot', pron: 'paot', es: 'Olla', assoc: "Echar la pota en una olla." },
+        { cat: 'nouns', en: 'Spoon', pron: 'spun', es: 'Cuchara', assoc: "Cuchara esponjosa (spun)." },
+        { cat: 'nouns', en: 'Fork', pron: 'fo*k', es: 'Tenedor', assoc: "Tenedor folklórico (fork)." },
+        { cat: 'nouns', en: 'Knife', pron: 'naif', es: 'Cuchillo', assoc: "Cortar un naipe (naif)." },
+        { cat: 'nouns', en: 'Napkin', pron: 'nápken', es: 'Servilleta', assoc: "Usar un naipe (napkin) de servilleta." },
+        { cat: 'nouns', en: 'Toothpick', pron: 'túzpek', es: 'Palillo', assoc: "Darle al diente con un pico" },
+        { cat: 'nouns', en: 'Thing', pron: 'zi:nk', es: 'Cosa', assoc: "Coser una cinta de zinc." },
+        { cat: 'nouns', en: 'Object', pron: 'aóbllekt', es: 'Objeto', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Machine', pron: 'mashín', es: 'Máquina', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Example', pron: 'exémpl', es: 'Ejemplo', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Country', pron: 'kántri', es: 'País / Campo', assoc: "Países contrarios (cantri)." },
+        { cat: 'nouns', en: 'Nationality', pron: 'nasheonáliti', es: 'Gentilicio', assoc: "Nacionalidad" },
+        { cat: 'nouns', en: 'Language', pron: 'lénguish', es: 'Idioma', assoc: "Lengua." },
+        { cat: 'nouns', en: 'Border', pron: 'bóde*', es: 'Frontera', assoc: "Gente borde en la frontera" },
+        { cat: 'nouns', en: 'Region', pron: 'rílleon', es: 'Región', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'City', pron: 'síti', es: 'Ciudad', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Town', pron: 'táun', es: 'Pueblo', assoc: "El tonto (taun) del pueblo." },
+        { cat: 'nouns', en: 'Barrio', pron: 'bário', es: 'Barrio', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Housing development', pron: 'háusink development', es: 'Urbanización', assoc: "Desarrolla casas" },
+        { cat: 'nouns', en: 'House', pron: 'haus', es: 'Casa', assoc: "Indios dicen Hau al salir de casa." },
+        { cat: 'nouns', en: 'Building', pron: 'bíldink', es: 'Edificio', assoc: "Un buitre se lleva un edificio." },
+        { cat: 'nouns', en: 'Flat', pron: 'flat', es: 'Piso', assoc: "Subir rápido da flat o" },
+        { cat: 'nouns', en: 'Apartment', pron: 'apá*tment', es: 'Apartamento', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Street', pron: 'strit', es: 'Calle', assoc: "Gente con estrés por la calle." },
+        { cat: 'nouns', en: 'Avenue', pron: 'áveniu', es: 'Avenida', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Square', pron: 'skué:*', es: 'Plaza', assoc: "Jugar al squash en la plaza." },
+        { cat: 'nouns', en: 'Cross', pron: 'cross', es: 'Cruce', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Corner', pron: 'có*ne*', es: 'Esquina', assoc: "Saque de esquina" },
+        { cat: 'nouns', en: 'Downtown', pron: 'dáuntaun', es: 'Centro ciudad', assoc: "Daltónico no ve el centro" },
+        { cat: 'nouns', en: 'Beginning', pron: 'bigínink', es: 'Principio', assoc: "Al principio del precipicio hay una viga" },
+        { cat: 'nouns', en: 'Middle', pron: 'midl', es: 'Mitad', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'End', pron: 'end', es: 'Fin', assoc: "The end" },
+        { cat: 'nouns', en: 'Park', pron: 'pa*k', es: 'Parque', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Garden', pron: 'gá*den', es: 'Jardín', assoc: "El guarda se guarda las flores" },
+        { cat: 'nouns', en: 'Fountain', pron: 'faúntin', es: 'Fuente', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Hospital', pron: 'hóspitael', es: 'Hospital', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Ambulance', pron: 'aémbiulaens', es: 'Ambulancia', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Pharmacy', pron: 'fá*masi', es: 'Farmacia', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Pill', pron: 'pi:l', es: 'Pastilla', assoc: "Píldora." },
+        { cat: 'nouns', en: 'Tranquilizer', pron: 'traénkilaise*', es: 'Calmante', assoc: "Tranquilizante" },
+        { cat: 'nouns', en: 'Antibiotic', pron: 'antibaiótik', es: 'Antibiótico', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Wound', pron: 'wund', es: 'Herida', assoc: "Herida hecha por un guau guau" },
+        { cat: 'nouns', en: 'Band Aid', pron: 'baéndeid', es: 'Tirita', assoc: "Banda de ayuda" },
+        { cat: 'nouns', en: 'Bandage', pron: 'baéndish', es: 'Esparadrapo', assoc: "Atar a la banda" },
+        { cat: 'nouns', en: 'Cotton', pron: 'cóteon', es: 'Algodón', assoc: "Algodón en un coto" },
+        { cat: 'nouns', en: 'Gauze', pron: 'go:s', es: 'Gasa', assoc: "Quitar con ganzúa" },
+        { cat: 'nouns', en: 'Injection', pron: 'inlléksheon', es: 'Inyección', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Cold', pron: 'could', es: 'Constipado', assoc: "Golpearse con un codo (cold)." },
+        { cat: 'nouns', en: 'Flu', pron: 'flu:', es: 'Gripe', assoc: "Tragar tubos de flúor" },
+        { cat: 'nouns', en: 'Pain', pron: 'péin', es: 'Dolor', assoc: "¡Ay qué pena (pein), cuánto dolor!" },
+        { cat: 'nouns', en: 'Fever', pron: 'five*', es: 'Fiebre', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Allergy', pron: 'aéle*lli', es: 'Alergia', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Store', pron: 'sto*', es: 'Tienda', assoc: "Contar una historia (stor) en la tienda." },
+        { cat: 'nouns', en: 'Business', pron: 'bísnes', es: 'Empresa', assoc: "Clase business" },
+        { cat: 'nouns', en: 'Hypermarket', pron: 'háipe*market', es: 'Hipermercado', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Supermarket', pron: 'súpe*market', es: 'Supermercado', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Restaurant', pron: 'résteorant', es: 'Restaurante', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Cafeteria', pron: 'cafetíria', es: 'Cafetería', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Bakery', pron: 'béikiri', es: 'Panadería', assoc: "Venden bacas, parece una baquería" },
+        { cat: 'nouns', en: 'Watchmaker', pron: 'watchmeike*', es: 'Relojería', assoc: "Bache marca el acceso" },
+        { cat: 'nouns', en: 'Jeweler', pron: 'llúle*', es: 'Joyería', assoc: "Joyas en jaulas" },
+        { cat: 'nouns', en: 'Shoe store', pron: 'shústo*', es: 'Zapatería', assoc: "Shoe=zapato" },
+        { cat: 'nouns', en: 'Toy store', pron: 'tóisto*', es: 'Juguetería', assoc: "Empiezan con toy" },
+        { cat: 'nouns', en: 'Boutique', pron: 'butík', es: 'Boutique', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Hair salon', pron: 'hé* salón', es: 'Peluquería', assoc: "Pelo al aire" },
+        { cat: 'nouns', en: 'Hardware store', pron: 'há*dwe*sto*', es: 'Ferretería', assoc: "Vender hardware" },
+        { cat: 'nouns', en: 'Price', pron: 'prais', es: 'Precio', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Gift', pron: 'gift', es: 'Regalo', assoc: "Un viejo grifo goteando" },
+        { cat: 'nouns', en: 'Free', pron: 'fri:', es: 'Gratis', assoc: "Freidurías gratis" },
+        { cat: 'nouns', en: 'Taxes', pron: 'táxes', es: 'Impuestos', assoc: "Taxis exentos de tasas" },
+        { cat: 'nouns', en: 'Bank', pron: 'baenk', es: 'Banco', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Money', pron: 'máni', es: 'Dinero', assoc: "El que tiene la mano (mani) grande." },
+        { cat: 'nouns', en: 'Euro', pron: 'iurou', es: 'Euro', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Dollar', pron: 'dóla*', es: 'Dólar', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Bill', pron: 'bi:l', es: 'Billete', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Coin', pron: 'cóin', es: 'Moneda', assoc: "Caín mató a Abel con moneda" },
+        { cat: 'nouns', en: 'Credit card', pron: 'crédit ca*d', es: 'Tarjeta crédito', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'ATM', pron: 'télle* mashín', es: 'Cajero auto', assoc: "Tela marinera" },
+        { cat: 'nouns', en: 'School', pron: 'skú:l', es: 'Escuela', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'Academy', pron: 'acaédemi', es: 'Academia', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'High school', pron: 'haísku:l', es: 'Instituto', assoc: "Alta escuela" },
+        { cat: 'nouns', en: 'University', pron: 'iunivérsiti', es: 'Universidad', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Bread', pron: 'bred', es: 'Pan', assoc: "Brotar (bred) pan." },
+        { cat: 'nouns', en: 'Pasta', pron: 'pásta', es: 'Pasta', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Soup', pron: 'sup', es: 'Sopa', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Potatoes', pron: 'patéiteos', es: 'Patatas', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Rice', pron: 'rais', es: 'Arroz', assoc: "Risa comer rizos" },
+        { cat: 'nouns', en: 'Vegetables', pron: 'vélltebls', es: 'Verdura', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Salad', pron: 'sálaed', es: 'Ensalada', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Sauce', pron: 'sao:s', es: 'Salsa', assoc: "Sauce bailando salsa" },
+        { cat: 'nouns', en: 'Egg', pron: 'e:k', es: 'Huevo', assoc: "Huevo con ego" },
+        { cat: 'nouns', en: 'Starters', pron: 'stá*te*s', es: 'Entrantes', assoc: "Estate quieto" },
+        { cat: 'nouns', en: 'Flour', pron: 'fláue*', es: 'Harina', assoc: "Flor hecha de harina" },
+        { cat: 'nouns', en: 'Salt', pron: 'saolt', es: 'Sal', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Menu', pron: 'méniu', es: 'Menú', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Meat', pron: 'mit', es: 'Carne', assoc: "Comer la mitad" },
+        { cat: 'nouns', en: 'Chicken', pron: 'chíkaen', es: 'Pollo', assoc: "Pollo chico masca chicle" },
+        { cat: 'nouns', en: 'Veal', pron: 'vi:l', es: 'Ternera', assoc: "Ternera vil" },
+        { cat: 'nouns', en: 'Pork', pron: 'po*k', es: 'Cerdo', assoc: "Cerdo puerco" },
+        { cat: 'nouns', en: 'Sirloin', pron: 'sírloin', es: 'Solomillo', assoc: "Sir de las lonchas" },
+        { cat: 'nouns', en: 'Rare', pron: 're:*', es: 'Poco hecho', assoc: "Ratas raras" },
+        { cat: 'nouns', en: 'Well done', pron: 'wél don', es: 'Muy hecho', assoc: "Bien hecho" },
+        { cat: 'nouns', en: 'Fish', pron: 'fish', es: 'Pescado', assoc: "Fístula con espinas" },
+        { cat: 'nouns', en: 'Fried', pron: 'frá:id', es: 'Frito', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Baked', pron: 'béikt', es: 'Asado', assoc: "Asado en la baca" },
+        { cat: 'nouns', en: 'Breaded', pron: 'breádid', es: 'Rebozado', assoc: "Bread=pan" },
+        { cat: 'nouns', en: 'Dessert', pron: 'desé*t', es: 'Postre', assoc: "Postre en el desierto" },
+        { cat: 'nouns', en: 'Fruit', pron: 'fru:t', es: 'Fruta', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Orange', pron: 'óraensh', es: 'Naranja', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Banana', pron: 'baenaéna', es: 'Plátano', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Melon', pron: 'mélon', es: 'Melón', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Pear', pron: 'pe:*', es: 'Pera', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Apple', pron: 'ápel', es: 'Manzana', assoc: "Aplícale insecticida" },
+        { cat: 'nouns', en: 'Strawberry', pron: 'straóberi', es: 'Fresa', assoc: "Extraña barra" },
+        { cat: 'nouns', en: 'Yogurt', pron: 'llógu*t', es: 'Yogur', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Chocolate', pron: 'chókolet', es: 'Chocolate', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Cake', pron: 'kéik', es: 'Pastel', assoc: "Hacer caca pasteles" },
+        { cat: 'nouns', en: 'Lemon', pron: 'lémen', es: 'Limón', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Ice cream', pron: 'aíscrim', es: 'Helado', assoc: "Izar crema" },
+        { cat: 'nouns', en: 'Coffee', pron: 'kófi', es: 'Café', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Tea', pron: 'ti:', es: 'Té', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Milk', pron: 'milk', es: 'Leche', assoc: "Milk y una leches" },
+        { cat: 'nouns', en: 'Sugar', pron: 'shúgae*', es: 'Azúcar', assoc: "Soga de azúcar" },
+        { cat: 'nouns', en: 'Saccharin', pron: 'sákerin', es: 'Sacarina', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Water', pron: 'wáte*', es: 'Agua', assoc: "Al wáter va el agua." },
+        { cat: 'nouns', en: 'Wine', pron: 'wá:in', es: 'Vino', assoc: "Es muy similar (guain)." },
+        { cat: 'nouns', en: 'Beer', pron: 'bíae*', es: 'Cerveza', assoc: "Beber cerveza y no ver la vía (bia)." },
+        { cat: 'nouns', en: 'Alcohol', pron: 'aélcohol', es: 'Alcohol', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Nature', pron: 'néitche*', es: 'Naturaleza', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Sea', pron: 'si:', es: 'Mar', assoc: "Un Seat 600 en el mar." },
+        { cat: 'nouns', en: 'Beach', pron: 'bich', es: 'Playa', assoc: "Bichos en la playa" },
+        { cat: 'nouns', en: 'River', pron: 'ríve*', es: 'Río', assoc: "Robar la rivera" },
+        { cat: 'nouns', en: 'Shore', pron: 'sho*', es: 'Orilla', assoc: "Orilla de un short" },
+        { cat: 'nouns', en: 'Lake', pron: 'léik', es: 'Lago', assoc: "Lago de laca" },
+        { cat: 'nouns', en: 'Mountain', pron: 'máunten', es: 'Montaña', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Forest', pron: 'fórest', es: 'Bosque', assoc: "Forrest Gump en el bosque" },
+        { cat: 'nouns', en: 'Tree', pron: 'tri:', es: 'Árbol', assoc: "Tres árboles" },
+        { cat: 'nouns', en: 'Exercise', pron: 'éxersais', es: 'Ejercicio', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Sport', pron: 'spó*t', es: 'Deporte', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Paper', pron: 'péipe*', es: 'Papel', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Letter', pron: 'léte*', es: 'Carta', assoc: "Carta con letras gigantes" },
+        { cat: 'nouns', en: 'Envelope', pron: 'énvelop', es: 'Sobre', assoc: "En velo permanente" },
+        { cat: 'nouns', en: 'Stamp', pron: 'stáemp', es: 'Sello', assoc: "Estampas se estampan" },
+        { cat: 'nouns', en: 'Book', pron: 'buk', es: 'Libro', assoc: "Bucanero leyendo un libro." },
+        { cat: 'nouns', en: 'Notebook', pron: 'nótbuk', es: 'Libreta', assoc: "Note + book" },
+        { cat: 'nouns', en: 'Newspaper', pron: 'níuspeipe*', es: 'Periódico', assoc: "News + paper" },
+        { cat: 'nouns', en: 'News', pron: 'niu:s', es: 'Noticia', assoc: "Neumático nuevo" },
+        { cat: 'nouns', en: 'Warning', pron: 'wao*nink', es: 'Aviso', assoc: "Guarros en la calle" },
+        { cat: 'nouns', en: 'Magazine', pron: 'mágasin', es: 'Revista', assoc: "Maga en el cine" },
+        { cat: 'nouns', en: 'Pen', pron: 'pen', es: 'Bolígrafo', assoc: "Bolígrafo da pena." },
+        { cat: 'nouns', en: 'Pencil', pron: 'pénsil', es: 'Lápiz', assoc: "Piensa antes de escribir" },
+        { cat: 'nouns', en: 'Man', pron: 'mae:n', es: 'Hombre', assoc: "Superman." },
+        { cat: 'nouns', en: 'Woman', pron: 'wóman', es: 'Mujer', assoc: "Mujer de goma (woman)." },
+        { cat: 'nouns', en: 'Guy', pron: 'gá:i', es: 'Chico', assoc: "Chicos gays" },
+        { cat: 'nouns', en: 'Girl', pron: 'geo*l', es: 'Niña', assoc: "Niña comiendo gel (guerl)." },
+        { cat: 'nouns', en: 'Boy', pron: 'bói', es: 'Niño', assoc: "El niño de Tarzán (Boy)." },
+        { cat: 'nouns', en: 'Baby', pron: 'béibi', es: 'Bebé', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Husband', pron: 'hásbaend', es: 'Esposo', assoc: "Has de ser un bandido" },
+        { cat: 'nouns', en: 'Wife', pron: 'waif', es: 'Esposa', assoc: "Guay esposa" },
+        { cat: 'nouns', en: 'Friend', pron: 'frend', es: 'Amigo', assoc: "Amigos se saludan con la frente (frend)." },
+        { cat: 'nouns', en: 'Father', pron: 'fáde*', es: 'Padre', assoc: "Padre se enfada" },
+        { cat: 'nouns', en: 'Mother', pron: 'máde*', es: 'Madre', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Son', pron: 'saon', es: 'Hijo', assoc: "Hijo hace sonido" },
+        { cat: 'nouns', en: 'Daughter', pron: 'dóte*', es: 'Hija', assoc: "Dogo lame a hija" },
+        { cat: 'nouns', en: 'Brother', pron: 'bróde*', es: 'Hermano', assoc: "Hermano con broza" },
+        { cat: 'nouns', en: 'Sister', pron: 'síste*', es: 'Hermana', assoc: "Sistema para despertar" },
+        { cat: 'nouns', en: 'Profession', pron: 'profésheon', es: 'Profesión', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Student', pron: 'stiúdent', es: 'Estudiante', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Professor', pron: 'proféso*', es: 'Profesor', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Teacher', pron: 'tíche*', es: 'Maestro', assoc: "Tachar ejercicios" },
+        { cat: 'nouns', en: 'Doctor', pron: 'dócto*', es: 'Médico', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Nurse', pron: 'neo*s', es: 'Enfermera', assoc: "Enfermera cursi" },
+        { cat: 'nouns', en: 'President', pron: 'président', es: 'Presidente', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Director', pron: 'directo*', es: 'Director', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Manager', pron: 'mánage*', es: 'Encargado', assoc: "Manager" },
+        { cat: 'nouns', en: 'Employee', pron: 'emplólli', es: 'Empleado', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Waiter', pron: 'wéite*', es: 'Camarero', assoc: "Guater" },
+        { cat: 'nouns', en: 'Secretary', pron: 'sécreteri', es: 'Secretario', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Tourist', pron: 'túrist', es: 'Turista', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Minister', pron: 'míniste*', es: 'Ministro', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Judge', pron: 'llagch', es: 'Juez', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Idea', pron: 'aidía', es: 'Idea', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Truth', pron: 't*uz', es: 'Verdad', assoc: "Verdad sin trucos" },
+        { cat: 'nouns', en: 'Politics', pron: 'pólitiks', es: 'Política', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Custom', pron: 'keóstom', es: 'Costumbre', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Religion', pron: 'rilíllen', es: 'Religión', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Name', pron: 'néim', es: 'Nombre', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Last name', pron: 'last néim', es: 'Apellido', assoc: "Último nombre" },
+        { cat: 'nouns', en: 'Person', pron: 'pérseon', es: 'Persona', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'People', pron: 'pípol', es: 'Gente', assoc: "Gente comiendo pipas" },
+        { cat: 'nouns', en: 'Society', pron: 'sosáiti', es: 'Sociedad', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Clothes', pron: 'clóuds', es: 'Ropa', assoc: "Ropa en cloaca" },
+        { cat: 'nouns', en: 'Size', pron: 'sá:is', es: 'Talla', assoc: "Seis tallas" },
+        { cat: 'nouns', en: 'Coat', pron: 'cout', es: 'Abrigo', assoc: "Coto de caza" },
+        { cat: 'nouns', en: 'Suit', pron: 'sut', es: 'Traje', assoc: "Traje en la suit" },
+        { cat: 'nouns', en: 'Jacket', pron: 'lláket', es: 'Chaqueta', assoc: "Pequeña chaqueta" },
+        { cat: 'nouns', en: 'Sweater', pron: 'suéte*', es: 'Jersey', assoc: "Suéter" },
+        { cat: 'nouns', en: 'Shirt', pron: 'sheo*t', es: 'Camisa', assoc: "Mona chita con camisa" },
+        { cat: 'nouns', en: 'Tee-shirt', pron: 'tísheo*t', es: 'Camiseta', assoc: "Setas en camiseta" },
+        { cat: 'nouns', en: 'Tie', pron: 'tá:i', es: 'Corbata', assoc: "Bolsita de té" },
+        { cat: 'nouns', en: 'Blouse', pron: 'blaus', es: 'Blusa', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Bra', pron: 'bra:', es: 'Sujetador', assoc: "Brasas" },
+        { cat: 'nouns', en: 'Pants', pron: 'paents', es: 'Pantalones', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Skirt', pron: 'ské*t', es: 'Falda', assoc: "Esquiadora con falda" },
+        { cat: 'nouns', en: 'Belt', pron: 'belt', es: 'Cinturón', assoc: "Esbelta con cinturón" },
+        { cat: 'nouns', en: 'Panties', pron: 'pántis', es: 'Bragas', assoc: "Panties" },
+        { cat: 'nouns', en: 'Socks', pron: 'saoks', es: 'Calcetines', assoc: "Sócrates con calcetines" },
+        { cat: 'nouns', en: 'Shoes', pron: 'shu:s', es: 'Zapatos', assoc: "Show de zapatos" },
+        { cat: 'nouns', en: 'Boots', pron: 'bu:ts', es: 'Botas', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Scarf', pron: 'scá*f', es: 'Bufanda', assoc: "Bufanda es cara" },
+        { cat: 'nouns', en: 'Hat', pron: 'ha:t', es: 'Gorro', assoc: "Se ata el gorro" },
+        { cat: 'nouns', en: 'Gloves', pron: 'glovs', es: 'Guantes', assoc: "Globos con forma de guantes" },
+        { cat: 'nouns', en: 'Bikini', pron: 'bikíni', es: 'Bikini', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Umbrella', pron: 'ambréla', es: 'Paraguas', assoc: "Paraguas con hambre" },
+        { cat: 'nouns', en: 'Glasses', pron: 'gláses', es: 'Gafas', assoc: "Vasos como gafas" },
+        { cat: 'nouns', en: 'Silk', pron: 'silk', es: 'Seda', assoc: "Gusano dice si" },
+        { cat: 'nouns', en: 'Wool', pron: 'wuol', es: 'Lana', assoc: "Oveja mete gol" },
+        { cat: 'nouns', en: 'Cloth', pron: 'claoz', es: 'Tela', assoc: "Coz a la tela" },
+        { cat: 'nouns', en: 'Rag', pron: 'raeg', es: 'Trapo', assoc: "Rasgar trapo" },
+        { cat: 'nouns', en: 'Material', pron: 'matírial', es: 'Material', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Plastic', pron: 'plástic', es: 'Plástico', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Cardboard', pron: 'cá*dbo*d', es: 'Cartón', assoc: "Cabo sujeta cartón" },
+        { cat: 'nouns', en: 'Metal', pron: 'métal', es: 'Metal', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Wood', pron: 'wuod', es: 'Madera', assoc: "Godo con madera" },
+        { cat: 'nouns', en: 'Natural', pron: 'nátiural', es: 'Natural', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Time', pron: 'táim', es: 'Tiempo', assoc: "Es muy similar." },
+        { cat: 'nouns', en: 'History', pron: 'hístori', es: 'Historia', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Date', pron: 'déit', es: 'Fecha', assoc: "Fechas datan" },
+        { cat: 'nouns', en: 'Age', pron: 'éich', es: 'Edad', assoc: "Echa agendas" },
+        { cat: 'nouns', en: 'Year', pron: 'Ilíae*', es: 'Año', assoc: "Tapando el hoyo de ayer (yier)." },
+        { cat: 'nouns', en: 'Day', pron: 'déi', es: 'Día', assoc: "Dar (dei) gracias por el día." },
+        { cat: 'nouns', en: 'Hour', pron: 'áwoa*', es: 'Hora', assoc: "Ahora" },
+        { cat: 'nouns', en: 'Minute', pron: 'méinit', es: 'Minuto', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Second', pron: 'sáecond', es: 'Segundo', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Schedule', pron: 'skédiul', es: 'Horario', assoc: "Es qué duda" },
+        { cat: 'nouns', en: 'Clock', pron: 'clok', es: 'Reloj', assoc: "Me vuelvo loco" },
+        { cat: 'nouns', en: 'Today', pron: 'tudéi', es: 'Hoy', assoc: "Toda la gente" },
+        { cat: 'nouns', en: 'Yesterday', pron: 'lléste*dei', es: 'Ayer', assoc: "Ya estamos" },
+        { cat: 'nouns', en: 'Tomorrow', pron: 'tumórrou', es: 'Mañana', assoc: "Tu morro" },
+        { cat: 'nouns', en: 'Morning', pron: 'mó:nink', es: 'Mañana (día)', assoc: "Mono por la mañana" },
+        { cat: 'nouns', en: 'Afternoon', pron: 'aftenún', es: 'Tarde', assoc: "Sin más tardar" },
+        { cat: 'nouns', en: 'Night', pron: 'náit', es: 'Noche', assoc: "Nicho (nait)." },
+        { cat: 'nouns', en: 'Week', pron: 'wik', es: 'Semana', assoc: "Semana bebiendo whisky (wik)." },
+        { cat: 'nouns', en: 'Weekend', pron: 'wíkaend', es: 'Fin de semana', assoc: "Week+end" },
+        { cat: 'nouns', en: 'Holiday', pron: 'heólidei', es: 'Día festivo', assoc: "Hologramas" },
+        { cat: 'nouns', en: 'Monday', pron: 'mándei', es: 'Lunes', assoc: "Luna mondando (mandei) pipas." },
+        { cat: 'nouns', en: 'Tuesday', pron: 'tíusdei', es: 'Martes', assoc: "Tú estás" },
+        { cat: 'nouns', en: 'Wednesday', pron: 'wénsdei', es: 'Miércoles', assoc: "Vendada" },
+        { cat: 'nouns', en: 'Thursday', pron: 'zeórsdei', es: 'Jueves', assoc: "Zurdo" },
+        { cat: 'nouns', en: 'Friday', pron: 'fráidei', es: 'Viernes', assoc: "Freidurías" },
+        { cat: 'nouns', en: 'Saturday', pron: 'sátu*dei', es: 'Sábado', assoc: "Saturde" },
+        { cat: 'nouns', en: 'Sunday', pron: 'sándei', es: 'Domingo', assoc: "Domingueros al sol (sun)." },
+        { cat: 'nouns', en: 'Month', pron: 'monz', es: 'Mes', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'January', pron: 'llaéniueri', es: 'Enero', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'February', pron: 'fébiueri', es: 'Febrero', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'March', pron: 'ma*ch', es: 'Marzo', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'April', pron: 'eíprel', es: 'Abril', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'May', pron: 'mé:i', es: 'Mayo', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'June', pron: 'llu:n', es: 'Junio', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'July', pron: 'llulá:i', es: 'Julio', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'August', pron: 'ágeost', es: 'Agosto', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'September', pron: 'septémbe*', es: 'Septiembre', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'October', pron: 'octóbe*', es: 'Octubre', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'November', pron: 'novémbe*', es: 'Noviembre', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'December', pron: 'disémbe*', es: 'Diciembre', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Meter', pron: 'míte*', es: 'Metro', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Kilometer', pron: 'kilómete*', es: 'Kilómetro', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Kilo', pron: 'kílo', es: 'Kilo', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Ton', pron: 'teon', es: 'Tonelada', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Weather', pron: 'wéde*', es: 'Clima', assoc: "Wate" },
+        { cat: 'nouns', en: 'Summer', pron: 'saóme*', es: 'Verano', assoc: "Asoma" },
+        { cat: 'nouns', en: 'Sun', pron: 'saon', es: 'Sol', assoc: "Un santo (san) al sol." },
+        { cat: 'nouns', en: 'Heat', pron: 'hit', es: 'Calor', assoc: "Harte" },
+        { cat: 'nouns', en: 'Winter', pron: 'wínte*', es: 'Invierno', assoc: "Aguante" },
+        { cat: 'nouns', en: 'Christmas', pron: 'crístmaes', es: 'Navidad', assoc: "Crisma" },
+        { cat: 'nouns', en: 'Snow', pron: 'snóu', es: 'Nieve', assoc: "Es no" },
+        { cat: 'nouns', en: 'Rain', pron: 'réin', es: 'Lluvia', assoc: "Reina" },
+        { cat: 'nouns', en: 'Spring', pron: 'sprín', es: 'Primavera', assoc: "Esprintar" },
+        { cat: 'nouns', en: 'Autumn', pron: 'aótom', es: 'Otoño', assoc: "Automóvil" },
+        { cat: 'nouns', en: 'Air', pron: 'e:*', es: 'Aire', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Vacation', pron: 'vekéisheon', es: 'Vacaciones', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Trip', pron: 'trip', es: 'Viaje', assoc: "Tripa" },
+        { cat: 'nouns', en: 'Excursion', pron: 'excú*shieon', es: 'Excursión', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Music', pron: 'míusec', es: 'Música', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Noise', pron: 'nóis', es: 'Ruido', assoc: "Nueces" },
+        { cat: 'nouns', en: 'Body', pron: 'báodi', es: 'Cuerpo', assoc: "Boda entre cuerpos." },
+        { cat: 'nouns', en: 'Head', pron: 'he:d', es: 'Cabeza', assoc: "Hada con dolor de cabeza (head-queca)." },
+        { cat: 'nouns', en: 'Face', pron: 'féis', es: 'Cara', assoc: "Faz" },
+        { cat: 'nouns', en: 'Eye', pron: 'á:i', es: 'Ojo', assoc: "Hay un ojo" },
+        { cat: 'nouns', en: 'Ear', pron: 'í:ae*', es: 'Oído', assoc: "Ir a oír" },
+        { cat: 'nouns', en: 'Nose', pron: 'nóus', es: 'Nariz', assoc: "No os toquéis la nariz" },
+        { cat: 'nouns', en: 'Mouth', pron: 'máuz', es: 'Boca', assoc: "Maus (ratón)" },
+        { cat: 'nouns', en: 'Tooth', pron: 'tu:z', es: 'Diente', assoc: "Tuz dientes" },
+        { cat: 'nouns', en: 'Molar', pron: 'mólae*', es: 'Muela', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Throat', pron: 'zróut', es: 'Garganta', assoc: "Trota" },
+        { cat: 'nouns', en: 'Chest', pron: 'chest', es: 'Pecho', assoc: "Chiste" },
+        { cat: 'nouns', en: 'Back', pron: 'ba:k', es: 'Espalda', assoc: "Vaca a la espalda" },
+        { cat: 'nouns', en: 'Heart', pron: 'heo:*t', es: 'Corazón', assoc: "Hartarse" },
+        { cat: 'nouns', en: 'Liver', pron: 'líve*', es: 'Hígado', assoc: "Liebre" },
+        { cat: 'nouns', en: 'Kidney', pron: 'kídni', es: 'Riñón', assoc: "Kid (niño)" },
+        { cat: 'nouns', en: 'Blood', pron: 'blo:d', es: 'Sangre', assoc: "Bloc de sangre" },
+        { cat: 'nouns', en: 'Stomach', pron: 'stómaek', es: 'Estómago', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Arm', pron: 'a:*m', es: 'Brazo', assoc: "Arma" },
+        { cat: 'nouns', en: 'Elbow', pron: 'élbou', es: 'Codo', assoc: "El bou (buey)" },
+        { cat: 'nouns', en: 'Wrist', pron: 'wrist', es: 'Muñeca', assoc: "Gris" },
+        { cat: 'nouns', en: 'Hand', pron: 'haend', es: 'Mano', assoc: "Hacer el pino con una mano (jan)." },
+        { cat: 'nouns', en: 'Finger', pron: 'fínge*', es: 'Dedo', assoc: "Fin" },
+        { cat: 'nouns', en: 'Leg', pron: 'lek', es: 'Pierna', assoc: "Legado" },
+        { cat: 'nouns', en: 'Knee', pron: 'ni:', es: 'Rodilla', assoc: "Ni rodilla" },
+        { cat: 'nouns', en: 'Ankle', pron: 'énkl', es: 'Tobillo', assoc: "Enclenque" },
+        { cat: 'nouns', en: 'Foot', pron: 'fut', es: 'Pie', assoc: "Fútbol" },
+        { cat: 'nouns', en: 'Weight', pron: 'wéit', es: 'Peso', assoc: "Wait (espera)" },
+        { cat: 'nouns', en: 'Height', pron: 'háit', es: 'Estatura', assoc: "Jai (alto)" },
+        { cat: 'nouns', en: 'Animal', pron: 'aénimael', es: 'Animal', assoc: "Es muy similar" },
+        { cat: 'nouns', en: 'Dog', pron: 'daog', es: 'Perro', assoc: "Perro dogo." },
+        { cat: 'nouns', en: 'Cat', pron: 'cat', es: 'Gato', assoc: "Cata de gatos." },
+        { cat: 'nouns', en: 'Horse', pron: 'ho*s', es: 'Caballo', assoc: "Corsé" },
+        { cat: 'nouns', en: 'Donkey', pron: 'dónki', es: 'Asno', assoc: "Don Quijote" },
+        { cat: 'nouns', en: 'Cow', pron: 'cá:o', es: 'Vaca', assoc: "Cowboy" },
+        { cat: 'nouns', en: 'Ox', pron: 'aox', es: 'Buey', assoc: "Oxígeno" },
+        { cat: 'nouns', en: 'Sheep', pron: 'shi:p', es: 'Oveja', assoc: "Chepa" },
+        { cat: 'nouns', en: 'Hen', pron: 'hen', es: 'Gallina', assoc: "Heno" },
+
+        // CAPÍTULO 6: ADJETIVOS
+        { cat: 'adj', en: 'Good', pron: 'gud', es: 'Bueno', assoc: "Un rey godo (gud) bueno." },
+        { cat: 'adj', en: 'Bad', pron: 'ba:d', es: 'Malo', assoc: "Un diablillo malo en una boda (bad)." },
+        { cat: 'adj', en: 'OK', pron: 'ókei', es: 'Regular', assoc: "Radio Ok" },
+        { cat: 'adj', en: 'Better', pron: 'béte*', es: 'Mejor', assoc: "Vete (bet..) al wáter." },
+        { cat: 'adj', en: 'Worse', pron: 'wo*s', es: 'Peor', assoc: "Iros vos (wors)." },
+        { cat: 'adj', en: 'Great', pron: 'gréit', es: 'Grande/Genial', assoc: "Gritar (greit) es genial." },
+        { cat: 'adj', en: 'Small', pron: 'smaó:l', es: 'Pequeño', assoc: "Un pequeño poni es malo (small)." },
+        { cat: 'adj', en: 'Superior', pron: 'supírieo*', es: 'Superior', assoc: "Es igual" },
+        { cat: 'adj', en: 'Inferior', pron: 'infírieo*', es: 'Inferior', assoc: "Es igual" },
+        { cat: 'adj', en: 'Pretty', pron: 'príti', es: 'Bonito', assoc: "Un bonito (pescado) muy apretado (priti)." },
+        { cat: 'adj', en: 'Beautiful', pron: 'biútifoul', es: 'Bello', assoc: "La bella durmiente ve un tifón (biutifol)." },
+        { cat: 'adj', en: 'Ugly', pron: 'ágli', es: 'Feo', assoc: "Una bruja fea muy ágil (agli)." },
+        { cat: 'adj', en: 'Clean', pron: 'clin', es: 'Limpio', assoc: "Clint Eastwood limpia a todos." },
+        { cat: 'adj', en: 'Dirty', pron: 'dé*ti', es: 'Sucio', assoc: "Alejarse de ti (deti)." },
+        { cat: 'adj', en: 'Hot', pron: 'haot', es: 'Caliente', assoc: "Bailar una jota (jot) al quemarse." },
+        { cat: 'adj', en: 'Cold', pron: 'cóuld', es: 'Frío', assoc: "Pistolero frío dispara su colt." },
+        { cat: 'adj', en: 'Cheap', pron: 'chip', es: 'Barato', assoc: "Un chip de chapa barato." },
+        { cat: 'adj', en: 'Expensive', pron: 'expénsif', es: 'Caro', assoc: "A expensas de los demás." },
+        { cat: 'adj', en: 'Full', pron: 'fu:l', es: 'Lleno', assoc: "Jugador de póquer con full." },
+        { cat: 'adj', en: 'Empty', pron: 'émpti', es: 'Vacío', assoc: "Empate (empti) a cero, grada vacía." },
+        { cat: 'adj', en: 'Smart', pron: 'smá*t', es: 'Listo', assoc: "Se mata (smat) a estudiar." },
+        { cat: 'adj', en: 'Stupid', pron: 'stúpid', es: 'Estúpido', assoc: "Es muy similar." },
+        { cat: 'adj', en: 'Capable', pron: 'kéipabl', es: 'Capaz', assoc: "Capa" },
+        { cat: 'adj', en: 'Sure', pron: 'siu*', es: 'Seguro', assoc: "Es muy similar" },
+        { cat: 'adj', en: 'Easy', pron: 'ísi', es: 'Fácil', assoc: "Así (isi) de fácil." },
+        { cat: 'adj', en: 'Difficult', pron: 'díficoult', es: 'Difícil', assoc: "Es muy similar." },
+        { cat: 'adj', en: 'Free', pron: 'fri', es: 'Libre / Gratis', assoc: "Liebre libre comiendo fresas (fri)." },
+        { cat: 'adj', en: 'Busy', pron: 'bísi', es: 'Ocupado', assoc: "Ocupar el bus con una bici (bisi)." },
+        { cat: 'adj', en: 'Alone', pron: 'alóun', es: 'Solo', assoc: "En una lona (aloun) solo." },
+        { cat: 'adj', en: 'Young', pron: 'Ilank', es: 'Joven', assoc: "Joven llanero (yank) solitario." },
+        { cat: 'adj', en: 'Old', pron: 'ould', es: 'Viejo', assoc: "Mueble de oro (old) viejo." },
+        { cat: 'adj', en: 'Tall', pron: 'tao:l', es: 'Alto', assoc: "Jugador alto de gran talla (tol)." },
+        { cat: 'adj', en: 'Short', pron: 'sho*t', es: 'Bajo', assoc: "Show de enanos." },
+        { cat: 'adj', en: 'Strong', pron: 'stróng', es: 'Fuerte', assoc: "Estruendo (strong) al tensar músculos." },
+        { cat: 'adj', en: 'Weak', pron: 'wik', es: 'Flojo', assoc: "Oui" },
+        { cat: 'adj', en: 'Sick', pron: 'seik', es: 'Enfermo', assoc: "Si que" },
+        { cat: 'adj', en: 'Healthy', pron: 'hélzi', es: 'Sano', assoc: "Gel científico" },
+        { cat: 'adj', en: 'Thin', pron: 'zin', es: 'Fino', assoc: "Cinta de zinc fina." },
+        { cat: 'adj', en: 'Fat', pron: 'fat', es: 'Gordo', assoc: "Le fat-a pantalón." },
+        { cat: 'adj', en: 'Thick', pron: 'zik', es: 'Grueso', assoc: "Ticket grueso" },
+        { cat: 'adj', en: 'Hard', pron: 'ha*d', es: 'Duro', assoc: "Oliver Hardy recortado en diamante duro." },
+        { cat: 'adj', en: 'Soft', pron: 'saoft', es: 'Blando', assoc: "Software blando." },
+        { cat: 'adj', en: 'Pleasant', pron: 'plésent', es: 'Agradable', assoc: "Placentero" },
+        { cat: 'adj', en: 'Nice', pron: 'náis', es: 'Simpático', assoc: "Niza" },
+        { cat: 'adj', en: 'Funny', pron: 'fáni', es: 'Gracioso', assoc: "Fans" },
+        { cat: 'adj', en: 'Polite', pron: 'poláit', es: 'Educado', assoc: "Polo" },
+        { cat: 'adj', en: 'Happy', pron: 'hápi', es: 'Feliz', assoc: "Hippy feliz." },
+        { cat: 'adj', en: 'Sad', pron: 'sa:d', es: 'Triste', assoc: "Sádico triste." },
+        { cat: 'adj', en: 'Tired', pron: 'taí*ed', es: 'Cansado', assoc: "Tirado (taired) en el suelo." },
+        { cat: 'adj', en: 'Color', pron: 'cólo*', es: 'Color', assoc: "Es muy similar" },
+        { cat: 'adv', en: 'White', pron: 'wait', es: 'Blanco', assoc: "Diente guay (wait) es blanco." },
+        { cat: 'adv', en: 'Black', pron: 'blak', es: 'Negro', assoc: "Black-Jack." },
+        { cat: 'adv', en: 'Blue', pron: 'blu', es: 'Azul', assoc: "Blusa azul." },
+        { cat: 'adv', en: 'Red', pron: '*ed', es: 'Rojo', assoc: "Red llena de tomates rojos." },
+        { cat: 'adv', en: 'Green', pron: 'grin', es: 'Verde', assoc: "Green de golf." },
+        { cat: 'adv', en: 'Yellow', pron: 'llélou', es: 'Amarillo', assoc: "Limones dicen jello." },
+        { cat: 'adv', en: 'Brown', pron: 'braun', es: 'Marrón', assoc: "Broma" },
+
+        // CAPÍTULO 7: ADVERBIOS
+        { cat: 'adv', en: 'Yes', pron: 'lles', es: 'Sí', assoc: "Todo el mundo lo sabe." },
+        { cat: 'adv', en: 'Always', pron: 'aólweis', es: 'Siempre', assoc: "Siembra de algas (aolweis)." },
+        { cat: 'adv', en: 'Also', pron: 'álso', es: 'También', assoc: "Al son (also) de la música." },
+        { cat: 'adv', en: 'True', pron: 't*u:', es: 'Cierto', assoc: "Truco" },
+        { cat: 'adv', en: 'Fair', pron: 'fe:*', es: 'Justo', assoc: "Fea" },
+        { cat: 'adv', en: 'No', pron: 'nou', es: 'No', assoc: "Es igual." },
+        { cat: 'adv', en: 'Never', pron: 'néve*', es: 'Nunca', assoc: "Nevar (never) nunca." },
+        { cat: 'adv', en: 'Either', pron: 'íde*', es: 'Tampoco', assoc: "Idea" },
+        { cat: 'adv', en: 'False', pron: 'fals', es: 'Falso', assoc: "Es muy similar" },
+        { cat: 'adv', en: 'Maybe', pron: 'méibi', es: 'Quizás', assoc: "Magrebí" },
+        { cat: 'adv', en: 'Depends', pron: 'depénds', es: 'Depende', assoc: "Es muy similar" },
+        { cat: 'adv', en: 'Sometimes', pron: 'sáomtaims', es: 'A veces', assoc: "Some + times" },
+        { cat: 'adv', en: 'If', pron: 'if', es: 'Si', assoc: "Sisi" },
+        { cat: 'adv', en: 'Well', pron: 'wel', es: 'Bien', assoc: "Vuelta" },
+        { cat: 'adv', en: 'Very', pron: 'vé*i', es: 'Muy', assoc: "Ver (veri) vaca muy gorda." },
+        { cat: 'adv', en: 'A lot', pron: 'a lao:t', es: 'Mucho', assoc: "Ganar mucho en la lotería." },
+        { cat: 'adv', en: 'Little', pron: 'lítel', es: 'Poco', assoc: "Litera" },
+        { cat: 'adv', en: 'Enough', pron: 'inóf', es: 'Bastante', assoc: "Eno" },
+        { cat: 'adv', en: 'All', pron: 'ao:l', es: 'Todo', assoc: "Altos" },
+        { cat: 'adv', en: 'Nothing', pron: 'náozink', es: 'Nada', assoc: "No thing" },
+        { cat: 'adv', en: 'More', pron: 'mo:*', es: 'Más', assoc: "Comer más moras (mor)." },
+        { cat: 'adv', en: 'Less', pron: 'less', es: 'Menos', assoc: "Lesbiana es menos hombre." },
+        { cat: 'adv', en: 'Now', pron: 'ná:u', es: 'Ahora', assoc: "Ahora sí ahora no (nau)." },
+        { cat: 'adv', en: 'Before', pron: 'bifó:*', es: 'Antes', assoc: "Vi a Ford (bifor) antes." },
+        { cat: 'adv', en: 'After', pron: 'áfte*', es: 'Después', assoc: "Hafta (after) después." },
+        { cat: 'adv', en: 'Next', pron: 'next', es: 'Siguiente', assoc: "Nestá" },
+        { cat: 'adv', en: 'Here', pron: 'hie*', es: 'Aquí', assoc: "Señalar aquí y reír jiji (jiar)." },
+        { cat: 'adv', en: 'There', pron: 'de:*', es: 'Allí', assoc: "Allí hay un líder (der)." },
+        { cat: 'adv', en: 'Late', pron: 'leit', es: 'Tarde', assoc: "Lata" },
+        { cat: 'adv', en: 'Fast', pron: 'fast', es: 'Rápido', assoc: "Fax rápido." },
+        { cat: 'adv', en: 'Slow', pron: 'slóu', es: 'Lento', assoc: "Es lo mismo que despacio." },
+
+        // CAPÍTULO 8, 9, 10: SALUDOS, CORTESÍA, PREGUNTAS
+        { cat: 'expr', en: 'Greet', pron: 'gri:t', es: 'Saludar', assoc: "Gritos" },
+        { cat: 'expr', en: 'Hello', pron: 'helóu', es: 'Hola', assoc: "Es muy similar." },
+        { cat: 'expr', en: 'Goodbye', pron: 'gudbá:i', es: 'Adiós', assoc: "Ir a Dios (gudbai) volando." },
+        { cat: 'expr', en: 'Please', pron: 'pli:s', es: 'Por favor', assoc: "En un plis (plis) plas." },
+        { cat: 'expr', en: 'Thank you', pron: 'zaénkiu', es: 'Gracias', assoc: "Un payaso en zancos (zankiu)." },
+        { cat: 'expr', en: 'You are welcome', pron: 'wélcam', es: 'De nada', assoc: "Bienvenido" },
+        { cat: 'expr', en: 'Sorry', pron: 'sórri', es: 'Lo siento', assoc: "Serrín (sorri) para tapar el agujero." },
+        { cat: 'expr', en: 'What?', pron: 'wat', es: '¿Qué?', assoc: "¡Qué wáter (wat) más sucio!" },
+        { cat: 'expr', en: 'Who?', pron: 'hu:', es: '¿Quién?', assoc: "¿Quién es? Huuuu (fantasma)." },
+        { cat: 'expr', en: 'Which?', pron: 'which', es: '¿Cuál?', assoc: "Whisky" },
+        { cat: 'expr', en: 'Where?', pron: 'we*', es: '¿Dónde?', assoc: "Drácula el conde (donde) no ve (we) bien." },
+        { cat: 'expr', en: 'When?', pron: 'wen', es: '¿Cuándo?', assoc: "¿Cuándo dicen que ven (wen)?" },
+        { cat: 'expr', en: 'Why?', pron: 'wá:i', es: '¿Por qué?', assoc: "¿Por qué es tan guay (wai)?" },
+        { cat: 'expr', en: 'How?', pron: 'háu', es: '¿Cómo?', assoc: "¿Cómo dicen hola los indios? Jau (hau)." },
+
+        // CAPÍTULO 11-15: PRONOMBRES Y GRAMÁTICA
+        { cat: 'pron', en: 'I', pron: 'á:i', es: 'Yo', assoc: "Yo soy delgado como una I." },
+        { cat: 'pron', en: 'You', pron: 'iu', es: 'Tú', assoc: "Tú con ese yoyó (yu)." },
+        { cat: 'pron', en: 'He', pron: 'hi', es: 'Él', assoc: "Él se ríe ji ji (hi)." },
+        { cat: 'pron', en: 'She', pron: 'shi', es: 'Ella', assoc: "Ella pide silencio Shh (shi)." },
+        { cat: 'pron', en: 'We', pron: 'wi', es: 'Nosotros', assoc: "¿Seguimos nosotros? Wi (oui)." },
+        { cat: 'pron', en: 'They', pron: 'dei', es: 'Ellos', assoc: "Juegan a ser Dei (Deidad)." },
+        { cat: 'pron', en: 'My', pron: 'mái', es: 'Mi', assoc: "Mi es muy similar a Mai." },
+        { cat: 'pron', en: 'Your', pron: 'llo:*', es: 'Tu', assoc: "Tuyo" },
+        { cat: 'pron', en: 'His', pron: 'his', es: 'Su (de él)', assoc: "Histérico" },
+        { cat: 'pron', en: 'Our', pron: 'áoa*', es: 'Nuestro', assoc: "Aros" },
+        { cat: 'pron', en: 'This', pron: 'dis', es: 'Este', assoc: "Disparar" },
+        { cat: 'pron', en: 'That', pron: 'dat', es: 'Ese', assoc: "Dato" },
+        { cat: 'pron', en: 'The', pron: 'dea', es: 'El / La', assoc: "Darte (de) el arte." },
+        { cat: 'pron', en: 'A', pron: 'a', es: 'Un / Una', assoc: "Es igual." },
+        { cat: 'pron', en: 'To', pron: 'tu', es: 'A / Para', assoc: "A tu lado." },
+        { cat: 'pron', en: 'With', pron: 'wiz', es: 'Con', assoc: "Whisky (wiz) con hielo." },
+        { cat: 'pron', en: 'In', pron: 'in', es: 'En', assoc: "Es muy similar." },
+        { cat: 'pron', en: 'And', pron: 'aend', es: 'Y', assoc: "Andar y andar." },
+        { cat: 'pron', en: 'But', pron: 'bat', es: 'Pero', assoc: "Pero bate (bat) el huevo." },
+        { cat: 'pron', en: 'Because', pron: 'bicó:s', es: 'Porque', assoc: "Porque son bizcos (bicos)." },
+
+        // CAPÍTULO 16: NÚMEROS
+        { cat: 'nums', en: 'Number', pron: 'námbe*', es: 'Número', assoc: "Es muy similar" },
+        { cat: 'nums', en: 'One', pron: 'uan', es: 'Uno', assoc: "Juan (uan) es el número uno." },
+        { cat: 'nums', en: 'Two', pron: 'tu:', es: 'Dos', assoc: "Somos dos, tú (tu) y yo." },
+        { cat: 'nums', en: 'Three', pron: 'zri', es: 'Tres', assoc: "Es similar." },
+        { cat: 'nums', en: 'Four', pron: 'fo:*', es: 'Cuatro', assoc: "Ford (for) con 4 ruedas." },
+        { cat: 'nums', en: 'Five', pron: 'fáif', es: 'Cinco', assoc: "Fácil (faif) rima con 5." },
+        { cat: 'nums', en: 'Six', pron: 'seiks', es: 'Seis', assoc: "Similar." },
+        { cat: 'nums', en: 'Seven', pron: 'séven', es: 'Siete', assoc: "Se ven (seven) a los 7 enanitos." },
+        { cat: 'nums', en: 'Eight', pron: 'éit', es: 'Ocho', assoc: "E.T. (eit) tiene forma de 8." },
+        { cat: 'nums', en: 'Nine', pron: 'náin', es: 'Nueve', assoc: "Nadie (nain) tiene 9 vidas." },
+        { cat: 'nums', en: 'Ten', pron: 'ten', es: 'Diez', assoc: "Ten los 10 mandamientos." },
+        { cat: 'nums', en: 'Twenty', pron: 'tuénti', es: 'Veinte', assoc: "Tu en ti (tuenti) tienes 20 huesos." },
+        { cat: 'nums', en: 'Thirty', pron: 'ze*ti', es: 'Treinta', assoc: "Cero (certi) es nada." },
+        { cat: 'nums', en: 'Hundred', pron: 'hándred', es: 'Cien', assoc: "Hundirse (haundred) en el cieno." },
+        { cat: 'nums', en: 'Thousand', pron: 'záusend', es: 'Mil', assoc: "Mil tosiendo: ZAS (zausen)." },
+        { cat: 'nums', en: 'Million', pron: 'mílieon', es: 'Millón', assoc: "Es muy similar" }
+    ];
+
+    const categories = [
+        { id: 'verbs', name: 'Verbos (Cap 4)' },
+        { id: 'nouns', name: 'Sustantivos (Cap 5)' },
+        { id: 'adj', name: 'Adjetivos (Cap 6)' },
+        { id: 'adv', name: 'Adverbios/Colores (Cap 7)' },
+        { id: 'expr', name: 'Saludos/Preguntas (Cap 8-10)' },
+        { id: 'pron', name: 'Pronombres/Gramática (Cap 11-15)' },
+        { id: 'nums', name: 'Números (Cap 16)' },
+        { id: 'all', name: '🔥 REPASO TOTAL' }
+    ];
+
+    window.loginWithGoogle = () => {
+        document.getElementById('login-status').innerText = "Conectando...";
+        signInWithPopup(auth, provider)
+            .then((result) => console.log("Login OK"))
+            .catch((error) => {
+                alert("Error: " + error.message);
+                document.getElementById('login-status').innerText = "";
+            });
+    };
+
+    window.doLogout = () => {
+        signOut(auth).then(() => {
+            alert("Has cerrado sesión");
+            location.reload();
+        });
+    };
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUserData = user;
+            document.getElementById('display-username').innerText = user.displayName.split(' ')[0];
+            showScreen('menu');
+        } else {
+            showScreen('login');
+        }
+    });
+
+    window.saveGlobalScoreCloud = async (points) => {
+        if (!currentUserData || points === 0) return;
+        if (currentMode === 'study') return;
+        try {
+            await addDoc(collection(db, "scores"), {
+                uid: currentUserData.uid,
+                name: currentUserData.displayName,
+                mode: currentMode,
+                cat: selectedCategory,
+                score: points,
+                date: new Date()
+            });
+        } catch (e) {
+            console.error("Error guardando score: ", e);
+        }
+    };
+
+    window.renderLeaderboard = async () => {
+        const cat = document.getElementById('lb-category').value;
+        const mode = document.getElementById('lb-mode').value;
+        const tbody = document.getElementById('lb-body');
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Cargando datos...</td></tr>';
+
+        try {
+            const q = query(
+                collection(db, "scores"), 
+                where("cat", "==", cat), 
+                where("mode", "==", mode),
+                orderBy("score", "desc"),
+                limit(50)
+            );
+            const querySnapshot = await getDocs(q);
+            tbody.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Aún no hay récords.</td></tr>';
+                return;
+            }
+            let rank = 1;
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const isMe = (currentUserData && data.uid === currentUserData.uid) ? 'user-highlight' : '';
+                const rankClass = (rank === 1) ? 'rank-1' : '';
+                tbody.innerHTML += `
+                    <tr class="${isMe}">
+                        <td class="${rankClass}">#${rank}</td>
+                        <td>${data.name}</td>
+                        <td style="text-align:right; font-weight:bold;">${data.score}</td>
+                    </tr>`;
+                rank++;
+            });
+        } catch (error) {
+            console.error(error);
+            if(error.message.includes("index")) alert("Falta índice en Firebase. Revisa la consola (F12).");
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Error cargando datos.</td></tr>';
+        }
+    }
+
+    let selectedCategory = null;
+    let currentMode = '';
+    let gameList = [];
+    let gameIndex = 0;
+    let score = 0;
+    let timer = null;
+    let timeLeft = 0;
+    let studyStep = 0;
+    let isReviewing = false;
+
+    const ui = {
+        screens: { login: 'screen-login', menu: 'screen-menu', game: 'screen-game', lb: 'screen-leaderboard' },
+        catGrid: document.getElementById('category-grid'),
+        input: document.getElementById('game-input'),
+        feedback: document.getElementById('feedback-area'),
+        assoc: document.getElementById('assoc-area'),
+        actionBtn: document.getElementById('action-btn')
+    };
+
+    window.init = () => {
+        ui.catGrid.innerHTML = '';
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'category-btn';
+            btn.innerText = cat.name;
+            btn.onclick = () => selectCategory(cat.id, btn);
+            ui.catGrid.appendChild(btn);
+        });
+        const lbCatSelect = document.getElementById('lb-category');
+        lbCatSelect.innerHTML = '';
+        categories.forEach(c => {
+            let opt = document.createElement('option');
+            opt.value = c.id;
+            opt.innerText = c.name;
+            lbCatSelect.appendChild(opt);
+        });
+        ui.input.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleGameAction(); });
+    }
+
+    window.selectCategory = (id, btn) => {
+        selectedCategory = id;
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    window.startGame = (mode) => {
+        if (!selectedCategory) return alert("Selecciona una categoría primero.");
+        currentMode = mode;
+        score = 0;
+        gameIndex = 0;
+        document.getElementById('current-score').innerText = 0;
+
+        if (selectedCategory === 'all') gameList = [...database];
+        else gameList = database.filter(i => i.cat === selectedCategory);
+
+        if(gameList.length === 0) return alert("No hay palabras en esta categoría.");
+        gameList.sort(() => Math.random() - 0.5);
+
+        document.getElementById('game-mode-display').innerText = mode.toUpperCase();
+        ui.input.style.display = (mode === 'study') ? 'none' : 'block';
+        
+        if (mode.includes('time')) {
+            timeLeft = 60;
+            document.getElementById('timer-display').style.display = 'block';
+            startTimer();
+        } else {
+            document.getElementById('timer-display').style.display = 'none';
+        }
+
+        showScreen('game');
+        loadCard();
+    }
+
+    function loadCard() {
+        if (gameIndex >= gameList.length) {
+            gameList.sort(() => Math.random() - 0.5);
+            gameIndex = 0;
+        }
+        const item = gameList[gameIndex];
+        isReviewing = false;
+        studyStep = 0;
+
+        ui.feedback.style.display = 'none';
+        ui.assoc.style.display = 'none';
+        ui.input.value = '';
+        ui.input.disabled = false;
+        ui.actionBtn.innerText = (currentMode === 'study') ? "Destapar" : "Comprobar";
+        ui.actionBtn.className = "btn-primary";
+
+        if (currentMode === 'study' || currentMode.endsWith('_es')) {
+            document.getElementById('question-text').innerText = item.en;
+            document.getElementById('audio-btn').style.display = 'inline-block';
+            document.getElementById('pronunciation-display').innerText = (currentMode === 'study') ? '' : `« ${item.pron} »`;
+            ui.input.placeholder = "Traduce al español...";
+        } else {
+            document.getElementById('question-text').innerText = item.es;
+            document.getElementById('audio-btn').style.display = 'none';
+            document.getElementById('pronunciation-display').innerText = '';
+            ui.input.placeholder = "Escribe en inglés...";
+        }
+        if (currentMode !== 'study') ui.input.focus();
+    }
+
+    window.handleGameAction = () => {
+        if (isReviewing) {
+            gameIndex++;
+            loadCard();
+            return;
+        }
+        const item = gameList[gameIndex];
+        if (currentMode === 'study') studyLogic(item);
+        else checkAnswer(item);
+    }
+
+    function studyLogic(item) {
+        studyStep++;
+        if (studyStep === 1) {
+            document.getElementById('pronunciation-display').innerText = `« ${item.pron} »`;
+            ui.actionBtn.innerText = "Ver Traducción";
+        } else if (studyStep === 2) {
+            ui.feedback.style.display = 'block';
+            ui.feedback.className = 'feedback fb-correct';
+            ui.feedback.innerHTML = `<strong>${item.es}</strong>`;
+            ui.actionBtn.innerText = "Ver Asociación";
+        } else if (studyStep === 3) {
+            ui.assoc.style.display = 'block';
+            ui.assoc.innerText = item.assoc;
+            ui.actionBtn.innerText = "Siguiente >>";
+            isReviewing = true;
+        }
+    }
+
+    function checkAnswer(item) {
+        const val = ui.input.value.toLowerCase().trim();
+        let correct = false;
+        let correctAnswer = "";
+
+        if (currentMode.endsWith('_en')) {
+            correct = (val === item.en.toLowerCase());
+            correctAnswer = item.en;
+        } else {
+            correct = item.es.toLowerCase().includes(val) && val.length > 2;
+            if (val === item.es.toLowerCase()) correct = true;
+            correctAnswer = item.es;
+        }
+
+        ui.input.disabled = true;
+        ui.feedback.style.display = 'block';
+        ui.assoc.style.display = 'block';
+        ui.assoc.innerText = item.assoc;
+        
+        isReviewing = true;
+        ui.actionBtn.innerText = "Siguiente >>";
+        ui.actionBtn.className = "btn-secondary";
+
+        if (correct) {
+            score += 10;
+            document.getElementById('current-score').innerText = score;
+            ui.feedback.className = 'feedback fb-correct';
+            ui.feedback.innerHTML = `✅ ¡Correcto! <b>${item.en}</b> = <b>${item.es}</b>`;
+        } else {
+            ui.feedback.className = 'feedback fb-wrong';
+            ui.feedback.innerHTML = `❌ Incorrecto. Era: <b>${correctAnswer}</b>`;
+            if (currentMode.includes('survival')) setTimeout(() => endGame(false), 2000);
+        }
+    }
+
+    function startTimer() {
+        document.getElementById('timer-display').innerText = timeLeft + 's';
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-display').innerText = timeLeft + 's';
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                endGame(true);
+            }
+        }, 1000);
+    }
+
+    window.endGame = (timeOut) => {
+        clearInterval(timer);
+        saveGlobalScoreCloud(score); 
+        let msg = timeOut ? "¡Tiempo agotado!" : "¡Juego terminado!";
+        if (currentMode.includes('survival') && !timeOut) msg = "¡Fallaste! Fin del juego.";
+        alert(`${msg}\nPuntuación final: ${score}`);
+        showScreen('menu');
+    }
+
+    window.playAudio = () => {
+        const item = gameList[gameIndex];
+        const text = item.en;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            const voices = window.speechSynthesis.getVoices();
+            const preferred = voices.find(v => v.lang === 'en-US' && v.name.includes('Google')) || voices.find(v => v.lang === 'en-US');
+            if (preferred) utterance.voice = preferred;
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    window.showScreen = (name) => {
+        Object.values(ui.screens).forEach(id => document.getElementById(id).classList.remove('active'));
+        document.getElementById(ui.screens[name]).classList.add('active');
+    }
+
+    window.showLeaderboard = () => {
+        showScreen('lb');
+        if(!selectedCategory) document.getElementById('lb-category').selectedIndex = 0;
+        else document.getElementById('lb-category').value = selectedCategory;
+        renderLeaderboard();
+    }
+
+    init(); 
+
+</script>
+</body>
+</html>
