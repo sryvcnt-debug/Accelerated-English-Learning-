@@ -11,7 +11,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
         
         body { 
-            background-color: #F0F4F8; /* Fondo azul grisáceo suave */
+            background-color: #F0F4F8; 
             color: #1F2937;
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
@@ -63,7 +63,6 @@
         .btn-verbos { background-color: #2563EB; color: white; border: none; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); }
         .btn-repaso { font-weight: 800; color: #0F172A; display: flex; gap: 5px; align-items: center; justify-content: center; }
         
-        /* Boton Instrucciones */
         .btn-instruct {
             background-color: #3B82F6; color: white; border: none; border-radius: 12px;
             width: 100%; padding: 16px; font-size: 1rem; font-weight: 700;
@@ -110,11 +109,8 @@
             background: #F1F5F9; padding: 4px 12px; border-radius: 20px;
         }
 
-        /* Estilo para el botón de audio */
         .audio-btn {
-            cursor: pointer;
-            transition: transform 0.1s;
-            display: inline-block;
+            cursor: pointer; transition: transform 0.1s; display: inline-block;
         }
         .audio-btn:active { transform: scale(0.9); }
 
@@ -139,7 +135,7 @@
         .correct-txt { color: #10B981; }
         .wrong-txt { color: #EF4444; }
 
-        /* --- PANTALLA 4: INSTRUCCIONES (CIENTÍFICAS) --- */
+        /* --- PANTALLA 4: INSTRUCCIONES --- */
         .instruct-screen { padding: 25px; background: white; min-height: 100vh; overflow-y: auto; }
         .inst-title { font-size: 1.5rem; font-weight: 800; color: #1E293B; margin-bottom: 15px; }
         .inst-block { margin-bottom: 25px; }
@@ -158,11 +154,12 @@
         <p class="app-subtitle">Diseñado por X</p>
         
         <div class="auth-card">
-            <input type="text" id="username" class="input-field" placeholder="Nombre de usuario">
-            <input type="password" id="password" class="input-field" placeholder="Contraseña">
+            <input type="text" id="username" class="input-field" placeholder="Usuario (máx 20 caracteres)" maxlength="20">
+            <input type="password" id="password" class="input-field" placeholder="Contraseña (máx 12 caracteres)" maxlength="12">
             
             <button class="btn-blue btn-full" onclick="app.login()">Iniciar Sesión</button>
             <button class="btn-full" style="background:transparent; color:#64748B; border:1px solid #E2E8F0; margin-top:10px;" onclick="app.register()">Registrarse</button>
+            
             <p id="auth-msg" style="color:#ef4444; margin-top:10px; font-size:0.9rem;"></p>
         </div>
     </div>
@@ -237,7 +234,6 @@
     </div>
 
     <div id="game-screen" class="game-screen hidden">
-        
         <div class="game-header-titles">
             <div class="gh-title">Accelerated English<br>Vocabulary Learning</div>
             <div class="gh-sub">DISEÑADO POR X</div>
@@ -270,7 +266,6 @@
 
             <div class="link-exit" onclick="app.goHome()">Salir al menú</div>
         </div>
-
     </div>
 
 </div>
@@ -1132,12 +1127,19 @@ const app = {
 
         if(!u || !p) return msg.innerText = "Elige usuario y contraseña.";
 
+        // --- VALIDACIONES DE LONGITUD ---
+        if(u.length > 20) return msg.innerText = "El usuario no puede tener más de 20 caracteres.";
+        if(p.length > 12) return msg.innerText = "La contraseña no puede tener más de 12 caracteres.";
+
         const db = app.getUsers();
         if(db[u]) return msg.innerText = "Este usuario ya existe.";
 
         app.saveUser(u, p);
         alert("¡Registro exitoso! Inicia sesión.");
         msg.innerText = "";
+        // Limpiar campos
+        document.getElementById('username').value = "";
+        document.getElementById('password').value = "";
     },
 
     logout: () => {
