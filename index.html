@@ -15,6 +15,7 @@
             color: #1F2937;
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
+            overflow-x: hidden; /* Evita scroll horizontal */
         }
 
         /* --- CONTENEDOR PRINCIPAL --- */
@@ -81,9 +82,32 @@
         .game-screen { 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             min-height: 100vh; padding: 20px; 
+            position: relative; /* Para posicionar el botón de atrás */
         }
 
-        .game-header-titles { text-align: center; margin-bottom: 30px; }
+        /* Botón Físico de Volver Atrás (Estilo App) */
+        .back-arrow-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #334155;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.1s;
+            z-index: 100;
+        }
+        .back-arrow-btn:active { transform: scale(0.9); background: #F1F5F9; }
+
+        .game-header-titles { text-align: center; margin-bottom: 30px; margin-top: 40px; }
         .gh-title { color: #2563EB; font-weight: 800; font-size: 1.5rem; line-height: 1.2; }
         .gh-sub { color: #64748B; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; margin-top: 5px; text-transform: uppercase; }
 
@@ -109,9 +133,7 @@
             background: #F1F5F9; padding: 4px 12px; border-radius: 20px;
         }
 
-        .audio-btn {
-            cursor: pointer; transition: transform 0.1s; display: inline-block;
-        }
+        .audio-btn { cursor: pointer; transition: transform 0.1s; display: inline-block; }
         .audio-btn:active { transform: scale(0.9); }
 
         .input-answer {
@@ -136,8 +158,8 @@
         .wrong-txt { color: #EF4444; }
 
         /* --- PANTALLA 4: INSTRUCCIONES --- */
-        .instruct-screen { padding: 25px; background: white; min-height: 100vh; overflow-y: auto; }
-        .inst-title { font-size: 1.5rem; font-weight: 800; color: #1E293B; margin-bottom: 15px; }
+        .instruct-screen { padding: 25px; background: white; min-height: 100vh; overflow-y: auto; position: relative; }
+        .inst-title { font-size: 1.5rem; font-weight: 800; color: #1E293B; margin-bottom: 15px; margin-top: 40px; }
         .inst-block { margin-bottom: 25px; }
         .inst-head { font-size: 1.1rem; font-weight: 700; color: #2563EB; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .inst-text { font-size: 0.95rem; color: #475569; line-height: 1.6; text-align: justify; }
@@ -203,6 +225,8 @@
     </div>
 
     <div id="instruct-screen" class="instruct-screen hidden">
+        <button class="back-arrow-btn" onclick="window.history.back()">←</button>
+
         <h2 class="inst-title">Fundamentos del Aprendizaje Acelerado</h2>
         <div class="menu-divider" style="margin: 10px 0 25px 0; background-color:#2563EB;"></div>
 
@@ -230,10 +254,13 @@
             </p>
         </div>
 
-        <button class="btn-blue btn-full" onclick="app.hideInstructions()">Entendido, volver al menú</button>
+        <button class="btn-blue btn-full" onclick="window.history.back()">Entendido, volver al menú</button>
     </div>
 
     <div id="game-screen" class="game-screen hidden">
+        
+        <button class="back-arrow-btn" onclick="window.history.back()">←</button>
+
         <div class="game-header-titles">
             <div class="gh-title">Accelerated English<br>Vocabulary Learning</div>
             <div class="gh-sub">DISEÑADO POR X</div>
@@ -264,7 +291,7 @@
                 <div id="assoc-text" class="assoc-text">...</div>
             </div>
 
-            <div class="link-exit" onclick="app.goHome()">Salir al menú</div>
+            <div class="link-exit" onclick="window.history.back()">Salir al menú</div>
         </div>
     </div>
 
@@ -1147,28 +1174,37 @@ const app = {
     },
 
     // --- NAVEGACIÓN ---
+    // Usamos pushState para crear historial y poder usar el botón de atrás del navegador
     play: (category) => {
+        history.pushState({ page: 'game' }, "", "#game");
         game.start(category);
-        document.getElementById('menu-screen').classList.add('hidden');
+        document.querySelectorAll('.auth-screen, .menu-screen, .instruct-screen').forEach(el => el.classList.add('hidden'));
         document.getElementById('game-screen').classList.remove('hidden');
     },
 
-    goHome: () => {
-        document.getElementById('game-screen').classList.add('hidden');
-        document.getElementById('menu-screen').classList.remove('hidden');
-    },
-
-    // --- INSTRUCCIONES ---
     showInstructions: () => {
-        document.getElementById('menu-screen').classList.add('hidden');
+        history.pushState({ page: 'instructions' }, "", "#instructions");
+        document.querySelectorAll('.auth-screen, .menu-screen, .game-screen').forEach(el => el.classList.add('hidden'));
         document.getElementById('instruct-screen').classList.remove('hidden');
     },
 
-    hideInstructions: () => {
-        document.getElementById('instruct-screen').classList.add('hidden');
+    goHome: () => {
+        document.querySelectorAll('.auth-screen, .game-screen, .instruct-screen').forEach(el => el.classList.add('hidden'));
         document.getElementById('menu-screen').classList.remove('hidden');
     }
 };
+
+// --- MANEJO DEL BOTÓN ATRÁS DEL NAVEGADOR ---
+window.addEventListener('popstate', (event) => {
+    // Si el usuario da atrás, ocultamos todo y mostramos el menú (o login si no hay sesión)
+    if(app.user) {
+        app.goHome();
+    } else {
+        // Si no hay usuario, recargar para ir al login
+        location.reload(); 
+    }
+});
+
 
 /* ======================================================
    LÓGICA DEL JUEGO (INPUT + ASOCIACIÓN)
@@ -1192,7 +1228,7 @@ const game = {
 
         if(game.list.length === 0) {
             alert("No hay palabras en esta categoría.");
-            app.goHome();
+            window.history.back(); // Volver si no hay palabras
             return;
         }
         
@@ -1214,7 +1250,7 @@ const game = {
         // Obtener siguiente palabra
         if(game.list.length === 0) {
             alert("¡Repaso terminado!");
-            app.goHome();
+            window.history.back(); // Volver al menú
             return;
         }
         game.curr = game.list.pop();
@@ -1243,7 +1279,7 @@ const game = {
         const feedback = document.getElementById('feedback-area');
         feedback.classList.remove('hidden');
 
-        // Validación simple: Si lo que escribió el usuario está contenido en la respuesta correcta o viceversa
+        // Validación simple
         const isCorrect = correctAns.includes(userAns) && userAns.length > 1; 
 
         if(isCorrect) {
@@ -1264,11 +1300,21 @@ const game = {
     }
 };
 
-// Enter key para enviar
-document.getElementById('answer-input').addEventListener('keypress', function (e) {
+// --- LISTENER GLOBAL PARA LA TECLA ENTER ---
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
-        if(document.getElementById('btn-check').style.display !== 'none') game.check();
-        else game.next();
+        // Solo actuar si estamos en la pantalla de juego y NO está oculta
+        if (!document.getElementById('game-screen').classList.contains('hidden')) {
+            const btnCheck = document.getElementById('btn-check');
+            
+            // Si el botón de comprobar está visible, comprobamos
+            if (btnCheck.style.display !== 'none') {
+                game.check();
+            } else {
+                // Si no (significa que ya comprobamos y ahora se ve "Siguiente"), pasamos
+                game.next();
+            }
+        }
     }
 });
 
