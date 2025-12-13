@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Accelerated Vocabulary Learning</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <style>
+        <style>
         :root {
-            /* Paleta "Cognitive Flow" - Azul Claro y Amigable */
-            --bg-body: #F0F9FF;        /* Azul Alicia muy suave */
-            --bg-card: #FFFFFF;        /* Blanco puro */
-            --primary: #0EA5E9;        /* Azul Cielo Vibrante */
-            --primary-dark: #0284C7;   /* Azul Océano para hover */
-            --accent: #F59E0B;         /* Ámbar para destacar */
-            --text-main: #334155;      /* Gris Pizarra Oscuro (menos duro que el negro) */
-            --text-light: #64748B;     /* Gris Pizarra Claro */
-            --success: #10B981;        /* Esmeralda */
-            --error: #EF4444;          /* Coral */
-            --shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.15); /* Sombra suave azulada */
+            /* Paleta "Deep Professional Sky" */
+            --bg-body: #D0E8F2;        /* Celeste más profundo y sólido */
+            --bg-card: #FFFFFF;        /* Blanco Puro */
+            --primary: #0369A1;        /* Azul Océano Profundo (Más serio) */
+            --primary-dark: #0C4A6E;   /* Azul Marino para hover */
+            --primary-light: #38BDF8;  /* Cian para detalles */
+            --text-main: #0F172A;      /* Azul Noche */
+            --text-muted: #475569;     /* Gris Azulado */
+            --accent: #F59E0B;         /* Ámbar */
+            --success: #059669;        /* Verde Esmeralda */
+            --error: #DC2626;          /* Rojo Intenso */
+            --shadow: 0 10px 30px -5px rgba(3, 105, 161, 0.2);
         }
 
         * {
@@ -29,52 +30,52 @@
 
         body {
             background-color: var(--bg-body);
+            /* Gradiente sutil para dar profundidad */
+            background-image: linear-gradient(160deg, #D0E8F2 0%, #E0F2FE 100%);
             color: var(--text-main);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             align-items: center;
-            overflow-x: hidden;
         }
 
-        /* Header Amigable */
+        /* Header con más presencia */
         header {
             width: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #E0F2FE;
+            border-bottom: 2px solid #BAE6FD;
             position: fixed;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 20px rgba(3, 105, 161, 0.08);
         }
 
         header h1 {
             font-family: 'Poppins', sans-serif;
             font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary-dark);
+            font-weight: 800;
+            color: var(--primary);
             letter-spacing: -0.5px;
+            text-transform: uppercase;
         }
 
         .user-badge {
-            background: #E0F2FE;
+            background: #F0F9FF;
             color: var(--primary-dark);
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
             border: 1px solid #BAE6FD;
         }
 
-        /* Contenedor Principal */
         #app-container {
             width: 100%;
-            max-width: 700px; /* Más ancho para lectura cómoda */
+            max-width: 680px;
             margin-top: 100px;
             padding: 20px;
             flex-grow: 1;
@@ -82,66 +83,61 @@
             flex-direction: column;
         }
 
-        /* Títulos */
-        h2 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
-            text-align: center;
-            margin-bottom: 25px;
-            color: var(--text-main);
-            font-weight: 700;
-        }
-
-        /* Tarjetas */
         .card {
             background: var(--bg-card);
             padding: 40px;
             border-radius: 24px;
             box-shadow: var(--shadow);
-            border: 1px solid #F1F5F9;
-            transition: transform 0.3s ease;
+            border: 1px solid #E0F2FE;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .input-group { margin-bottom: 20px; }
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
 
-        label {
+        .input-group label {
             display: block;
-            color: var(--text-light);
+            color: var(--text-muted);
             margin-bottom: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         input {
             width: 100%;
             padding: 16px;
-            background: #F8FAFC;
-            border: 2px solid #E2E8F0;
+            background: #F1F5F9;
+            border: 2px solid #CBD5E1;
             border-radius: 12px;
             color: var(--text-main);
             font-size: 1rem;
-            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            transition: all 0.2s;
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary);
             background: #FFFFFF;
-            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+            box-shadow: 0 0 0 4px rgba(3, 105, 161, 0.15);
         }
 
-        /* Botones Interactivos */
         .btn {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             border: none;
             border-radius: 14px;
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 1.05rem;
+            font-weight: 700;
             font-family: 'Poppins', sans-serif;
             cursor: pointer;
             transition: all 0.2s;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -151,19 +147,18 @@
         .btn-primary {
             background: var(--primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 6px 0 var(--primary-dark); /* Efecto 3D sutil */
         }
 
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(14, 165, 233, 0.4);
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--primary-dark);
         }
 
         .btn-outline {
             background: white;
-            border: 2px solid #E2E8F0;
-            color: var(--text-light);
+            border: 2px solid #CBD5E1;
+            color: var(--text-muted);
         }
 
         .btn-outline:hover {
@@ -172,142 +167,107 @@
             background: #F0F9FF;
         }
 
-        /* Menú Categorías */
         .grid-menu {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 20px;
         }
 
         .category-card {
             background: white;
-            padding: 20px;
-            border-radius: 16px;
+            padding: 25px;
+            border-radius: 20px;
             text-align: center;
-            border: 2px solid transparent;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 2px solid #E2E8F0;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .category-card:hover {
             border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: var(--shadow);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(3, 105, 161, 0.15);
         }
 
-        .cat-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
-        .cat-name { font-weight: 600; color: var(--text-main); }
+        .cat-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
+        .cat-name { font-weight: 700; color: var(--primary-dark); font-size: 1rem; }
 
-        /* Pantalla de Juego */
-        .game-header {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #F1F5F9;
-        }
-
-        .progress-pill {
+        /* Juego */
+        .progress-indicator {
             background: #E0F2FE;
-            color: #0284C7;
-            padding: 6px 14px;
+            color: var(--primary-dark);
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.9rem;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            display: inline-block;
+            border: 1px solid #BAE6FD;
         }
 
         #w-english {
-            font-size: 3rem;
+            font-size: 3.2rem;
             font-family: 'Poppins', sans-serif;
             font-weight: 800;
-            margin: 10px 0;
-            color: var(--text-main);
-            letter-spacing: -1px;
+            margin: 20px 0 10px;
+            color: var(--primary-dark);
+            letter-spacing: -1.5px;
+            line-height: 1.1;
         }
 
         #w-pron {
-            color: var(--primary);
+            color: var(--text-muted);
             font-family: 'Courier New', monospace;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             background: #F1F5F9;
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 8px;
             font-weight: 600;
+            border: 1px solid #E2E8F0;
         }
 
-        /* Área de Asociación (Mnemotecnia) */
         .mnemonic-box {
             background: #FFFBEB; 
-            border-left: 4px solid #F59E0B;
+            border-left: 5px solid #F59E0B;
             padding: 20px; 
-            margin: 20px 0; 
-            border-radius: 8px;
+            margin: 25px 0; 
+            border-radius: 12px;
             font-style: italic; 
-            color: #78350F; 
+            color: #92400E; 
             display: none;
+            position: relative;
             line-height: 1.6;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        /* Instrucciones Detalladas */
+        /* Instrucciones */
         .scientific-content {
             text-align: left;
             font-size: 0.95rem;
             line-height: 1.8;
-            color: #475569;
+            color: #334155;
             max-height: 60vh;
             overflow-y: auto;
             padding-right: 15px;
         }
 
         .scientific-content h3 {
-            color: var(--primary-dark);
+            color: var(--primary);
             font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             margin-top: 30px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #E2E8F0;
+            border-bottom: 2px solid #BAE6FD;
             padding-bottom: 5px;
         }
 
-        .citation {
-            font-size: 0.8em;
-            color: #94A3B8;
-            vertical-align: super;
-        }
-
-        .highlight-box {
-            background: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            padding: 15px;
-            border-radius: 12px;
-            margin: 15px 0;
-        }
-
-        .symbol-item {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        .symbol {
-            background: var(--text-main);
+        .motivation-box {
+            background: linear-gradient(135deg, #0369A1, #0EA5E9);
             color: white;
-            font-family: monospace;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .motivation-section {
-            background: linear-gradient(135deg, #0EA5E9, #2563EB);
-            color: white;
-            padding: 25px;
-            border-radius: 16px;
+            padding: 30px;
+            border-radius: 20px;
             margin-top: 30px;
             text-align: center;
+            box-shadow: 0 15px 30px -10px rgba(3, 105, 161, 0.5);
         }
 
         .designer-credit {
@@ -322,17 +282,21 @@
             text-transform: uppercase;
         }
 
-        /* Feedback visual */
-        .feedback-correct { background: #D1FAE5; color: #065F46; padding: 15px; border-radius: 12px; font-weight: 700; text-align: center; }
-        .feedback-wrong { background: #FEE2E2; color: #991B1B; padding: 15px; border-radius: 12px; font-weight: 700; text-align: center; }
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .correct { background: #DCFCE7; color: #166534; border: 2px solid #86EFAC; }
+        .wrong { background: #FEE2E2; color: #991B1B; border: 2px solid #FCA5A5; }
 
         .hidden { display: none !important; }
 
-        /* Scrollbar personalizada */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #F1F5F9; }
-        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+        ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -2960,6 +2924,10 @@ const RAW_DATA_OXFORD3000 = [
    LÓGICA DEL SISTEMA (LOCAL STORAGE)
    ========================================================================== */
 
+/* ==========================================================================
+   LÓGICA DEL SISTEMA (LOGIN, JUEGO, HISTORY API)
+   ========================================================================== */
+
 function normalizeText(text) {
     return text ? text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
 }
@@ -2969,23 +2937,39 @@ const app = {
     currentLevel: null,
     currentCategory: null,
 
-    // Objeto para guardar progreso localmente
     userData: {
         password: "",
         stats: { wordsLearned: 0, totalScore: 0 }
     },
 
     init() {
+        // Manejo del BOTÓN ATRÁS del navegador
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.screen) {
+                // Si hay un estado guardado, volvemos a esa pantalla
+                app.showScreen(event.state.screen, false); 
+            } else {
+                // Si no hay estado (llegamos al inicio), mostramos login o nivel
+                if(app.currentUser) {
+                    app.showScreen('level-screen', false);
+                } else {
+                    app.showScreen('auth-screen', false);
+                }
+            }
+        });
+
         setTimeout(() => {
             const el = document.getElementById('user-input');
             if(el) el.focus();
         }, 500);
 
-        // Enter en inputs
         const uInput = document.getElementById('user-input');
         const pInput = document.getElementById('pass-input');
         if(uInput) uInput.addEventListener('keydown', (e) => { if(e.key==='Enter') { e.preventDefault(); pInput.focus(); } });
         if(pInput) pInput.addEventListener('keydown', (e) => { if(e.key==='Enter') { e.preventDefault(); app.login(); } });
+
+        // Reemplazamos el estado inicial para que no esté vacío
+        history.replaceState({ screen: 'auth-screen' }, '', '#login');
     },
 
     login() {
@@ -2996,12 +2980,10 @@ const app = {
         if (userIn.length > 20) { alert('⚠️ Usuario máx. 20 caracteres.'); return; }
         if (passIn.length > 12) { alert('⚠️ Contraseña máx. 12 caracteres.'); return; }
 
-        // Lógica Local Storage: Recuperar o Crear
-        const localKey = 'user_' + userIn;
+        const localKey = 'avl_user_' + userIn;
         const storedData = localStorage.getItem(localKey);
 
         if (storedData) {
-            // Usuario existe, verificar contraseña
             const parsedData = JSON.parse(storedData);
             if (parsedData.password === passIn) {
                 this.userData = parsedData;
@@ -3010,7 +2992,6 @@ const app = {
                 alert("⛔ Contraseña incorrecta.");
             }
         } else {
-            // Usuario nuevo, registrar
             if(confirm(`El usuario "${userIn}" no existe.\n¿Crear cuenta nueva?`)) {
                 this.userData = {
                     password: passIn,
@@ -3024,25 +3005,23 @@ const app = {
 
     enterApp(user) {
         this.currentUser = user;
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('level-screen').classList.remove('hidden');
         document.getElementById('user-display').textContent = user;
+        // Navegar a niveles y guardar en historial
+        this.showScreen('level-screen'); 
     },
 
     saveProgress() {
         if(this.currentUser) {
-            const localKey = 'user_' + this.currentUser;
+            const localKey = 'avl_user_' + this.currentUser;
             localStorage.setItem(localKey, JSON.stringify(this.userData));
         }
     },
 
     selectLevel(lvl) {
         this.currentLevel = lvl;
-        // Ocultar saludos si es avanzado
         const btnSaludos = document.querySelector('.btn-saludos');
         if(btnSaludos) btnSaludos.style.display = (lvl === 'oxford3000') ? 'none' : 'block';
 
-        // Actualizar título del menú
         document.getElementById('menu-title').textContent = (lvl === 'oxford3000') ? 'Categorías Avanzadas' : 'Categorías Básicas';
 
         this.showScreen('menu-screen');
@@ -3050,7 +3029,6 @@ const app = {
 
     showModeSelection(cat) {
         this.currentCategory = cat;
-        // Verificar datos
         const words = game.getWords(cat);
         if (words.length === 0) {
             alert(`⚠️ No hay datos cargados para ${cat}.`);
@@ -3066,19 +3044,33 @@ const app = {
     },
 
     showInstructions() { this.showScreen('instruct-screen'); },
-    goToLevelSelection() { this.showScreen('level-screen'); },
-    goHome() { this.showScreen('menu-screen'); },
+    goToLevelSelection() { 
+        // Usar history.back() simula presionar atrás
+        history.back(); 
+    },
+    goHome() { 
+        // Si estamos en el juego, volver atrás nos lleva al selector de modo
+        // Si queremos ir al menú principal, forzamos la pantalla
+        this.selectLevel(this.currentLevel);
+    },
 
-    showScreen(id) {
+    // FUNCIÓN CENTRAL DE NAVEGACIÓN
+    showScreen(id, pushHistory = true) {
         document.querySelectorAll('#app-container > div').forEach(d => d.classList.add('hidden'));
         const target = document.getElementById(id);
         if(target) target.classList.remove('hidden');
+
+        // Agregar al historial del navegador
+        if (pushHistory) {
+            history.pushState({ screen: id }, '', `#${id.replace('-screen', '')}`);
+        }
     },
 
     confirmExit() {
-        if(confirm("¿Abandonar la sesión actual?")) {
+        if(confirm("¿Abandonar la sesión?")) {
             game.stopTimer();
-            this.goHome();
+            // Intentar volver atrás con historial
+            history.back();
         }
     }
 };
@@ -3095,7 +3087,6 @@ const game = {
     getWords(category) {
         const source = app.currentLevel === 'basico' ? RAW_DATA : RAW_DATA_OXFORD3000;
 
-        // Mapeo seguro
         const mapped = source.map(item => ({
             cat: item[0],
             eng: item[1],
@@ -3109,7 +3100,6 @@ const game = {
     },
 
     shuffle(array) {
-        // Algoritmo Fisher-Yates para aleatoriedad real
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -3120,22 +3110,14 @@ const game = {
         this.mode = mode;
         this.isReverse = mode.includes('reverso');
 
-        // 1. Obtener y MEZCLAR SIEMPRE
         let rawWords = this.getWords(category);
-        if(rawWords.length === 0) {
-            alert('⚠️ No hay palabras en esta categoría.');
-            app.goHome();
-            return;
-        }
-
-        this.words = [...rawWords]; // Copia para no alterar original
-        this.shuffle(this.words);   // Mezcla estocástica obligatoria
+        this.words = [...rawWords]; 
+        this.shuffle(this.words);
 
         this.currentIndex = 0;
         this.score = 0;
         this.awaitingNext = false;
 
-        // UI Reset
         const timerDisplay = document.getElementById('timer-display');
         const assocBox = document.getElementById('assoc-box');
         const feedbackArea = document.getElementById('feedback-area');
@@ -3157,8 +3139,6 @@ const game = {
         if (mode === 'contrareloj') this.startTimer(60);
 
         if(scoreEl) scoreEl.style.display = (mode === 'estudio') ? 'none' : 'block';
-
-        // Ocultar audio en modo reverso
         if(audioBtn) audioBtn.style.display = this.isReverse ? 'none' : 'block';
 
         this.updateUI();
@@ -3166,7 +3146,6 @@ const game = {
 
         setTimeout(() => { if(answerInput) answerInput.focus(); }, 100);
 
-        // Limpiar eventos anteriores para evitar duplicados
         if(answerInput) {
             answerInput.onkeydown = null;
             answerInput.onkeydown = (e) => {
@@ -3182,7 +3161,6 @@ const game = {
     startTimer(sec) {
         const display = document.getElementById('timer-display');
         if(!display) return;
-
         display.classList.remove('hidden');
         let t = sec;
         display.textContent = t + 's';
@@ -3193,7 +3171,7 @@ const game = {
             if(t <= 0) {
                 clearInterval(this.timer);
                 alert("⏰ ¡Tiempo agotado!");
-                app.goHome();
+                app.confirmExit(); // Salir usando el historial
             }
         }, 1000);
     },
@@ -3201,26 +3179,22 @@ const game = {
     stopTimer() { if(this.timer) clearInterval(this.timer); },
 
     updateUI() {
-        // CONTADOR FIJO EN 3000 para modo avanzado
         const prog = document.getElementById('progress-label');
         if(prog) {
             if(app.currentLevel === 'oxford3000') {
-                // Modo avanzado: Mostrar siempre /3000
                 prog.textContent = `${this.currentIndex + 1} / 3000`;
             } else {
-                // Modo básico: Mostrar total real
                 prog.textContent = `${this.currentIndex + 1} / ${this.words.length}`;
             }
         }
-
         const sc = document.getElementById('score-display');
         if(sc) sc.textContent = `Pts: ${this.score}`;
     },
 
     showWord() {
         if (this.currentIndex >= this.words.length) {
-            alert("🏆 ¡Sesión completada! Las palabras se reordenarán para la próxima vez.");
-            app.goHome();
+            alert("🏆 ¡Sesión completada! Las palabras se reordenarán.");
+            app.confirmExit();
             return;
         }
 
@@ -3233,12 +3207,7 @@ const game = {
         const wPron = document.getElementById('w-pron');
         const wAssocText = document.getElementById('assoc-text');
 
-        if(input) {
-            input.value = "";
-            input.disabled = false;
-            input.focus();
-        }
-
+        if(input) { input.value = ""; input.disabled = false; input.focus(); }
         if(feedbackArea) feedbackArea.classList.add('hidden');
         if(nextBtn) nextBtn.classList.add('hidden');
         if(assocBox) assocBox.style.display = 'none';
@@ -3266,7 +3235,7 @@ const game = {
     },
 
     playAudio() {
-        if(this.isReverse) return;
+        if (this.isReverse) return;
         const w = this.words[this.currentIndex];
         if(w && w.eng) {
             const u = new SpeechSynthesisUtterance(w.eng);
@@ -3279,12 +3248,9 @@ const game = {
         if(this.awaitingNext) return;
 
         const input = document.getElementById('answer-input');
-        if(!input) return;
-
         const val = normalizeText(input.value);
         const w = this.words[this.currentIndex];
         const correct = normalizeText(this.isReverse ? w.eng : w.esp);
-
         const fb = document.getElementById('feedback-area');
         const assocBox = document.getElementById('assoc-box');
         const nextBtn = document.getElementById('next-word-btn');
@@ -3301,24 +3267,22 @@ const game = {
             this.score += 10;
             app.userData.stats.totalScore += 10;
             if(fb) {
-                fb.innerHTML = `<div class="feedback-correct">✅ ¡CORRECTO! +10</div>`;
+                fb.innerHTML = `<div class="feedback-box correct">✅ ¡CORRECTO! +10</div>`;
                 fb.classList.remove('hidden');
             }
         } else {
             if(fb) {
-                fb.innerHTML = `<div class="feedback-wrong">❌ INCORRECTO<br>Era: <strong>${this.isReverse ? w.eng : w.esp}</strong></div>`;
+                fb.innerHTML = `<div class="feedback-box wrong">❌ INCORRECTO<br>Era: <strong>${this.isReverse ? w.eng : w.esp}</strong></div>`;
                 fb.classList.remove('hidden');
             }
-
-            if(this.mode === 'supervivencia') {
+            if (this.mode === 'supervivencia') {
                 this.stopTimer();
                 alert("💀 Fin del juego - Modo Supervivencia");
-                app.goHome();
+                app.confirmExit();
                 return;
             }
         }
 
-        // Guardar progreso local
         if(this.mode !== 'estudio') {
             app.userData.stats.wordsLearned++;
             app.saveProgress();
@@ -3339,7 +3303,6 @@ const game = {
     }
 };
 
-// Arrancar
 app.init();
 </script>
 </body>
