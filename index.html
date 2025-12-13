@@ -8,185 +8,659 @@
         /* --- FUENTES Y RESET --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
-        
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Inter', -apple-system, sans-serif; 
+        }
+
         body { 
-            background-color: #F0F4F8; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #1F2937;
-            display: flex; justify-content: center; align-items: center;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
             min-height: 100vh;
-            overflow-x: hidden; /* Evita scroll horizontal */
         }
 
         /* --- CONTENEDOR PRINCIPAL --- */
         #app-container {
-            width: 100%; max-width: 480px;
+            width: 100%; 
+            max-width: 480px;
             min-height: 100vh;
-            display: flex; flex-direction: column;
+            display: flex; 
+            flex-direction: column;
             position: relative;
             background-color: #F0F4F8;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         /* --- UTILIDADES --- */
         .hidden { display: none !important; }
-        .btn-blue { background-color: #2563EB; color: white; border: none; transition: 0.2s; }
-        .btn-blue:hover { background-color: #1d4ed8; }
-        .btn-full { width: 100%; padding: 14px; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; }
+
+        .btn-blue { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            border: none; 
+            transition: all 0.3s ease; 
+        }
+
+        .btn-blue:hover { 
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-full { 
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 1rem; 
+            cursor: pointer; 
+        }
+
         .text-center { text-align: center; }
 
         /* --- PANTALLA 1: LOGIN --- */
         .auth-screen { 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            height: 100vh; padding: 20px; text-align: center;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            padding: 20px; 
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .app-title { color: #2563EB; font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 5px; }
-        .app-subtitle { color: #64748B; font-size: 0.9rem; font-weight: 600; margin-bottom: 40px; letter-spacing: 1px; text-transform: uppercase; }
-        
-        .auth-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; }
-        .input-field { width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px; margin-bottom: 15px; font-size: 1rem; outline: none; }
-        .input-field:focus { border-color: #2563EB; }
+
+        .app-title { 
+            color: white; 
+            font-size: 2.8rem; 
+            font-weight: 800; 
+            line-height: 1.2; 
+            margin-bottom: 8px;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .app-subtitle { 
+            color: rgba(255,255,255,0.95); 
+            font-size: 0.95rem; 
+            font-weight: 600; 
+            margin-bottom: 45px; 
+            letter-spacing: 1.2px; 
+            text-transform: uppercase; 
+        }
+
+        .auth-card { 
+            background: white; 
+            padding: 40px 35px; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25); 
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        .input-field { 
+            width: 100%; 
+            padding: 16px; 
+            border: 2px solid #E2E8F0; 
+            border-radius: 12px; 
+            margin-bottom: 18px; 
+            font-size: 1rem; 
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus { 
+            border-color: #667eea; 
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        /* --- PANTALLA SELECCIÓN DE NIVEL --- */
+        .level-screen {
+            padding: 20px;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .level-header {
+            text-align: center;
+            margin: 30px 0 20px;
+        }
+
+        .level-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .level-subtitle {
+            font-size: 0.9rem;
+            color: #94A3B8;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .level-divider {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 18px auto 35px;
+            border-radius: 2px;
+        }
+
+        .level-btn {
+            width: 100%;
+            padding: 28px;
+            margin-bottom: 16px;
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .level-btn:hover::before {
+            left: 100%;
+        }
+
+        .level-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.25);
+        }
+
+        .level-btn-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+
+        .level-btn-desc {
+            font-size: 0.9rem;
+            color: #64748B;
+            line-height: 1.5;
+        }
+
+        .level-badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
 
         /* --- PANTALLA 2: MENÚ --- */
-        .menu-screen { padding: 20px; background: white; min-height: 100vh; }
-        .menu-header { text-align: center; margin-top: 20px; margin-bottom: 5px; font-size: 0.85rem; font-weight: 700; color: #94A3B8; letter-spacing: 1.5px; text-transform: uppercase; }
-        .menu-divider { width: 40px; height: 3px; background-color: #CBD5E1; margin: 0 auto 25px auto; border-radius: 2px; }
-
-        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        
-        .menu-btn {
-            background-color: white; border: 1px solid #E2E8F0; border-radius: 12px;
-            padding: 16px 5px; font-size: 0.95rem; font-weight: 600; color: #334155;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.1s;
+        .menu-screen { 
+            padding: 20px; 
+            background: white; 
+            min-height: 100vh; 
         }
-        .menu-btn:active { transform: scale(0.98); }
-        
-        .btn-verbos { background-color: #2563EB; color: white; border: none; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); }
-        .btn-repaso { font-weight: 800; color: #0F172A; display: flex; gap: 5px; align-items: center; justify-content: center; }
-        
+
+        .menu-header { 
+            text-align: center; 
+            margin-top: 22px; 
+            margin-bottom: 8px; 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            color: #94A3B8; 
+            letter-spacing: 1.8px; 
+            text-transform: uppercase; 
+        }
+
+        .menu-divider { 
+            width: 45px; 
+            height: 3px; 
+            background: linear-gradient(90deg, #667eea, #764ba2); 
+            margin: 0 auto 25px auto; 
+            border-radius: 2px; 
+        }
+
+        .back-btn {
+            background: #F1F5F9;
+            color: #64748B;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 18px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .back-btn:hover {
+            background: #E2E8F0;
+            color: #334155;
+            transform: translateX(-3px);
+        }
+
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 14px; 
+            margin-bottom: 22px; 
+        }
+
+        .menu-btn {
+            background-color: white; 
+            border: 2px solid #E2E8F0; 
+            border-radius: 16px;
+            padding: 20px 10px; 
+            font-size: 0.95rem; 
+            font-weight: 600; 
+            color: #334155;
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 85px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .menu-btn:hover { 
+            border-color: #667eea; 
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.2);
+        }
+
+        /* Botones especiales */
+        .btn-verbos { 
+            border-color: #10B981; 
+            color: #059669; 
+        }
+
+        .btn-verbos:hover { 
+            border-color: #10B981; 
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.12)); 
+        }
+
+        .btn-repaso { 
+            background: linear-gradient(135deg, #F59E0B, #EF4444); 
+            color: white; 
+            border: none;
+            grid-column: 1 / -1;
+        }
+
+        .btn-repaso:hover { 
+            background: linear-gradient(135deg, #EF4444, #F59E0B);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
         .btn-instruct {
-            background-color: #3B82F6; color: white; border: none; border-radius: 12px;
-            width: 100%; padding: 16px; font-size: 1rem; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 10px; cursor: pointer;
+            width: 100%;
+            padding: 16px;
+            margin-top: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-instruct:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
         }
 
         .ranking-btn {
-            background-color: #F59E0B; color: white; border: none; border-radius: 12px;
-            width: 100%; padding: 16px; font-size: 1rem; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); margin-top: 10px; cursor: pointer;
-        }
-
-        /* --- PANTALLA 3: JUEGO --- */
-        .game-screen { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            min-height: 100vh; padding: 20px; 
-            position: relative; /* Para posicionar el botón de atrás */
-        }
-
-        /* Botón Físico de Volver Atrás (Estilo App) */
-        .back-arrow-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+            width: 100%;
+            padding: 16px;
+            margin-top: 12px;
             background: white;
-            border: 1px solid #E2E8F0;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: #334155;
+            color: #64748B;
+            border: 2px solid #E2E8F0;
+            border-radius: 14px;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: transform 0.1s;
-            z-index: 100;
-        }
-        .back-arrow-btn:active { transform: scale(0.9); background: #F1F5F9; }
-
-        .game-header-titles { text-align: center; margin-bottom: 30px; margin-top: 40px; }
-        .gh-title { color: #2563EB; font-weight: 800; font-size: 1.5rem; line-height: 1.2; }
-        .gh-sub { color: #64748B; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; margin-top: 5px; text-transform: uppercase; }
-
-        .status-pill {
-            background: white; border-radius: 50px; padding: 8px 20px;
-            display: flex; justify-content: space-between; width: 100%; max-width: 350px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;
-            font-size: 0.8rem; font-weight: 700; color: #475569;
+            transition: all 0.3s ease;
+            font-size: 1rem;
         }
 
-        .game-card {
-            background: white; border-radius: 20px; width: 100%; max-width: 380px;
-            padding: 40px 30px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; align-items: center;
+        .ranking-btn:hover {
+            border-color: #FCD34D;
+            background: rgba(252, 211, 77, 0.12);
+            transform: translateY(-2px);
         }
 
-        .word-en { font-size: 2.5rem; font-weight: 800; color: #0F172A; margin-bottom: 5px; }
-        
-        .word-pron { 
-            color: #94A3B8; font-family: monospace; font-size: 1rem; 
-            margin-bottom: 30px; display: flex; align-items: center; gap: 8px;
-            background: #F1F5F9; padding: 4px 12px; border-radius: 20px;
+        /* --- PANTALLA 3: INSTRUCCIONES --- */
+        .instruct-screen { 
+            padding: 20px; 
+            background: white; 
+            min-height: 100vh; 
+            overflow-y: auto; 
         }
 
-        .audio-btn { cursor: pointer; transition: transform 0.1s; display: inline-block; }
-        .audio-btn:active { transform: scale(0.9); }
+        .inst-title { 
+            font-size: 1.6rem; 
+            font-weight: 800; 
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center; 
+            margin-top: 22px; 
+        }
 
-        .input-answer {
-            width: 100%; padding: 14px; border: 2px solid #E2E8F0; border-radius: 8px;
-            font-size: 1rem; margin-bottom: 15px; outline: none; transition: 0.2s;
+        .inst-block { 
+            background: #F8FAFC; 
+            padding: 22px; 
+            border-radius: 14px; 
+            margin-bottom: 16px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .inst-head { 
+            font-weight: 700; 
+            font-size: 1.05rem; 
+            color: #1F2937; 
+            margin-bottom: 12px; 
+        }
+
+        .inst-text { 
+            color: #475569; 
+            line-height: 1.7; 
+            font-size: 0.95rem; 
+        }
+
+        .highlight { 
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.25), rgba(118, 75, 162, 0.25)); 
+            padding: 2px 8px; 
+            border-radius: 6px; 
+            font-weight: 600; 
+        }
+
+        .inst-steps { 
+            background: white; 
+            padding: 18px; 
+            border-radius: 10px; 
+            margin: 12px 0; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .inst-example { 
+            background: #FEF3C7; 
+            padding: 14px; 
+            border-radius: 10px; 
+            font-style: italic; 
+            color: #92400E; 
+            margin-top: 12px;
+            border-left: 3px solid #F59E0B;
+        }
+
+        .btn-back {
+            width: 100%;
+            padding: 16px;
+            margin-top: 22px;
+            background: #F1F5F9;
+            color: #64748B;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-back:hover {
+            background: #E2E8F0;
+            color: #334155;
+            transform: translateY(-2px);
+        }
+
+        /* --- PANTALLA 4: JUEGO --- */
+        .game-screen { 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        }
+
+        .game-topbar {
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(12px);
+            padding: 16px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .top-left { 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+        }
+
+        .score-box { 
+            background: rgba(255,255,255,0.35); 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            font-weight: 700; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .word-card {
+            background: white;
+            padding: 35px;
+            border-radius: 24px;
             text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
         }
-        .input-answer:focus { border-color: #2563EB; }
-        
-        .link-exit { color: #94A3B8; font-size: 0.9rem; text-decoration: none; margin-top: 20px; cursor: pointer; display: block;}
 
-        .assoc-container {
-            margin-top: 20px; width: 100%; text-align: left;
-            background-color: #ECFDF5; border-left: 4px solid #10B981;
-            padding: 15px; border-radius: 6px; display: none; 
+        .word-english {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
         }
-        .assoc-label { font-size: 0.75rem; color: #059669; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
-        .assoc-text { color: #065F46; font-size: 0.95rem; font-style: italic; line-height: 1.4; }
-        
-        .feedback-msg { margin-bottom: 10px; font-weight: 700; font-size: 1.1rem; }
-        .correct-txt { color: #10B981; }
-        .wrong-txt { color: #EF4444; }
 
-        /* --- PANTALLA 4: INSTRUCCIONES --- */
-        .instruct-screen { padding: 25px; background: white; min-height: 100vh; overflow-y: auto; position: relative; }
-        .inst-title { font-size: 1.5rem; font-weight: 800; color: #1E293B; margin-bottom: 15px; margin-top: 40px; }
-        .inst-block { margin-bottom: 25px; }
-        .inst-head { font-size: 1.1rem; font-weight: 700; color: #2563EB; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .inst-text { font-size: 0.95rem; color: #475569; line-height: 1.6; text-align: justify; }
-        .highlight { background-color: #FEF3C7; padding: 2px 4px; border-radius: 4px; font-weight: 600; color: #D97706; }
+        .word-pron {
+            font-size: 1.15rem;
+            color: #94A3B8;
+            font-style: italic;
+            margin-bottom: 0;
+        }
 
+        .answer-section {
+            background: white;
+            padding: 28px;
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        #answer-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #answer-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+        }
+
+        .game-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        #btn-check {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+        }
+
+        #btn-check:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+        }
+
+        #btn-next {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        #btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+        }
+
+        #feedback-area {
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .correct-txt {
+            color: #059669;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .wrong-txt {
+            color: #DC2626;
+            font-size: 1rem;
+        }
+
+        #assoc-box {
+            background: #FEF3C7;
+            padding: 22px;
+            border-radius: 14px;
+            margin-top: 16px;
+            border-left: 4px solid #F59E0B;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .assoc-label {
+            font-weight: 700;
+            color: #92400E;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        #assoc-text {
+            color: #78350F;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .app-title { font-size: 2.2rem; }
+            .word-english { font-size: 2.2rem; }
+            .level-btn { padding: 24px; }
+        }
     </style>
 </head>
 <body>
-
 <div id="app-container">
 
+    <!-- PANTALLA 1: LOGIN/BIENVENIDA -->
     <div id="auth-screen" class="auth-screen">
-        <h1 class="app-title">Accelerated English<br>Vocabulary Learning</h1>
-        <p class="app-subtitle">Diseñado por X</p>
-        
+        <div class="app-title">Accelerated<br>English<br>Vocabulary</div>
+        <div class="app-subtitle">Método Mnemotécnico Acelerado</div>
+
         <div class="auth-card">
-            <input type="text" id="username" class="input-field" placeholder="Usuario (máx 20 caracteres)" maxlength="20">
-            <input type="password" id="password" class="input-field" placeholder="Contraseña (máx 12 caracteres)" maxlength="12">
-            
-            <button class="btn-blue btn-full" onclick="app.login()">Iniciar Sesión</button>
-            <button class="btn-full" style="background:transparent; color:#64748B; border:1px solid #E2E8F0; margin-top:10px;" onclick="app.register()">Registrarse</button>
-            
-            <p id="auth-msg" style="color:#ef4444; margin-top:10px; font-size:0.9rem;"></p>
+            <input type="text" id="user-input" class="input-field" placeholder="Nombre de usuario">
+            <button class="btn-full btn-blue" onclick="app.login()">Comenzar Aprendizaje</button>
         </div>
     </div>
 
+    <!-- PANTALLA DE SELECCIÓN DE NIVEL -->
+    <div id="level-screen" class="level-screen hidden">
+        <div class="level-header">
+            <div class="level-title">Selecciona tu Nivel</div>
+            <div class="level-subtitle">Elige el nivel apropiado para ti</div>
+            <div class="level-divider"></div>
+        </div>
+
+        <button class="level-btn" onclick="app.selectLevel('basico')">
+            <div>
+                <div class="level-btn-title">📚 Nivel Básico</div>
+                <div class="level-btn-desc">776 palabras esenciales del inglés básico con asociaciones mnemotécnicas</div>
+            </div>
+            <span class="level-badge">776 PALABRAS</span>
+        </button>
+
+        <button class="level-btn" onclick="app.selectLevel('oxford3000')">
+            <div>
+                <div class="level-btn-title">🎓 Nivel Avanzado, Oxford 3000</div>
+                <div class="level-btn-desc">Las 3000 palabras más importantes del inglés según Oxford University</div>
+            </div>
+            <span class="level-badge">PRÓXIMAMENTE</span>
+        </button>
+
+        <div style="text-align:center; margin-top:35px;">
+            <a href="#" style="color:#94A3B8; text-decoration:none; font-size:0.85rem; font-weight:600;" onclick="app.logout()">← Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <!-- PANTALLA 2: MENÚ DE CATEGORÍAS -->
     <div id="menu-screen" class="menu-screen hidden">
+        <button class="back-btn" onclick="app.goToLevelSelection()">← Volver a Niveles</button>
+
         <div class="menu-header">CATEGORÍA</div>
         <div class="menu-divider"></div>
 
@@ -215,20 +689,19 @@
             📘 Guía de Uso & Metodología
         </button>
 
-        <button class="ranking-btn" onclick="alert('Ranking local: \n1. Usuario1 - 500pts')">
+        <button class="ranking-btn" onclick="alert('🏆 Ranking Local\n\n1. Usuario1 - 500pts\n2. Usuario2 - 350pts\n3. Usuario3 - 280pts')">
             🏆 Ranking Local
         </button>
-        
-        <div style="text-align:center; margin-top:20px;">
-            <a href="#" style="color:#94A3B8; text-decoration:none; font-size:0.8rem;" onclick="app.logout()">Cerrar Sesión</a>
+
+        <div style="text-align:center; margin-top:25px;">
+            <a href="#" style="color:#94A3B8; text-decoration:none; font-size:0.85rem; font-weight:600;" onclick="app.logout()">← Cerrar Sesión</a>
         </div>
     </div>
 
+    <!-- PANTALLA 3: INSTRUCCIONES -->
     <div id="instruct-screen" class="instruct-screen hidden">
-        <button class="back-arrow-btn" onclick="window.history.back()">←</button>
-
         <h2 class="inst-title">Fundamentos del Aprendizaje Acelerado</h2>
-        <div class="menu-divider" style="margin: 10px 0 25px 0; background-color:#2563EB;"></div>
+        <div class="menu-divider" style="margin: 12px auto 30px;"></div>
 
         <div class="inst-block">
             <div class="inst-head">🧠 1. Codificación Mnemotécnica Visual</div>
@@ -245,53 +718,70 @@
         </div>
 
         <div class="inst-block">
-            <div class="inst-head">🔗 3. El Algoritmo de Asociación</div>
+            <div class="inst-head">🎯 3. Método de Tres Pasos</div>
+            <div class="inst-steps">
+                <p class="inst-text" style="margin-bottom: 10px;"><strong>Paso A:</strong> Mira la palabra en inglés y lee su pronunciación figurada.</p>
+                <p class="inst-text" style="margin-bottom: 10px;"><strong>Paso B:</strong> Esa pronunciación te recordará a una palabra en español (el "Ancla").</p>
+                <p class="inst-text"><strong>Paso C:</strong> Visualiza una interacción absurda entre el "Ancla" y el significado real.</p>
+
+                <div class="inst-example">
+                    <strong>Ejemplo:</strong> "Book" suena a "Buk". Imagina un <strong>Buque</strong> (barco) gigante hecho completamente de papel, con páginas como velas y letras flotando en el mar.
+                </div>
+            </div>
+        </div>
+
+        <div class="inst-block">
+            <div class="inst-head">⚡ 4. Repetición Espaciada</div>
             <p class="inst-text">
-                <strong>Paso A:</strong> Mira la palabra en inglés y lee su pronunciación figurada.<br>
-                <strong>Paso B:</strong> Esa pronunciación te recordará a una palabra en español (el "Ancla").<br>
-                <strong>Paso C:</strong> Visualiza una interacción absurda entre el "Ancla" y el significado real.<br><br>
-                <em>Ejemplo:</em> "Book" suena a "Buk". Imagina un "Buque" (barco) hecho de papel lleno de letras.
+                El sistema te presentará las palabras varias veces en diferentes sesiones. Al principio puede parecer lento, pero <span class="highlight">cada repetición refuerza la memoria a largo plazo</span>. No te saltes las repeticiones, son esenciales para la retención.
             </p>
         </div>
 
-        <button class="btn-blue btn-full" onclick="window.history.back()">Entendido, volver al menú</button>
+        <div class="inst-block">
+            <div class="inst-head">🎮 5. Gamificación y Puntos</div>
+            <p class="inst-text">
+                Cada acierto suma puntos a tu marcador. La motivación intrínseca y el refuerzo positivo aceleran significativamente el aprendizaje. Compite contigo mismo y mejora tu récord personal en cada sesión.
+            </p>
+        </div>
+
+        <button class="btn-back" onclick="app.goHome()">← Volver al Menú</button>
     </div>
 
+    <!-- PANTALLA 4: JUEGO -->
     <div id="game-screen" class="game-screen hidden">
-        
-        <button class="back-arrow-btn" onclick="window.history.back()">←</button>
-
-        <div class="game-header-titles">
-            <div class="gh-title">Accelerated English<br>Vocabulary Learning</div>
-            <div class="gh-sub">DISEÑADO POR X</div>
+        <div class="game-topbar">
+            <div class="top-left">
+                <div id="category-label" style="font-size: 1rem;">Categoría</div>
+                <div id="progress-label" style="font-size:0.75rem; opacity:0.95; margin-top: 2px;">Progreso: 0/0</div>
+            </div>
+            <div class="score-box">
+                <span id="score-display">Pts: 0</span>
+            </div>
         </div>
 
-        <div class="status-pill">
-            <span id="mode-display">MODO_PRÁCTICA</span>
-            <span id="score-display">Pts: 0</span>
-        </div>
-
-        <div class="game-card">
-            <div id="w-english" class="word-en">Book</div>
-            
-            <div class="word-pron">
-                « <span id="w-pron">buk</span> » 
-                <span class="audio-btn" onclick="game.speak()" title="Escuchar pronunciación">🔊</span>
+        <div class="game-content">
+            <div class="word-card">
+                <div class="word-english" id="w-english">Word</div>
+                <div class="word-pron" id="w-pron">"pronunciación"</div>
             </div>
 
-            <div id="feedback-area" class="feedback-msg hidden"></div>
+            <div class="answer-section">
+                <input type="text" id="answer-input" placeholder="Escribe la traducción en español...">
 
-            <input type="text" id="answer-input" class="input-answer" placeholder="Traduce al español..." autocomplete="off">
-            
-            <button id="btn-check" class="btn-blue btn-full" onclick="game.check()">Comprobar</button>
-            <button id="btn-next" class="btn-full" style="background:#10B981; color:white; border:none; display:none; margin-top:10px;" onclick="game.next()">Siguiente Palabra ➡</button>
+                <div id="feedback-area" class="hidden"></div>
 
-            <div id="assoc-box" class="assoc-container">
-                <div class="assoc-label">Asociación Inverosímil</div>
-                <div id="assoc-text" class="assoc-text">...</div>
+                <button id="btn-check" class="game-btn" onclick="game.check()">✓ Verificar Respuesta</button>
+                <button id="btn-next" class="game-btn hidden" onclick="game.next()">→ Siguiente Palabra</button>
+
+                <div id="assoc-box" style="display:none;">
+                    <div class="assoc-label">💡 Asociación Mnemotécnica</div>
+                    <div id="assoc-text">Texto de asociación...</div>
+                </div>
             </div>
 
-            <div class="link-exit" onclick="window.history.back()">Salir al menú</div>
+            <button class="btn-back" onclick="app.goHome()" style="background: rgba(255,255,255,0.25); color: white; margin-top: 12px; backdrop-filter: blur(10px);">
+                ← Volver al Menú
+            </button>
         </div>
     </div>
 
@@ -299,9 +789,11 @@
 
 <script>
 /* ======================================================
-   BASE DE DATOS MASIVA (776 PALABRAS + ASOCIACIONES)
+   BASES DE DATOS DE VOCABULARIO
    ====================================================== */
-const RAW_DATA = [
+
+// Base de datos Nivel Básico (776 palabras)
+const RAW_DATA_BASICO = [
 // VERBOS
 ["Verbos","To Be","tu bi","Ser/Estar","Ser o no ser: «tu bi o no tu bi»"],
 ["Verbos","Have","ha:f","Haber/Tener","Haber es similar a have. Tener un haba"],
@@ -1116,178 +1608,232 @@ const RAW_DATA = [
 ["Numeros","Tenth","tenz","Décimo","Ten"]
 ];
 
+// Base de datos Oxford 3000 (preparada para agregar vocabulario)
+const RAW_DATA_OXFORD3000 = [
+// VERBOS
+// Formato: ["Verbos","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
+// Ejemplo: ["Verbos","Abandon","abándon","Abandonar","Abandonar en un descampado muy abandonado"],
+
+// SUSTANTIVOS  
+// Formato: ["Sustantivos","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
+
+// ADJETIVOS
+// Formato: ["Adjetivos","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
+
+// ADVERBIOS/COLORES
+// Formato: ["Adverbios","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
+
+// SALUDOS/PREGUNTAS
+// Formato: ["Saludos","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
+
+// PRONOMBRES/GRAMÁTICA
+// Formato: ["Pronombres","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
+
+// NÚMEROS
+// Formato: ["Numeros","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
+];
+
+// Variable global para el nivel actual
+let currentLevel = 'basico';
+let RAW_DATA = RAW_DATA_BASICO; // Por defecto
+
 /* ======================================================
-   CONTROL DE LA APLICACIÓN
+   APLICACIÓN PRINCIPAL
    ====================================================== */
 const app = {
-    user: null,
-
-    // --- AUTENTICACIÓN SIMPLE (Local Storage) ---
-    getUsers: () => JSON.parse(localStorage.getItem('acc_eng_users')) || {},
-    saveUser: (u, p) => {
-        const db = app.getUsers();
-        db[u] = p;
-        localStorage.setItem('acc_eng_users', JSON.stringify(db));
-    },
+    currentUser: null,
+    currentLevel: 'basico',
 
     login: () => {
-        const u = document.getElementById('username').value.trim();
-        const p = document.getElementById('password').value.trim();
-        const msg = document.getElementById('auth-msg');
-
-        if(!u || !p) return msg.innerText = "Rellena todos los campos.";
-
-        const db = app.getUsers();
-        if(db[u] && db[u] === p) {
-            app.user = u;
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('menu-screen').classList.remove('hidden');
-        } else {
-            msg.innerText = "Credenciales incorrectas.";
+        const input = document.getElementById('user-input');
+        const username = input.value.trim();
+        if(username.length < 2) {
+            alert("⚠️ Por favor ingresa un nombre válido (mínimo 2 caracteres)");
+            return;
         }
-    },
-
-    register: () => {
-        const u = document.getElementById('username').value.trim();
-        const p = document.getElementById('password').value.trim();
-        const msg = document.getElementById('auth-msg');
-
-        if(!u || !p) return msg.innerText = "Elige usuario y contraseña.";
-
-        // --- VALIDACIONES DE LONGITUD ---
-        if(u.length > 20) return msg.innerText = "El usuario no puede tener más de 20 caracteres.";
-        if(p.length > 12) return msg.innerText = "La contraseña no puede tener más de 12 caracteres.";
-
-        const db = app.getUsers();
-        if(db[u]) return msg.innerText = "Este usuario ya existe.";
-
-        app.saveUser(u, p);
-        alert("¡Registro exitoso! Inicia sesión.");
-        msg.innerText = "";
-        // Limpiar campos
-        document.getElementById('username').value = "";
-        document.getElementById('password').value = "";
+        app.currentUser = username;
+        app.showLevelSelection();
     },
 
     logout: () => {
-        location.reload();
+        if(confirm('¿Estás seguro que deseas cerrar sesión?')) {
+            app.currentUser = null;
+            app.currentLevel = 'basico';
+            document.getElementById('user-input').value = '';
+            app.showScreen('auth-screen');
+        }
     },
 
-    // --- NAVEGACIÓN ---
-    // Usamos pushState para crear historial y poder usar el botón de atrás del navegador
-    play: (category) => {
-        history.pushState({ page: 'game' }, "", "#game");
-        game.start(category);
-        document.querySelectorAll('.auth-screen, .menu-screen, .instruct-screen').forEach(el => el.classList.add('hidden'));
-        document.getElementById('game-screen').classList.remove('hidden');
+    showLevelSelection: () => {
+        app.showScreen('level-screen');
     },
 
-    showInstructions: () => {
-        history.pushState({ page: 'instructions' }, "", "#instructions");
-        document.querySelectorAll('.auth-screen, .menu-screen, .game-screen').forEach(el => el.classList.add('hidden'));
-        document.getElementById('instruct-screen').classList.remove('hidden');
+    selectLevel: (level) => {
+        if(level === 'oxford3000') {
+            if(RAW_DATA_OXFORD3000.length === 0) {
+                alert('🎓 Nivel Avanzado Oxford 3000\n\nEste nivel estará disponible próximamente.\n\nIncluirá las 3000 palabras más importantes del inglés según Oxford University, organizadas en las mismas categorías con asociaciones mnemotécnicas.\n\n📚 Mientras tanto, practica con el Nivel Básico para dominar las 776 palabras esenciales.');
+                return;
+            }
+        }
+
+        app.currentLevel = level;
+
+        // Cambiar la base de datos según el nivel seleccionado
+        if(level === 'basico') {
+            RAW_DATA = RAW_DATA_BASICO;
+        } else if(level === 'oxford3000') {
+            RAW_DATA = RAW_DATA_OXFORD3000;
+        }
+
+        app.goHome();
+    },
+
+    goToLevelSelection: () => {
+        app.showLevelSelection();
     },
 
     goHome: () => {
-        document.querySelectorAll('.auth-screen, .game-screen, .instruct-screen').forEach(el => el.classList.add('hidden'));
-        document.getElementById('menu-screen').classList.remove('hidden');
+        app.showScreen('menu-screen');
+    },
+
+    showInstructions: () => {
+        app.showScreen('instruct-screen');
+    },
+
+    play: (category) => {
+        if(RAW_DATA.length === 0) {
+            alert('⚠️ No hay palabras disponibles para este nivel aún.\n\nPor favor, selecciona otro nivel o espera a que se agregue contenido.');
+            return;
+        }
+
+        game.start(category);
+    },
+
+    showScreen: (screenId) => {
+        document.querySelectorAll('#app-container > div').forEach(div => {
+            div.classList.add('hidden');
+        });
+        document.getElementById(screenId).classList.remove('hidden');
     }
 };
 
-// --- MANEJO DEL BOTÓN ATRÁS DEL NAVEGADOR ---
-window.addEventListener('popstate', (event) => {
-    // Si el usuario da atrás, ocultamos todo y mostramos el menú (o login si no hay sesión)
-    if(app.user) {
-        app.goHome();
-    } else {
-        // Si no hay usuario, recargar para ir al login
-        location.reload(); 
-    }
-});
-
-
 /* ======================================================
-   LÓGICA DEL JUEGO (INPUT + ASOCIACIÓN)
+   LÓGICA DEL JUEGO
    ====================================================== */
 const game = {
+    category: '',
     list: [],
     curr: null,
     score: 0,
+    totalWords: 0,
+    currentIndex: 0,
 
     start: (cat) => {
+        game.category = cat;
         game.score = 0;
-        document.getElementById('score-display').innerText = "Pts: 0";
-        document.getElementById('mode-display').innerText = cat.toUpperCase();
 
-        // Filtrar lista
-        if(cat === 'REPASO') game.list = [...RAW_DATA];
-        else game.list = RAW_DATA.filter(x => x[0].toUpperCase() === cat.toUpperCase());
-
-        // Barajar
-        game.list.sort(() => Math.random() - 0.5);
+        // Filtrar palabras según la categoría
+        if(cat === 'REPASO') {
+            game.list = RAW_DATA.slice();
+        } else {
+            game.list = RAW_DATA.filter(w => w[0] === cat);
+        }
 
         if(game.list.length === 0) {
-            alert("No hay palabras en esta categoría.");
-            window.history.back(); // Volver si no hay palabras
+            alert("⚠️ No hay palabras disponibles en esta categoría.\n\nPor favor, selecciona otra categoría o agrega palabras a esta.");
             return;
         }
-        
+
+        // Mezclar palabras aleatoriamente (Shuffle)
+        game.list.sort(() => Math.random() - 0.5);
+        game.totalWords = game.list.length;
+        game.currentIndex = 0;
+
+        app.showScreen('game-screen');
+        document.getElementById('category-label').innerText = cat;
+        document.getElementById('score-display').innerText = "Pts: 0";
+
         game.next();
     },
 
     next: () => {
-        // Reset UI
         document.getElementById('feedback-area').classList.add('hidden');
-        document.getElementById('assoc-box').style.display = 'none'; // OCULTAR ASOCIACION
-        document.getElementById('btn-next').style.display = 'none';
+        document.getElementById('assoc-box').style.display = 'none';
         document.getElementById('btn-check').style.display = 'block';
-        
+        document.getElementById('btn-next').style.display = 'none';
+
         const input = document.getElementById('answer-input');
-        input.value = "";
+        input.value = '';
         input.disabled = false;
         input.focus();
 
         // Obtener siguiente palabra
         if(game.list.length === 0) {
-            alert("¡Repaso terminado!");
-            window.history.back(); // Volver al menú
+            const finalScore = game.score;
+            const totalQuestions = game.totalWords;
+            const percentage = Math.round((finalScore / (totalQuestions * 10)) * 100);
+
+            let message = `🎉 ¡Repaso Completado!\n\n`;
+            message += `📊 Resultados:\n`;
+            message += `• Puntuación: ${finalScore} puntos\n`;
+            message += `• Palabras: ${totalQuestions}\n`;
+            message += `• Efectividad: ${percentage}%\n\n`;
+
+            if(percentage >= 90) {
+                message += `🏆 ¡Excelente! Dominio perfecto.`;
+            } else if(percentage >= 70) {
+                message += `👏 ¡Muy bien! Sigue practicando.`;
+            } else if(percentage >= 50) {
+                message += `💪 Buen intento. Repasa más.`;
+            } else {
+                message += `📚 Sigue estudiando. ¡Tú puedes!`;
+            }
+
+            alert(message);
+            app.goHome();
             return;
         }
+
         game.curr = game.list.pop();
+        game.currentIndex++;
 
-        // Renderizar
+        // Actualizar progreso
+        document.getElementById('progress-label').innerText = 
+            `Progreso: ${game.currentIndex}/${game.totalWords}`;
+
+        // Renderizar palabra actual
         document.getElementById('w-english').innerText = game.curr[1];
-        document.getElementById('w-pron').innerText = game.curr[2];
+        document.getElementById('w-pron').innerText = '"' + game.curr[2] + '"';
         document.getElementById('assoc-text').innerText = game.curr[4];
-    },
-
-    speak: () => {
-        if (!game.curr) return;
-        // Creamos una nueva instancia de voz
-        const utterance = new SpeechSynthesisUtterance(game.curr[1]); // La palabra en inglés
-        utterance.lang = 'en-US'; // Establecemos el idioma a inglés
-        utterance.rate = 0.9; // Velocidad normal (un poco más pausada)
-        window.speechSynthesis.speak(utterance);
     },
 
     check: () => {
         const input = document.getElementById('answer-input');
         const userAns = input.value.trim().toLowerCase();
-        // La respuesta correcta es la posición 3 del array
+
+        if(userAns.length === 0) {
+            alert('⚠️ Por favor escribe una respuesta antes de verificar.');
+            input.focus();
+            return;
+        }
+
         const correctAns = game.curr[3].toLowerCase(); 
-        
+
         const feedback = document.getElementById('feedback-area');
         feedback.classList.remove('hidden');
 
-        // Validación simple
+        // Validación: Si lo que escribió el usuario está contenido en la respuesta correcta
         const isCorrect = correctAns.includes(userAns) && userAns.length > 1; 
 
         if(isCorrect) {
-            feedback.innerHTML = `<span class="correct-txt">¡Correcto!</span>`;
+            feedback.innerHTML = `<span class="correct-txt">✓ ¡Correcto! Excelente.</span>`;
+            feedback.style.background = 'rgba(16, 185, 129, 0.15)';
             game.score += 10;
         } else {
-            feedback.innerHTML = `<span class="wrong-txt">Incorrecto. Era: ${game.curr[3]}</span>`;
+            feedback.innerHTML = `<span class="wrong-txt">✗ Incorrecto. La respuesta correcta es: <strong>${game.curr[3]}</strong></span>`;
+            feedback.style.background = 'rgba(220, 38, 38, 0.15)';
         }
+
         document.getElementById('score-display').innerText = "Pts: " + game.score;
 
         // UI Post-Check
@@ -1295,26 +1841,29 @@ const game = {
         document.getElementById('btn-check').style.display = 'none';
         document.getElementById('btn-next').style.display = 'block';
 
-        // MOSTRAR ASOCIACIÓN SIEMPRE
+        // MOSTRAR ASOCIACIÓN MNEMOTÉCNICA SIEMPRE
         document.getElementById('assoc-box').style.display = 'block';
     }
 };
 
-// --- LISTENER GLOBAL PARA LA TECLA ENTER ---
-document.addEventListener('keydown', function (e) {
+// Enter key para enviar respuesta
+document.getElementById('answer-input').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
-        // Solo actuar si estamos en la pantalla de juego y NO está oculta
-        if (!document.getElementById('game-screen').classList.contains('hidden')) {
-            const btnCheck = document.getElementById('btn-check');
-            
-            // Si el botón de comprobar está visible, comprobamos
-            if (btnCheck.style.display !== 'none') {
-                game.check();
-            } else {
-                // Si no (significa que ya comprobamos y ahora se ve "Siguiente"), pasamos
-                game.next();
-            }
+        if(document.getElementById('btn-check').style.display !== 'none') {
+            game.check();
+        } else {
+            game.next();
         }
+    }
+});
+
+// Prevenir que el usuario salga accidentalmente durante el juego
+window.addEventListener('beforeunload', function (e) {
+    const gameScreen = document.getElementById('game-screen');
+    if (!gameScreen.classList.contains('hidden')) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
     }
 });
 
