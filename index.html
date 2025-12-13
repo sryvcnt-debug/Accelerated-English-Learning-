@@ -170,21 +170,6 @@
             overflow: hidden;
         }
 
-        .level-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .level-btn:hover::before {
-            left: 100%;
-        }
-
         .level-btn:hover {
             border-color: #667eea;
             transform: translateY(-4px);
@@ -217,6 +202,29 @@
             letter-spacing: 0.5px;
         }
 
+        /* --- BOTÓN VOLVER ATRÁS --- */
+        .back-btn {
+            background: #F1F5F9;
+            color: #64748B;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 18px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: #E2E8F0;
+            color: #334155;
+            transform: translateX(-3px);
+        }
+
         /* --- PANTALLA 2: MENÚ --- */
         .menu-screen { 
             padding: 20px; 
@@ -241,25 +249,6 @@
             background: linear-gradient(90deg, #667eea, #764ba2); 
             margin: 0 auto 25px auto; 
             border-radius: 2px; 
-        }
-
-        .back-btn {
-            background: #F1F5F9;
-            color: #64748B;
-            padding: 12px 22px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 18px;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-        }
-
-        .back-btn:hover {
-            background: #E2E8F0;
-            color: #334155;
-            transform: translateX(-3px);
         }
 
         .grid-container { 
@@ -293,7 +282,6 @@
             box-shadow: 0 6px 16px rgba(102, 126, 234, 0.2);
         }
 
-        /* Botones especiales */
         .btn-verbos { 
             border-color: #10B981; 
             color: #059669; 
@@ -422,7 +410,7 @@
             border-left: 3px solid #F59E0B;
         }
 
-        .btn-back {
+        .btn-back-full {
             width: 100%;
             padding: 16px;
             margin-top: 22px;
@@ -436,7 +424,7 @@
             font-size: 1rem;
         }
 
-        .btn-back:hover {
+        .btn-back-full:hover {
             background: #E2E8F0;
             color: #334155;
             transform: translateY(-2px);
@@ -480,25 +468,58 @@
             flex-direction: column;
             justify-content: center;
             padding: 20px;
+            overflow-y: auto;
         }
 
         .word-card {
             background: white;
-            padding: 35px;
+            padding: 30px;
             border-radius: 24px;
             text-align: center;
             margin-bottom: 20px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.25);
         }
 
+        .word-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
         .word-english {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 12px;
+        }
+
+        .audio-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+        }
+
+        .audio-btn:active {
+            transform: scale(0.95);
         }
 
         .word-pron {
@@ -506,6 +527,35 @@
             color: #94A3B8;
             font-style: italic;
             margin-bottom: 0;
+        }
+
+        /* Asociación Mnemotécnica Visible */
+        .assoc-box-visible {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            border-left: 5px solid #F59E0B;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+
+        .assoc-label {
+            font-weight: 700;
+            color: #92400E;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .assoc-text {
+            color: #78350F;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
         .answer-section {
@@ -531,44 +581,13 @@
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
         }
 
-        .game-btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 12px;
-        }
-
-        #btn-check {
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: white;
-        }
-
-        #btn-check:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
-        }
-
-        #btn-next {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        #btn-next:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
-        }
-
         #feedback-area {
             text-align: center;
             padding: 16px;
             border-radius: 12px;
             margin-bottom: 16px;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .correct-txt {
@@ -582,35 +601,12 @@
             font-size: 1rem;
         }
 
-        #assoc-box {
-            background: #FEF3C7;
-            padding: 22px;
-            border-radius: 14px;
-            margin-top: 16px;
-            border-left: 4px solid #F59E0B;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .assoc-label {
-            font-weight: 700;
-            color: #92400E;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-        }
-
-        #assoc-text {
-            color: #78350F;
-            line-height: 1.7;
-            font-size: 0.95rem;
-        }
-
         /* Responsive */
         @media (max-width: 480px) {
             .app-title { font-size: 2.2rem; }
-            .word-english { font-size: 2.2rem; }
+            .word-english { font-size: 2rem; }
             .level-btn { padding: 24px; }
+            .audio-btn { width: 45px; height: 45px; font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -639,9 +635,9 @@
         <button class="level-btn" onclick="app.selectLevel('basico')">
             <div>
                 <div class="level-btn-title">📚 Nivel Básico</div>
-                <div class="level-btn-desc">776 palabras esenciales del inglés básico con asociaciones mnemotécnicas</div>
+                <div class="level-btn-desc">802 palabras esenciales del inglés básico con asociaciones mnemotécnicas</div>
             </div>
-            <span class="level-badge">776 PALABRAS</span>
+            <span class="level-badge">802 PALABRAS</span>
         </button>
 
         <button class="level-btn" onclick="app.selectLevel('oxford3000')">
@@ -659,7 +655,10 @@
 
     <!-- PANTALLA 2: MENÚ DE CATEGORÍAS -->
     <div id="menu-screen" class="menu-screen hidden">
-        <button class="back-btn" onclick="app.goToLevelSelection()">← Volver a Niveles</button>
+        <button class="back-btn" onclick="app.goToLevelSelection()">
+            <span>←</span>
+            <span>Volver a Niveles</span>
+        </button>
 
         <div class="menu-header">CATEGORÍA</div>
         <div class="menu-divider"></div>
@@ -700,6 +699,11 @@
 
     <!-- PANTALLA 3: INSTRUCCIONES -->
     <div id="instruct-screen" class="instruct-screen hidden">
+        <button class="back-btn" onclick="app.goHome()">
+            <span>←</span>
+            <span>Volver al Menú</span>
+        </button>
+
         <h2 class="inst-title">Fundamentos del Aprendizaje Acelerado</h2>
         <div class="menu-divider" style="margin: 12px auto 30px;"></div>
 
@@ -744,7 +748,12 @@
             </p>
         </div>
 
-        <button class="btn-back" onclick="app.goHome()">← Volver al Menú</button>
+        <div class="inst-block">
+            <div class="inst-head">🔊 6. Audio Pronunciación</div>
+            <p class="inst-text">
+                Presiona el botón de volumen 🔊 al lado de cada palabra para escuchar su pronunciación en inglés. Esto refuerza el aprendizaje auditivo y mejora tu comprensión oral.
+            </p>
+        </div>
     </div>
 
     <!-- PANTALLA 4: JUEGO -->
@@ -761,26 +770,31 @@
 
         <div class="game-content">
             <div class="word-card">
-                <div class="word-english" id="w-english">Word</div>
+                <div class="word-header">
+                    <div class="word-english" id="w-english">Word</div>
+                    <button class="audio-btn" id="audio-btn" onclick="game.playAudio()">🔊</button>
+                </div>
                 <div class="word-pron" id="w-pron">"pronunciación"</div>
-            </div>
 
-            <div class="answer-section">
-                <input type="text" id="answer-input" placeholder="Escribe la traducción en español...">
-
-                <div id="feedback-area" class="hidden"></div>
-
-                <button id="btn-check" class="game-btn" onclick="game.check()">✓ Verificar Respuesta</button>
-                <button id="btn-next" class="game-btn hidden" onclick="game.next()">→ Siguiente Palabra</button>
-
-                <div id="assoc-box" style="display:none;">
-                    <div class="assoc-label">💡 Asociación Mnemotécnica</div>
-                    <div id="assoc-text">Texto de asociación...</div>
+                <!-- Asociación Mnemotécnica siempre visible -->
+                <div class="assoc-box-visible">
+                    <div class="assoc-label">
+                        <span>💡</span>
+                        <span>Asociación Mnemotécnica</span>
+                    </div>
+                    <div class="assoc-text" id="assoc-text">Texto de asociación mnemotécnica...</div>
                 </div>
             </div>
 
-            <button class="btn-back" onclick="app.goHome()" style="background: rgba(255,255,255,0.25); color: white; margin-top: 12px; backdrop-filter: blur(10px);">
-                ← Volver al Menú
+            <div class="answer-section">
+                <input type="text" id="answer-input" placeholder="Escribe la traducción en español y presiona Enter...">
+
+                <div id="feedback-area" class="hidden"></div>
+            </div>
+
+            <button class="back-btn" onclick="app.confirmExit()" style="margin-top: 12px; background: rgba(255,255,255,0.25); color: white; backdrop-filter: blur(10px);">
+                <span>←</span>
+                <span>Volver al Menú</span>
             </button>
         </div>
     </div>
@@ -789,10 +803,9 @@
 
 <script>
 /* ======================================================
-   BASES DE DATOS DE VOCABULARIO
+   BASE DE DATOS DE VOCABULARIO (802 PALABRAS)
    ====================================================== */
 
-// Base de datos Nivel Básico (776 palabras)
 const RAW_DATA_BASICO = [
 // VERBOS
 ["Verbos","To Be","tu bi","Ser/Estar","Ser o no ser: «tu bi o no tu bi»"],
@@ -1608,34 +1621,11 @@ const RAW_DATA_BASICO = [
 ["Numeros","Tenth","tenz","Décimo","Ten"]
 ];
 
-// Base de datos Oxford 3000 (preparada para agregar vocabulario)
-const RAW_DATA_OXFORD3000 = [
-// VERBOS
-// Formato: ["Verbos","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
-// Ejemplo: ["Verbos","Abandon","abándon","Abandonar","Abandonar en un descampado muy abandonado"],
+// Base de datos Oxford 3000 (preparada para agregar)
+const RAW_DATA_OXFORD3000 = [];
 
-// SUSTANTIVOS  
-// Formato: ["Sustantivos","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
-
-// ADJETIVOS
-// Formato: ["Adjetivos","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
-
-// ADVERBIOS/COLORES
-// Formato: ["Adverbios","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
-
-// SALUDOS/PREGUNTAS
-// Formato: ["Saludos","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
-
-// PRONOMBRES/GRAMÁTICA
-// Formato: ["Pronombres","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
-
-// NÚMEROS
-// Formato: ["Numeros","Palabra","pronunciación","Traducción","Asociación mnemotécnica"],
-];
-
-// Variable global para el nivel actual
-let currentLevel = 'basico';
-let RAW_DATA = RAW_DATA_BASICO; // Por defecto
+// Variable global
+let RAW_DATA = RAW_DATA_BASICO;
 
 /* ======================================================
    APLICACIÓN PRINCIPAL
@@ -1671,20 +1661,13 @@ const app = {
     selectLevel: (level) => {
         if(level === 'oxford3000') {
             if(RAW_DATA_OXFORD3000.length === 0) {
-                alert('🎓 Nivel Avanzado Oxford 3000\n\nEste nivel estará disponible próximamente.\n\nIncluirá las 3000 palabras más importantes del inglés según Oxford University, organizadas en las mismas categorías con asociaciones mnemotécnicas.\n\n📚 Mientras tanto, practica con el Nivel Básico para dominar las 776 palabras esenciales.');
+                alert('🎓 Nivel Avanzado Oxford 3000\n\nEste nivel estará disponible próximamente.\n\nIncluirá las 3000 palabras más importantes del inglés según Oxford University, organizadas en las mismas categorías con asociaciones mnemotécnicas.\n\n📚 Mientras tanto, practica con el Nivel Básico para dominar las 802 palabras esenciales.');
                 return;
             }
         }
 
         app.currentLevel = level;
-
-        // Cambiar la base de datos según el nivel seleccionado
-        if(level === 'basico') {
-            RAW_DATA = RAW_DATA_BASICO;
-        } else if(level === 'oxford3000') {
-            RAW_DATA = RAW_DATA_OXFORD3000;
-        }
-
+        RAW_DATA = (level === 'basico') ? RAW_DATA_BASICO : RAW_DATA_OXFORD3000;
         app.goHome();
     },
 
@@ -1702,11 +1685,16 @@ const app = {
 
     play: (category) => {
         if(RAW_DATA.length === 0) {
-            alert('⚠️ No hay palabras disponibles para este nivel aún.\n\nPor favor, selecciona otro nivel o espera a que se agregue contenido.');
+            alert('⚠️ No hay palabras disponibles para este nivel aún.');
             return;
         }
-
         game.start(category);
+    },
+
+    confirmExit: () => {
+        if(confirm('¿Deseas salir del juego?\n\nTu progreso se perderá.')) {
+            app.goHome();
+        }
     },
 
     showScreen: (screenId) => {
@@ -1732,20 +1720,21 @@ const game = {
         game.category = cat;
         game.score = 0;
 
-        // Filtrar palabras según la categoría
+        // Filtrar palabras según categoría
         if(cat === 'REPASO') {
-            game.list = RAW_DATA.slice();
+            game.list = [...RAW_DATA]; // Copiar todo el array
         } else {
             game.list = RAW_DATA.filter(w => w[0] === cat);
         }
 
         if(game.list.length === 0) {
-            alert("⚠️ No hay palabras disponibles en esta categoría.\n\nPor favor, selecciona otra categoría o agrega palabras a esta.");
+            alert("⚠️ No hay palabras en esta categoría.");
             return;
         }
 
-        // Mezclar palabras aleatoriamente (Shuffle)
-        game.list.sort(() => Math.random() - 0.5);
+        // MEZCLA ALEATORIA cada vez que se inicia
+        game.list = game.shuffle(game.list);
+
         game.totalWords = game.list.length;
         game.currentIndex = 0;
 
@@ -1756,11 +1745,20 @@ const game = {
         game.next();
     },
 
+    // Función shuffle mejorada (Fisher-Yates)
+    shuffle: (array) => {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    },
+
     next: () => {
-        document.getElementById('feedback-area').classList.add('hidden');
-        document.getElementById('assoc-box').style.display = 'none';
-        document.getElementById('btn-check').style.display = 'block';
-        document.getElementById('btn-next').style.display = 'none';
+        const feedback = document.getElementById('feedback-area');
+        feedback.classList.add('hidden');
+        feedback.style.background = 'transparent';
 
         const input = document.getElementById('answer-input');
         input.value = '';
@@ -1769,28 +1767,7 @@ const game = {
 
         // Obtener siguiente palabra
         if(game.list.length === 0) {
-            const finalScore = game.score;
-            const totalQuestions = game.totalWords;
-            const percentage = Math.round((finalScore / (totalQuestions * 10)) * 100);
-
-            let message = `🎉 ¡Repaso Completado!\n\n`;
-            message += `📊 Resultados:\n`;
-            message += `• Puntuación: ${finalScore} puntos\n`;
-            message += `• Palabras: ${totalQuestions}\n`;
-            message += `• Efectividad: ${percentage}%\n\n`;
-
-            if(percentage >= 90) {
-                message += `🏆 ¡Excelente! Dominio perfecto.`;
-            } else if(percentage >= 70) {
-                message += `👏 ¡Muy bien! Sigue practicando.`;
-            } else if(percentage >= 50) {
-                message += `💪 Buen intento. Repasa más.`;
-            } else {
-                message += `📚 Sigue estudiando. ¡Tú puedes!`;
-            }
-
-            alert(message);
-            app.goHome();
+            game.showFinalStats();
             return;
         }
 
@@ -1801,7 +1778,7 @@ const game = {
         document.getElementById('progress-label').innerText = 
             `Progreso: ${game.currentIndex}/${game.totalWords}`;
 
-        // Renderizar palabra actual
+        // Renderizar palabra
         document.getElementById('w-english').innerText = game.curr[1];
         document.getElementById('w-pron').innerText = '"' + game.curr[2] + '"';
         document.getElementById('assoc-text').innerText = game.curr[4];
@@ -1812,52 +1789,101 @@ const game = {
         const userAns = input.value.trim().toLowerCase();
 
         if(userAns.length === 0) {
-            alert('⚠️ Por favor escribe una respuesta antes de verificar.');
-            input.focus();
-            return;
+            return; // No hacer nada si está vacío
         }
 
         const correctAns = game.curr[3].toLowerCase(); 
-
         const feedback = document.getElementById('feedback-area');
         feedback.classList.remove('hidden');
 
-        // Validación: Si lo que escribió el usuario está contenido en la respuesta correcta
+        // Validación mejorada
         const isCorrect = correctAns.includes(userAns) && userAns.length > 1; 
 
         if(isCorrect) {
-            feedback.innerHTML = `<span class="correct-txt">✓ ¡Correcto! Excelente.</span>`;
+            feedback.innerHTML = `<span class="correct-txt">✓ ¡Correcto!</span>`;
             feedback.style.background = 'rgba(16, 185, 129, 0.15)';
             game.score += 10;
         } else {
-            feedback.innerHTML = `<span class="wrong-txt">✗ Incorrecto. La respuesta correcta es: <strong>${game.curr[3]}</strong></span>`;
+            feedback.innerHTML = `<span class="wrong-txt">✗ Incorrecto. Era: <strong>${game.curr[3]}</strong></span>`;
             feedback.style.background = 'rgba(220, 38, 38, 0.15)';
         }
 
         document.getElementById('score-display').innerText = "Pts: " + game.score;
-
-        // UI Post-Check
         input.disabled = true;
-        document.getElementById('btn-check').style.display = 'none';
-        document.getElementById('btn-next').style.display = 'block';
 
-        // MOSTRAR ASOCIACIÓN MNEMOTÉCNICA SIEMPRE
-        document.getElementById('assoc-box').style.display = 'block';
+        // Auto-pasar a la siguiente después de 1.5 segundos
+        setTimeout(() => {
+            game.next();
+        }, 1500);
+    },
+
+    playAudio: () => {
+        const word = game.curr[1];
+
+        // Usar Web Speech API
+        if ('speechSynthesis' in window) {
+            // Cancelar cualquier síntesis en curso
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US'; // Inglés estadounidense
+            utterance.rate = 0.85; // Velocidad un poco más lenta para claridad
+            utterance.pitch = 1;
+            utterance.volume = 1;
+
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert('Tu navegador no soporta la síntesis de voz.\nIntenta con Chrome, Edge o Safari.');
+        }
+    },
+
+    showFinalStats: () => {
+        const finalScore = game.score;
+        const totalQuestions = game.totalWords;
+        const percentage = Math.round((finalScore / (totalQuestions * 10)) * 100);
+
+        let emoji = '🎉';
+        let title = '¡Repaso Completado!';
+        let message = '';
+
+        if(percentage >= 90) {
+            emoji = '🏆';
+            title = '¡Excelente!';
+            message = 'Dominio perfecto del vocabulario.';
+        } else if(percentage >= 70) {
+            emoji = '👏';
+            title = '¡Muy Bien!';
+            message = 'Sigue practicando para mejorar.';
+        } else if(percentage >= 50) {
+            emoji = '💪';
+            title = 'Buen Intento';
+            message = 'Repasa las palabras más veces.';
+        } else {
+            emoji = '📚';
+            title = 'Sigue Estudiando';
+            message = '¡No te rindas, tú puedes!';
+        }
+
+        const stats = `${emoji} ${title}\n\n` +
+                     `📊 Resultados:\n` +
+                     `• Puntuación: ${finalScore} / ${totalQuestions * 10} puntos\n` +
+                     `• Palabras: ${totalQuestions}\n` +
+                     `• Efectividad: ${percentage}%\n\n` +
+                     `${message}`;
+
+        alert(stats);
+        app.goHome();
     }
 };
 
-// Enter key para enviar respuesta
+// ENTER key para verificar y pasar automáticamente
 document.getElementById('answer-input').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
-        if(document.getElementById('btn-check').style.display !== 'none') {
-            game.check();
-        } else {
-            game.next();
-        }
+        game.check();
     }
 });
 
-// Prevenir que el usuario salga accidentalmente durante el juego
+// Prevenir salida accidental
 window.addEventListener('beforeunload', function (e) {
     const gameScreen = document.getElementById('game-screen');
     if (!gameScreen.classList.contains('hidden')) {
@@ -1866,6 +1892,9 @@ window.addEventListener('beforeunload', function (e) {
         return '';
     }
 });
+
+console.log('✅ Accelerated English Vocabulary cargado');
+console.log('📊 Total palabras nivel básico:', RAW_DATA_BASICO.length);
 
 </script>
 </body>
