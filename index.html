@@ -4,23 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Accelerated Vocabulary Learning</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Paleta "Cognitive Sky" - Fresca, Luminosa y Académica */
-            --bg-body: #E0F2FE;        /* Azul Cielo Muy Claro */
-            --bg-card: #FFFFFF;        /* Blanco Puro */
-            --primary: #0284C7;        /* Azul Océano Inteligente */
-            --primary-light: #38BDF8;  /* Azul Cian Vivo */
-            --primary-dark: #0369A1;   /* Azul Profundo */
-            --text-main: #0F172A;      /* Azul Noche (Lectura) */
-            --text-muted: #64748B;     /* Gris Pizarra */
-            --accent: #F59E0B;         /* Ámbar (Atención) */
-            --success: #10B981;        /* Verde Éxito */
-            --error: #EF4444;          /* Rojo Error */
-            --highlight-bg: #F0F9FF;   /* Fondo para destacados */
-            --highlight-border: #BAE6FD;
-            --shadow: 0 10px 30px -10px rgba(2, 132, 199, 0.15);
+            /* Paleta "Cognitive Flow" - Azul Claro y Amigable */
+            --bg-body: #F0F9FF;        /* Azul Alicia muy suave */
+            --bg-card: #FFFFFF;        /* Blanco puro */
+            --primary: #0EA5E9;        /* Azul Cielo Vibrante */
+            --primary-dark: #0284C7;   /* Azul Océano para hover */
+            --accent: #F59E0B;         /* Ámbar para destacar */
+            --text-main: #334155;      /* Gris Pizarra Oscuro (menos duro que el negro) */
+            --text-light: #64748B;     /* Gris Pizarra Claro */
+            --success: #10B981;        /* Esmeralda */
+            --error: #EF4444;          /* Coral */
+            --shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.15); /* Sombra suave azulada */
         }
 
         * {
@@ -32,137 +29,111 @@
 
         body {
             background-color: var(--bg-body);
-            background-image: radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
-                              radial-gradient(at 100% 100%, rgba(2, 132, 199, 0.1) 0px, transparent 50%);
             color: var(--text-main);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             align-items: center;
+            overflow-x: hidden;
         }
 
-        /* Header Minimalista */
+        /* Header Amigable */
         header {
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            padding: 15px 20px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #BAE6FD;
+            border-bottom: 1px solid #E0F2FE;
             position: fixed;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 15px rgba(2, 132, 199, 0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
         header h1 {
             font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: var(--primary);
+            color: var(--primary-dark);
             letter-spacing: -0.5px;
-            text-transform: uppercase;
-            margin-right: 10px;
-        }
-
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .user-badge {
-            background: #F0F9FF;
-            color: var(--primary);
-            padding: 4px 10px;
+            background: #E0F2FE;
+            color: var(--primary-dark);
+            padding: 6px 15px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 600;
             border: 1px solid #BAE6FD;
-            white-space: nowrap;
         }
 
-        .btn-home-fixed {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .btn-home-fixed:hover { background: var(--primary-dark); }
-
-        /* Contenedor Fluido */
+        /* Contenedor Principal */
         #app-container {
             width: 100%;
-            max-width: 680px;
-            margin-top: 80px;
+            max-width: 700px; /* Más ancho para lectura cómoda */
+            margin-top: 100px;
             padding: 20px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            padding-bottom: 40px;
+        }
+
+        /* Títulos */
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--text-main);
+            font-weight: 700;
         }
 
         /* Tarjetas */
         .card {
             background: var(--bg-card);
-            padding: 30px;
+            padding: 40px;
             border-radius: 24px;
             box-shadow: var(--shadow);
             border: 1px solid #F1F5F9;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 20px;
+            transition: transform 0.3s ease;
         }
 
-        h2 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.5rem;
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--text-main);
-            font-weight: 700;
-        }
+        .input-group { margin-bottom: 20px; }
 
-        /* Inputs */
-        .input-group label {
+        label {
             display: block;
-            color: var(--text-muted);
-            margin-bottom: 6px;
+            color: var(--text-light);
+            margin-bottom: 8px;
             font-size: 0.9rem;
             font-weight: 500;
         }
 
         input {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: #F8FAFC;
             border: 2px solid #E2E8F0;
             border-radius: 12px;
             color: var(--text-main);
             font-size: 1rem;
-            margin-bottom: 15px;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
         }
 
         input:focus {
             outline: none;
-            border-color: var(--primary-light);
+            border-color: var(--primary);
             background: #FFFFFF;
-            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15);
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
         }
 
-        /* Botones */
+        /* Botones Interactivos */
         .btn {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             border: none;
             border-radius: 14px;
             font-size: 1rem;
@@ -170,211 +141,178 @@
             font-family: 'Poppins', sans-serif;
             cursor: pointer;
             transition: all 0.2s;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .btn-primary {
             background: var(--primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
         }
+
         .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(2, 132, 199, 0.3);
+            box-shadow: 0 6px 15px rgba(14, 165, 233, 0.4);
         }
 
         .btn-outline {
             background: white;
             border: 2px solid #E2E8F0;
-            color: var(--text-muted);
+            color: var(--text-light);
         }
+
         .btn-outline:hover {
-            border-color: var(--primary-light);
+            border-color: var(--primary);
             color: var(--primary);
             background: #F0F9FF;
         }
 
-        .btn-retry {
-            background: var(--accent);
-            color: white;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-        }
-        .btn-retry:hover { background: #D97706; }
-
-        /* Toggle Switch para Dirección */
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 25px;
-            background: #F1F5F9;
-            padding: 5px;
-            border-radius: 12px;
-        }
-        .toggle-btn {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            transition: all 0.2s;
-        }
-        .toggle-btn.active {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        /* Menú Grid */
+        /* Menú Categorías */
         .grid-menu {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 15px;
         }
+
         .category-card {
-            background: #F8FAFC;
-            padding: 15px;
+            background: white;
+            padding: 20px;
             border-radius: 16px;
             text-align: center;
-            border: 1px solid #E2E8F0;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             cursor: pointer;
             transition: all 0.2s;
         }
+
         .category-card:hover {
-            background: white;
-            border-color: var(--primary-light);
-            transform: translateY(-3px);
+            border-color: var(--primary);
+            transform: translateY(-4px);
             box-shadow: var(--shadow);
         }
-        .cat-icon { font-size: 1.8rem; margin-bottom: 5px; display: block; }
-        .cat-name { font-weight: 600; color: var(--text-main); font-size: 0.9rem; }
+
+        .cat-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+        .cat-name { font-weight: 600; color: var(--text-main); }
 
         /* Pantalla de Juego */
         .game-header {
-            display: flex;
-            justify-content: space-between;
+            display: flex; 
+            justify-content: space-between; 
             align-items: center;
-            margin-bottom: 15px;
-        }
-        .progress-indicator {
-            background: #E0F2FE;
-            color: var(--primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-        #w-english {
-            font-size: 2.5rem;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            margin: 10px 0 5px;
-            color: var(--primary);
-            letter-spacing: -1px;
-            line-height: 1.1;
-        }
-        #w-pron {
-            color: var(--text-muted);
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            background: #F1F5F9;
-            padding: 4px 10px;
-            border-radius: 6px;
-            display: inline-block;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #F1F5F9;
         }
 
-        /* Mnemotecnia */
+        .progress-pill {
+            background: #E0F2FE;
+            color: #0284C7;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #w-english {
+            font-size: 3rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            margin: 10px 0;
+            color: var(--text-main);
+            letter-spacing: -1px;
+        }
+
+        #w-pron {
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            background: #F1F5F9;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* Área de Asociación (Mnemotecnia) */
         .mnemonic-box {
             background: #FFFBEB; 
             border-left: 4px solid #F59E0B;
-            padding: 15px; 
-            margin: 15px 0; 
+            padding: 20px; 
+            margin: 20px 0; 
             border-radius: 8px;
             font-style: italic; 
-            color: #92400E; 
-            display: none; /* Oculto por defecto */
-            line-height: 1.5;
-            font-size: 0.95rem;
+            color: #78350F; 
+            display: none;
+            line-height: 1.6;
         }
-        
-        /* Instrucciones */
+
+        /* Instrucciones Detalladas */
         .scientific-content {
             text-align: left;
-            font-size: 0.9rem;
-            line-height: 1.7;
-            color: #334155;
-            max-height: 65vh;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #475569;
+            max-height: 60vh;
             overflow-y: auto;
-            padding-right: 10px;
+            padding-right: 15px;
         }
+
         .scientific-content h3 {
-            color: var(--primary);
+            color: var(--primary-dark);
             font-family: 'Poppins', sans-serif;
             font-size: 1.1rem;
-            margin-top: 20px;
-            border-bottom: 2px solid #E0F2FE;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #E2E8F0;
             padding-bottom: 5px;
-        }
-        
-        /* ESTILO DESTACADO PARA PUNTO 1 (FONÉTICA) */
-        .phonetics-highlight {
-            background-color: #F0F9FF;
-            border: 2px solid var(--primary-light);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .phonetics-highlight h3 {
-            color: var(--primary-dark);
-            margin-top: 0;
-            border-bottom: none;
         }
 
         .citation {
-            font-size: 0.75rem;
+            font-size: 0.8em;
             color: #94A3B8;
+            vertical-align: super;
         }
 
         .highlight-box {
-            background: #FFFFFF;
-            border-left: 4px solid var(--accent);
-            padding: 10px 15px;
-            margin: 10px 0;
-            border-radius: 0 8px 8px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .symbol-item {
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-        }
-        .symbol {
-            font-weight: 800;
-            color: var(--primary-dark);
-            font-family: monospace;
-            font-size: 1.1rem;
-            margin-right: 5px;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
         }
 
-        .motivation-box {
-            background: linear-gradient(135deg, #0284C7, #0EA5E9);
+        .symbol-item {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .symbol {
+            background: var(--text-main);
             color: white;
-            padding: 20px;
+            font-family: monospace;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .motivation-section {
+            background: linear-gradient(135deg, #0EA5E9, #2563EB);
+            color: white;
+            padding: 25px;
             border-radius: 16px;
-            margin-top: 25px;
+            margin-top: 30px;
             text-align: center;
         }
 
         .designer-credit {
-            margin-top: 30px;
-            padding-top: 15px;
+            margin-top: 40px;
+            padding-top: 20px;
             border-top: 1px solid #E2E8F0;
             text-align: center;
             font-size: 0.75rem;
@@ -384,169 +322,97 @@
             text-transform: uppercase;
         }
 
-        /* Feedback */
-        .feedback-area {
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: 700;
-            text-align: center;
-        }
-        .correct { background: #D1FAE5; color: #065F46; border: 1px solid #6EE7B7; }
-        .wrong { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+        /* Feedback visual */
+        .feedback-correct { background: #D1FAE5; color: #065F46; padding: 15px; border-radius: 12px; font-weight: 700; text-align: center; }
+        .feedback-wrong { background: #FEE2E2; color: #991B1B; padding: 15px; border-radius: 12px; font-weight: 700; text-align: center; }
 
         .hidden { display: none !important; }
-    
-        /* Estilos para frase final destacada */
-        .final-quote {
-            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-            border-left: 5px solid #F59E0B;
-            padding: 25px;
-            margin: 30px 0;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            text-align: center;
-        }
 
-        .final-quote p {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin: 0;
-            color: #78350F;
-        }
-
-        .final-quote strong {
-            font-weight: 700;
-            color: #78350F;
-        }
-
-        /* Estilos para instrucciones científicas */
-        .phonetics-highlight {
-            background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
-            border-left: 4px solid var(--primary);
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .phonetics-highlight h3 {
-            color: var(--primary);
-            margin-top: 0;
-        }
-
-        .symbol-item {
-            margin: 12px 0;
-            padding: 10px;
-            background: white;
-            border-radius: 6px;
-            border-left: 3px solid #0EA5E9;
-        }
-
-        .symbol {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: var(--primary);
-            margin-right: 8px;
-        }
-
-        .citation {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .highlight-box {
-            background: #F8FAFC;
-            border: 1px solid #CBD5E1;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-        }
-
-        .designer-credit {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid var(--primary);
-            font-weight: 600;
-            color: var(--primary);
-        }
-
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Accelerated Vocabulary Learning</h1>
-        <div class="header-controls">
-            <div id="user-display" class="user-badge">Invitado</div>
-            <button onclick="app.goHome()" class="btn-home-fixed">Menú Principal</button>
-        </div>
+        <div id="user-display" class="user-badge">Invitado</div>
     </header>
 
     <div id="app-container">
-        
+
         <div id="auth-screen">
             <div class="card">
                 <h2>Bienvenido</h2>
-                <p style="text-align:center; color:var(--text-muted); margin-bottom:20px;">Plataforma de Neuroaprendizaje Léxico</p>
+                <p style="text-align:center; color:var(--text-light); margin-bottom:20px;">Tu plataforma personal de alto rendimiento.</p>
+
                 <div class="input-group">
                     <label>Usuario</label>
                     <input type="text" id="user-input" maxlength="20" placeholder="Nombre de usuario">
                 </div>
                 <div class="input-group">
                     <label>Contraseña</label>
-                    <input type="password" id="pass-input" maxlength="12" placeholder="Contraseña">
+                    <input type="password" id="pass-input" maxlength="12" placeholder="Contraseña de acceso">
                 </div>
-                <button class="btn btn-primary" onclick="app.login()">Ingresar al Sistema 🚀</button>
+                <button class="btn btn-primary" onclick="app.login()">
+                    Iniciar Sesión 🚀
+                </button>
             </div>
         </div>
 
         <div id="level-screen" class="hidden">
             <div class="card">
                 <h2>Selecciona tu Nivel</h2>
-                <button class="btn btn-primary" style="background: linear-gradient(135deg, #10B981, #059669);" onclick="app.selectLevel('basico')">🌱 Nivel Básico (800 Palabras)</button>
-                <button class="btn btn-primary" style="background: linear-gradient(135deg, #F59E0B, #D97706);" onclick="app.selectLevel('oxford3000')">🔥 Nivel Avanzado (3000+ Palabras)</button>
-                <button class="btn btn-outline" style="margin-top: 20px;" onclick="app.showInstructions()">📘 Metodología y Ciencia</button>
+                <button class="btn btn-primary" style="background: linear-gradient(135deg, #10B981, #059669);" onclick="app.selectLevel('basico')">
+                    🌱 Nivel Básico (800 Palabras)
+                </button>
+                <button class="btn btn-primary" style="background: linear-gradient(135deg, #F59E0B, #D97706); margin-top: 15px;" onclick="app.selectLevel('oxford3000')">
+                    🔥 Nivel Avanzado (3000+ Palabras)
+                </button>
+                <button class="btn btn-outline" style="margin-top: 25px;" onclick="app.showInstructions()">
+                    📘 Metodología y Ciencia
+                </button>
             </div>
         </div>
 
         <div id="menu-screen" class="hidden">
-            <div class="card">
-                <h2 id="menu-title">Categorías</h2>
-                <div class="grid-menu">
-                    <div class="category-card" onclick="app.showModeSelection('Verbos')">
-                        <span class="cat-icon">🏃</span><span class="cat-name">Verbos</span>
-                    </div>
-                    <div class="category-card" onclick="app.showModeSelection('Sustantivos')">
-                        <span class="cat-icon">📦</span><span class="cat-name">Sustantivos</span>
-                    </div>
-                    <div class="category-card" onclick="app.showModeSelection('Adjetivos')">
-                        <span class="cat-icon">✨</span><span class="cat-name">Adjetivos</span>
-                    </div>
-                    <div class="category-card" onclick="app.showModeSelection('Adverbios')">
-                        <span class="cat-icon">⚡</span><span class="cat-name">Adverbios</span>
-                    </div>
-                    <div class="category-card btn-saludos" onclick="app.showModeSelection('Saludos')">
-                        <span class="cat-icon">👋</span><span class="cat-name">Saludos</span>
-                    </div>
+            <h2 id="menu-title">Categorías</h2>
+            <div class="grid-menu">
+                <div class="category-card" onclick="app.showModeSelection('Verbos')">
+                    <span class="cat-icon">🏃</span>
+                    <span class="cat-name">Verbos</span>
                 </div>
-                <button class="btn btn-primary" style="margin-top:20px; background: linear-gradient(135deg, #EF4444, #DC2626);" onclick="app.showModeSelection('REPASO')">🧠 REPASO TOTAL</button>
-                <button class="btn btn-outline" onclick="app.goToLevelSelection()">⬅ Cambiar Nivel</button>
+                <div class="category-card" onclick="app.showModeSelection('Sustantivos')">
+                    <span class="cat-icon">📦</span>
+                    <span class="cat-name">Sustantivos</span>
+                </div>
+                <div class="category-card" onclick="app.showModeSelection('Adjetivos')">
+                    <span class="cat-icon">✨</span>
+                    <span class="cat-name">Adjetivos</span>
+                </div>
+                <div class="category-card" onclick="app.showModeSelection('Adverbios')">
+                    <span class="cat-icon">⚡</span>
+                    <span class="cat-name">Adverbios</span>
+                </div>
+                <div class="category-card btn-saludos" onclick="app.showModeSelection('Saludos')">
+                    <span class="cat-icon">👋</span>
+                    <span class="cat-name">Saludos</span>
+                </div>
             </div>
+            <button class="btn btn-primary" style="margin-top:25px; background: linear-gradient(135deg, #EF4444, #DC2626);" onclick="app.showModeSelection('REPASO')">
+                🧠 REPASO TOTAL
+            </button>
+            <button class="btn btn-outline" onclick="app.goToLevelSelection()">⬅ Cambiar Nivel</button>
         </div>
 
         <div id="mode-screen" class="hidden">
             <div class="card">
-                <h2 id="mode-title">Configuración de Estudio</h2>
-                
-                <div class="toggle-container">
-                    <div id="dir-normal" class="toggle-btn active" onclick="app.setDirection('normal')">🇬🇧 Inglés ⮕ 🇪🇸 Español</div>
-                    <div id="dir-reverse" class="toggle-btn" onclick="app.setDirection('reverse')">🇪🇸 Español ⮕ 🇬🇧 Inglés</div>
-                </div>
-
-                <button class="btn btn-primary" onclick="app.playWithMode('normal')">🎯 Modo Normal (Puntos)</button>
-                <button class="btn btn-primary" style="background: #6366F1;" onclick="app.playWithMode('estudio')">📚 Modo Estudio (Sin fallos)</button>
+                <h2 id="mode-title">Elige tu Desafío</h2>
+                <button class="btn btn-primary" onclick="app.playWithMode('normal')">🎯 Modo Normal</button>
+                <button class="btn btn-primary" style="background: #6366F1;" onclick="app.playWithMode('estudio')">📚 Modo Estudio (Visualización)</button>
                 <button class="btn btn-primary" style="background: #F59E0B;" onclick="app.playWithMode('contrareloj')">⏱️ Contrareloj</button>
                 <button class="btn btn-primary" style="background: #EF4444;" onclick="app.playWithMode('supervivencia')">💀 Supervivencia</button>
                 <button class="btn btn-outline" onclick="app.goHome()">⬅ Volver</button>
@@ -555,33 +421,30 @@
 
         <div id="game-screen" class="hidden">
             <div class="game-header">
-                <span id="progress-label" class="progress-indicator">1 / 3000</span>
+                <span id="progress-label" class="progress-pill">1 / 3000</span>
                 <span id="score-display" style="font-weight:700; color:var(--primary);">Pts: 0</span>
             </div>
 
             <div class="card" style="padding: 30px; margin-bottom: 20px; text-align: center;">
-                <div id="timer-display" class="progress-indicator hidden" style="background:#FEF2F2; color:#DC2626; margin-bottom:10px;">60s</div>
+                <div id="timer-display" class="progress-pill hidden" style="background:#FEF2F2; color:#DC2626; margin-bottom:10px; display:inline-block;">60s</div>
                 <div id="w-english">Hello</div>
                 <div id="w-pron">"jélou"</div>
-                <button id="audio-button" class="btn btn-outline" style="width:auto; padding:6px 15px; font-size:0.8rem; margin:15px auto 0; border-radius:30px;" onclick="game.playAudio()">🔊 Escuchar</button>
+                <button id="audio-button" class="btn btn-outline" style="width:auto; padding:8px 20px; font-size:0.85rem; margin:15px auto 0; border-radius:30px;" onclick="game.playAudio()">🔊 Escuchar</button>
             </div>
 
             <div id="assoc-box" class="mnemonic-box">
                 <span id="assoc-text">...</span>
             </div>
 
-            <input type="text" id="answer-input" placeholder="Escribe tu respuesta..." autocomplete="off">
-            <div id="feedback-area" class="hidden"></div>
+            <input type="text" id="answer-input" placeholder="Escribe la traducción..." autocomplete="off">
 
-            <button id="check-btn" class="btn btn-primary hidden">Comprobar</button> <div style="display: flex; gap: 10px;">
-                <button id="retry-btn" class="btn btn-retry hidden" onclick="game.retryGame()">🔄 Reintentar</button>
-                <button id="next-word-btn" class="btn btn-primary hidden" onclick="game.nextSlide()">Siguiente ➡</button>
-            </div>
+            <div id="feedback-area" class="hidden" style="margin-top:15px;"></div>
 
-            <button class="btn btn-outline" style="margin-top:20px; border:none; color:#94A3B8;" onclick="app.confirmExit()">❌ Salir</button>
+            <button id="next-word-btn" class="btn btn-primary hidden" onclick="game.nextSlide()">Siguiente Palabra ➡</button>
+            <button class="btn btn-outline" style="margin-top:20px; color:#94A3B8; border:none;" onclick="app.confirmExit()">❌ Salir de la sesión</button>
         </div>
 
-                <div id="instruct-screen" class="hidden">
+        <div id="instruct-screen" class="hidden">
             <div class="card" style="padding: 30px;">
                 <h2>Fundamentos y Metodología</h2>
                 <div class="scientific-content">
@@ -596,55 +459,60 @@
                     <p>El <strong>Efecto de Primacía</strong> dicta que tendemos a recordar mejor los primeros elementos de una lista<span class="citation">[4]</span>. En los métodos tradicionales, esto provoca que aprendas muy bien las palabras con "A" y olvides el resto. Investigaciones recientes confirman que el orden de presentación afecta significativamente la retención a largo plazo<span class="citation">[5]</span>.</p>
                     <p><strong>Nuestra Solución Tecnológica:</strong> Cada vez que inicias un modo de juego, el algoritmo ejecuta una redistribución aleatoria total usando el método Fisher-Yates. Nunca te enfrentarás al mismo orden dos veces, garantizando que las 3.000 palabras tengan la misma probabilidad de ser procesadas con tu máxima atención cognitiva.</p>
 
-                    <div class="phonetics-highlight">
-                        <h3>3. Decodificación Fonética Simplificada</h3>
-                        <p>Para reducir la carga cognitiva, hemos sustituido el complejo Alfabeto Fonético Internacional (IPA) por una transcripción figurada intuitiva para hispanohablantes:</p>
-                        <div class="symbol-item"><span class="symbol">:</span> <strong>(Dos Puntos) Alargamiento Vocálico.</strong><br>Indica que la vocal anterior debe pronunciarse larga, casi el doble de tiempo. Ejemplo: <em>si:</em> suena como una "i" larga.</div>
-                        <div class="symbol-item"><span class="symbol">*</span> <strong>(Asterisco) Sonido Schwa / R Muda.</strong><br>Representa un sonido gutural suave o una vocal neutra (schwa). En inglés británico, al final de palabra, la 'r' a menudo no se pronuncia; déjala morir en la garganta.</div>
-                        <div class="symbol-item"><span class="symbol">z / th</span> <strong>Sonido 'Z' Española.</strong><br>Coloca la lengua entre los dientes (como en "Zapato" en España) para pronunciar correctamente el sonido 'th' inglés.</div>
+                    <h3>3. Decodificación Fonética Simplificada</h3>
+                    <p>Para reducir la carga cognitiva, hemos sustituido el complejo Alfabeto Fonético Internacional (IPA) por una transcripción figurada intuitiva para hispanohablantes:</p>
+
+                    <div class="highlight-box">
+                        <div class="symbol-item">
+                            <span class="symbol">:</span>
+                            <span><strong>(Dos Puntos) Alargamiento Vocálico.</strong><br>Indica que la vocal anterior debe pronunciarse larga, casi el doble de tiempo. Ejemplo: <em>si:</em> suena como una "i" larga.</span>
+                        </div>
+                        <div class="symbol-item">
+                            <span class="symbol">*</span>
+                            <span><strong>(Asterisco) Sonido Schwa / R Muda.</strong><br>Representa un sonido gutural suave o una vocal neutra (schwa). En inglés británico, al final de palabra, la 'r' a menudo no se pronuncia; déjala morir en la garganta.</span>
+                        </div>
+                        <div class="symbol-item">
+                            <span class="symbol">z / th</span>
+                            <span><strong>Sonido 'Z' Española.</strong><br>Coloca la lengua entre los dientes (como en "Zapato" en España) para pronunciar correctamente el sonido 'th' inglés.</span>
+                        </div>
                     </div>
 
                     <h3>4. Repetición Espaciada y Timing Óptimo</h3>
                     <p>La <strong>repetición espaciada</strong> (spaced repetition) es una estrategia respaldada por décadas de investigación cognitiva<span class="citation">[6]</span>. El cerebro consolida la información de manera más eficiente cuando las sesiones de estudio están distribuidas en el tiempo, en lugar de concentradas en bloques largos (cramming).</p>
                     <p>Estudios recientes sugieren que el momento óptimo para el aprendizaje de idiomas es por la mañana temprano (aprovechando niveles óptimos de cortisol y atención) y antes de dormir (facilitando la consolidación durante el sueño REM)<span class="citation">[7]</span>.</p>
 
-                    <div class="motivation-box">
-                        <h4 style="color:#FFF; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px;">🚀 PROTOCOLO DE ALTO RENDIMIENTO</h4>
-                        <p style="font-size:0.95rem;">La plasticidad cerebral requiere descanso para la consolidación. <strong>No estudies 3 horas seguidas.</strong> El aprendizaje efectivo se basa en la <strong>calidad, no en la cantidad</strong>.</p>
-                        <p style="background:rgba(255,255,255,0.1); padding:15px; border-radius:8px; margin-top:10px;">
-                            <strong>Recomendación Técnica Basada en Evidencia:</strong><br><br>
-                            • <strong>2 micro-sesiones diarias de 20-30 minutos</strong> son más efectivas que una sesión de 2 horas<span class="citation">[8]</span>.<br>
-                            • <strong>Sesión matutina (7-9 AM):</strong> Aprovecha el pico de cortisol para maximizar la atención y el encoding inicial.<br>
-                            • <strong>Sesión nocturna (21-22 PM):</strong> Favorece la consolidación durante el sueño profundo y REM.<br>
-                            • <strong>Días de repaso:</strong> Revisa vocabulario a las 24h, 3 días y 7 días después para maximizar la retención a largo plazo<span class="citation">[9]</span>.
-                        </p>
-                    </div>
-
-                    <div class="final-quote">
-                        <p><strong>"El vocabulario no es solo una lista de palabras; es la arquitectura de tu pensamiento. Constrúyelo con precisión y método científico."</strong></p>
-                    </div>
-
-                    <div class="highlight-box">
-                        <h4 style="margin-top:0; color:var(--primary);">ANEXO: Metodologías de Juego</h4>
-                        <ul style="padding-left:20px; font-size:0.9rem;">
-                            <li><strong>🎯 Modo Normal:</strong> Aprendizaje estándar con feedback inmediato y puntuación. Acumula puntos por cada respuesta correcta.</li>
-                            <li><strong>📚 Modo Estudio:</strong> Sin estrés ni presión. La asociación mnemotécnica aparece después de intentar responder, reforzando el aprendizaje.</li>
-                            <li><strong>⏱️ Contrareloj:</strong> 60 segundos para traducir el máximo de palabras posibles. Desarrolla velocidad de recuperación léxica.</li>
-                            <li><strong>💀 Supervivencia:</strong> Un solo error termina la sesión. El reto definitivo para probar la solidez de tu memoria.</li>
+                    <div class="motivation-section">
+                        <h4 style="color:#FFF; margin-bottom:15px; font-weight:700; letter-spacing:1px;">🚀 PROTOCOLO DE ALTO RENDIMIENTO</h4>
+                        <p style="margin-bottom:10px;">La plasticidad cerebral requiere descanso para la consolidación. No estudies 3 horas seguidas. El aprendizaje efectivo se basa en la <strong>calidad, no en la cantidad</strong>.</p>
+                        <p><strong>Recomendación Técnica Basada en Evidencia:</strong></p>
+                        <ul style="text-align: left; max-width: 500px; margin: 15px auto; line-height: 1.8;">
+                            <li><strong>2 micro-sesiones diarias de 20-30 minutos</strong> son más efectivas que una sesión de 2 horas<span class="citation">[8]</span>.</li>
+                            <li><strong>Sesión matutina (7-9 AM):</strong> Aprovecha el pico de cortisol para maximizar la atención y el encoding inicial.</li>
+                            <li><strong>Sesión nocturna (21-22 PM):</strong> Favorece la consolidación durante el sueño profundo y REM.</li>
+                            <li><strong>Días de repaso:</strong> Revisa vocabulario a las 24h, 3 días y 7 días después para maximizar la retención a largo plazo<span class="citation">[9]</span>.</li>
                         </ul>
+                        <p style="margin-top:20px; font-weight:600; font-size:1.1em; border-top: 1px solid rgba(255,255,255,0.3); padding-top:15px;">"El vocabulario no es solo una lista de palabras; es la arquitectura de tu pensamiento. Constrúyelo con precisión y método científico."</p>
                     </div>
 
-                    <h3>Referencias Bibliográficas</h3>
-                    <ul style="font-size: 0.75rem; color: #64748B; list-style: none; padding: 0; margin-top:10px;">
-                        <li style="margin-bottom:8px;">[1] Atkinson, R. C., & Raugh, M. R. (1975). An application of the mnemonic keyword method to the acquisition of a Russian vocabulary. <em>Journal of Experimental Psychology: Human Learning and Memory, 104</em>(2), 126–133. <a href="https://doi.org/10.1037/0278-7393.1.2.126" target="_blank" style="color:#0284C7;">https://doi.org/10.1037/0278-7393.1.2.126</a></li>
-                        <li style="margin-bottom:8px;">[2] Malaga English. (2024, April 15). Método de Palabra Clave: Domina Vocabulario Rápido. <a href="https://www.malagaenglish.com/metodo-palabra-clave" target="_blank" style="color:#0284C7;">https://www.malagaenglish.com/metodo-palabra-clave</a></li>
-                        <li style="margin-bottom:8px;">[3] Helpful Professor. (2023, March 29). Elaborative Encoding: 10 Examples & Definition. <a href="https://helpfulprofessor.com/elaborative-encoding/" target="_blank" style="color:#0284C7;">https://helpfulprofessor.com/elaborative-encoding/</a></li>
-                        <li style="margin-bottom:8px;">[4] The Decision Lab. (n.d.). Efecto primacía. <a href="https://thedecisionlab.com/es/biases/primacy-effect" target="_blank" style="color:#0284C7;">https://thedecisionlab.com/es/biases/primacy-effect</a></li>
-                        <li style="margin-bottom:8px;">[5] Cognitive Bias Lab. (2025, November 30). Primacy Effect - Definition, Examples, and How to Overcome It. <a href="https://www.cognitivebiaslab.com/bias/bias-primacy-effect/" target="_blank" style="color:#0284C7;">https://www.cognitivebiaslab.com/bias/bias-primacy-effect/</a></li>
-                        <li style="margin-bottom:8px;">[6] Kornell, N., & Bjork, R. A. (2008). Learning concepts and categories: Is spacing the "enemy of induction"? <em>Psychological Science, 19</em>(6), 585–592. <a href="https://doi.org/10.1111/j.1467-9280.2008.02127.x" target="_blank" style="color:#0284C7;">https://doi.org/10.1111/j.1467-9280.2008.02127.x</a></li>
-                        <li style="margin-bottom:8px;">[7] Lingvist. (2023, March 28). What's the Best Time of Day to Study a Language? <a href="https://lingvist.com/blog/the-best-time-of-day-to-study-a-language/" target="_blank" style="color:#0284C7;">https://lingvist.com/blog/the-best-time-of-day-to-study-a-language/</a></li>
-                        <li style="margin-bottom:8px;">[8] Dunlosky, J., Rawson, K. A., Marsh, E. J., Nathan, M. J., & Willingham, D. T. (2013). Improving students' learning with effective learning techniques: Promising directions from cognitive and educational psychology. <em>Psychological Science in the Public Interest, 14</em>(1), 4–58. <a href="https://doi.org/10.1177/1529100612453266" target="_blank" style="color:#0284C7;">https://doi.org/10.1177/1529100612453266</a></li>
-                        <li style="margin-bottom:8px;">[9] Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T., & Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. <em>Psychological Bulletin, 132</em>(3), 354–380. <a href="https://doi.org/10.1037/0033-2909.132.3.354" target="_blank" style="color:#0284C7;">https://doi.org/10.1037/0033-2909.132.3.354</a></li>
+                    <h3>Referencias Bibliográficas (APA 7)</h3>
+                    <ul style="font-size: 0.8rem; color: #64748B; list-style: none; margin-top: 10px; padding-left: 0; line-height: 1.6;">
+                        <li style="margin-bottom: 8px;">[1] Atkinson, R. C., & Raugh, M. R. (1975). An application of the mnemonic keyword method to the acquisition of a Russian vocabulary. <em>Journal of Experimental Psychology: Human Learning and Memory, 104</em>(2), 126–133. https://doi.org/10.1037/0278-7393.1.2.126</li>
+
+                        <li style="margin-bottom: 8px;">[2] Malaga English. (2024, April 15). <em>Método de Palabra Clave: Domina Vocabulario Rápido</em>. https://www.malagaenglish.com/metodo-palabra-clave</li>
+
+                        <li style="margin-bottom: 8px;">[3] Helpful Professor. (2023, March 29). <em>Elaborative Encoding: 10 Examples & Definition</em>. https://helpfulprofessor.com/elaborative-encoding/</li>
+
+                        <li style="margin-bottom: 8px;">[4] The Decision Lab. (n.d.). <em>Efecto primacía</em>. https://thedecisionlab.com/es/biases/primacy-effect</li>
+
+                        <li style="margin-bottom: 8px;">[5] Cognitive Bias Lab. (2025, November 30). <em>Primacy Effect - Definition, Examples, and How to Overcome It</em>. https://www.cognitivebiaslab.com/bias/bias-primacy-effect/</li>
+
+                        <li style="margin-bottom: 8px;">[6] Kornell, N., & Bjork, R. A. (2008). Learning concepts and categories: Is spacing the "enemy of induction"? <em>Psychological Science, 19</em>(6), 585–592. https://doi.org/10.1111/j.1467-9280.2008.02127.x</li>
+
+                        <li style="margin-bottom: 8px;">[7] Lingvist. (2023, March 28). <em>What's the Best Time of Day to Study a Language?</em> https://lingvist.com/blog/the-best-time-of-day-to-study-a-language/</li>
+
+                        <li style="margin-bottom: 8px;">[8] Dunlosky, J., Rawson, K. A., Marsh, E. J., Nathan, M. J., & Willingham, D. T. (2013). Improving students' learning with effective learning techniques: Promising directions from cognitive and educational psychology. <em>Psychological Science in the Public Interest, 14</em>(1), 4–58. https://doi.org/10.1177/1529100612453266</li>
+
+                        <li style="margin-bottom: 8px;">[9] Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T., & Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. <em>Psychological Bulletin, 132</em>(3), 354–380. https://doi.org/10.1037/0033-2909.132.3.354</li>
                     </ul>
 
                     <div class="designer-credit">
@@ -653,15 +521,23 @@
                 </div>
                 <button class="btn btn-primary" style="margin-top:20px;" onclick="app.goHome()">Entendido, volver al menú</button>
             </div>
-        </div>    </div>
+        </div>
+
+    </div>
 
 <script>
+
+// ═══════════════════════════════════════════════════════════════════
+// ACCELERATED VOCABULARY LEARNING v3.0 - VERSIÓN CORREGIDA
+// Fecha: 2025-12-13
+// Correcciones aplicadas: goHome, navegación, validación
+// ═══════════════════════════════════════════════════════════════════
+
 /* ==========================================================================
-   DATOS DE LAS 3000+ PALABRAS
+   DATOS DE LAS 2,389 PALABRAS
    ========================================================================== */
 
-// ⚠️ ATENCIÓN: Aquí comienza la zona de datos.
-// El código incluye las listas que me has proporcionado previamente.
+// Nivel Básico (802 palabras)
 
 const RAW_DATA = [
 ["Verbos","To Be","tu bi","Ser/Estar","Ser o no ser: «tu bi o no tu bi»"],
@@ -3088,7 +2964,7 @@ const RAW_DATA_OXFORD3000 = [
 
 
 /* ==========================================================================
-   LÓGICA DEL SISTEMA
+   LÓGICA DEL SISTEMA (LOCAL STORAGE)
    ========================================================================== */
 
 function normalizeText(text) {
@@ -3099,38 +2975,24 @@ const app = {
     currentUser: null,
     currentLevel: null,
     currentCategory: null,
-    currentDirection: 'normal', // 'normal' (Eng->Esp) o 'reverse' (Esp->Eng)
-    
+
+    // Objeto para guardar progreso localmente
     userData: {
         password: "",
         stats: { wordsLearned: 0, totalScore: 0 }
     },
 
     init() {
-        // Manejo History API para botón atrás
-        window.addEventListener('popstate', (event) => {
-            if (event.state && event.state.screen) {
-                app.showScreen(event.state.screen, false);
-            } else {
-                // Estado inicial
-                if(app.currentUser) app.showScreen('level-screen', false);
-                else app.showScreen('auth-screen', false);
-            }
-        });
-
         setTimeout(() => {
             const el = document.getElementById('user-input');
             if(el) el.focus();
         }, 500);
 
-        // Eventos de teclado
+        // Enter en inputs
         const uInput = document.getElementById('user-input');
         const pInput = document.getElementById('pass-input');
         if(uInput) uInput.addEventListener('keydown', (e) => { if(e.key==='Enter') { e.preventDefault(); pInput.focus(); } });
         if(pInput) pInput.addEventListener('keydown', (e) => { if(e.key==='Enter') { e.preventDefault(); app.login(); } });
-
-        // Estado inicial historial
-        history.replaceState({ screen: 'auth-screen' }, '', '#login');
     },
 
     login() {
@@ -3141,10 +3003,12 @@ const app = {
         if (userIn.length > 20) { alert('⚠️ Usuario máx. 20 caracteres.'); return; }
         if (passIn.length > 12) { alert('⚠️ Contraseña máx. 12 caracteres.'); return; }
 
-        const localKey = 'avl_user_' + userIn;
+        // Lógica Local Storage: Recuperar o Crear
+        const localKey = 'user_' + userIn;
         const storedData = localStorage.getItem(localKey);
 
         if (storedData) {
+            // Usuario existe, verificar contraseña
             const parsedData = JSON.parse(storedData);
             if (parsedData.password === passIn) {
                 this.userData = parsedData;
@@ -3153,8 +3017,12 @@ const app = {
                 alert("⛔ Contraseña incorrecta.");
             }
         } else {
+            // Usuario nuevo, registrar
             if(confirm(`El usuario "${userIn}" no existe.\n¿Crear cuenta nueva?`)) {
-                this.userData = { password: passIn, stats: { wordsLearned: 0, totalScore: 0 } };
+                this.userData = {
+                    password: passIn,
+                    stats: { wordsLearned: 0, totalScore: 0 }
+                };
                 localStorage.setItem(localKey, JSON.stringify(this.userData));
                 this.enterApp(userIn);
             }
@@ -3163,62 +3031,60 @@ const app = {
 
     enterApp(user) {
         this.currentUser = user;
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('level-screen').classList.remove('hidden');
         document.getElementById('user-display').textContent = user;
-        this.showScreen('level-screen');
     },
 
     saveProgress() {
         if(this.currentUser) {
-            localStorage.setItem('avl_user_' + this.currentUser, JSON.stringify(this.userData));
+            const localKey = 'user_' + this.currentUser;
+            localStorage.setItem(localKey, JSON.stringify(this.userData));
         }
     },
 
     selectLevel(lvl) {
         this.currentLevel = lvl;
+        // Ocultar saludos si es avanzado
         const btnSaludos = document.querySelector('.btn-saludos');
         if(btnSaludos) btnSaludos.style.display = (lvl === 'oxford3000') ? 'none' : 'block';
-        document.getElementById('menu-title').textContent = (lvl === 'oxford3000') ? 'Categorías Avanzadas' : 'Categorías Básicas';
-        this.showScreen('menu-screen');
-    },
 
-    setDirection(dir) {
-        this.currentDirection = dir;
-        // Actualizar UI visual del toggle
-        document.getElementById('dir-normal').classList.toggle('active', dir === 'normal');
-        document.getElementById('dir-reverse').classList.toggle('active', dir === 'reverse');
+        // Actualizar título del menú
+        document.getElementById('menu-title').textContent = (lvl === 'oxford3000') ? 'Categorías Avanzadas' : 'Categorías Básicas';
+
+        this.showScreen('menu-screen');
     },
 
     showModeSelection(cat) {
         this.currentCategory = cat;
-        // Check data
+        // Verificar datos
         const words = game.getWords(cat);
-        if (words.length === 0) { alert(`⚠️ No hay datos cargados para ${cat}.`); return; }
-        
-        document.getElementById('mode-title').textContent = `${cat}`;
+        if (words.length === 0) {
+            alert(`⚠️ No hay datos cargados para ${cat}.`);
+            return;
+        }
+        document.getElementById('mode-title').textContent = `${cat} - Selecciona Modo`;
         this.showScreen('mode-screen');
     },
 
     playWithMode(mode) {
-        game.startGame(this.currentCategory, mode, this.currentDirection);
+        game.startGame(this.currentCategory, mode);
         this.showScreen('game-screen');
     },
 
     showInstructions() { this.showScreen('instruct-screen'); },
     goToLevelSelection() { this.showScreen('level-screen'); },
-    goHome() { 
-        this.showScreen('level-screen'); 
-    },
+    goHome() { this.showScreen('menu-screen'); },
 
-    showScreen(id, pushHistory = true) {
+    showScreen(id) {
         document.querySelectorAll('#app-container > div').forEach(d => d.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        if (pushHistory) history.pushState({ screen: id }, '', `#${id.replace('-screen', '')}`);
+        const target = document.getElementById(id);
+        if(target) target.classList.remove('hidden');
     },
 
     confirmExit() {
         if(confirm("¿Abandonar la sesión actual?")) {
             game.stopTimer();
-            // Volver al menú
             this.goHome();
         }
     }
@@ -3229,14 +3095,14 @@ const game = {
     currentIndex: 0,
     score: 0,
     mode: 'normal',
-    direction: 'normal',
     timer: null,
+    isReverse: false,
     awaitingNext: false,
 
     getWords(category) {
-        // En tu archivo real, RAW_DATA debe estar completo
-        const source = app.currentLevel === 'basico' ? RAW_DATA_BASICO : RAW_DATA_OXFORD3000;
-        
+        const source = app.currentLevel === 'basico' ? RAW_DATA : RAW_DATA_OXFORD3000;
+
+        // Mapeo seguro
         const mapped = source.map(item => ({
             cat: item[0],
             eng: item[1],
@@ -3250,58 +3116,80 @@ const game = {
     },
 
     shuffle(array) {
+        // Algoritmo Fisher-Yates para aleatoriedad real
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
     },
 
-    startGame(category, mode, direction) {
+    startGame(category, mode) {
         this.mode = mode;
-        this.direction = direction; // 'normal' o 'reverse'
-        
-        // 1. Cargar y MEZCLAR
+        this.isReverse = mode.includes('reverso');
+
+        // 1. Obtener y MEZCLAR SIEMPRE
         let rawWords = this.getWords(category);
-        this.words = [...rawWords];
-        this.shuffle(this.words);
+        if(rawWords.length === 0) {
+            alert('⚠️ No hay palabras en esta categoría.');
+            app.goHome();
+            return;
+        }
+
+        this.words = [...rawWords]; // Copia para no alterar original
+        this.shuffle(this.words);   // Mezcla estocástica obligatoria
 
         this.currentIndex = 0;
         this.score = 0;
         this.awaitingNext = false;
 
         // UI Reset
-        document.getElementById('timer-display').classList.add('hidden');
-        document.getElementById('assoc-box').style.display = 'none';
-        document.getElementById('feedback-area').classList.add('hidden');
-        document.getElementById('next-word-btn').classList.add('hidden');
-        document.getElementById('retry-btn').classList.add('hidden');
-        
-        const input = document.getElementById('answer-input');
-        input.value = "";
-        input.disabled = false;
-        
-        // Timer
+        const timerDisplay = document.getElementById('timer-display');
+        const assocBox = document.getElementById('assoc-box');
+        const feedbackArea = document.getElementById('feedback-area');
+        const nextBtn = document.getElementById('next-word-btn');
+        const answerInput = document.getElementById('answer-input');
+        const scoreEl = document.getElementById('score-display');
+        const audioBtn = document.getElementById('audio-button');
+
+        if(timerDisplay) timerDisplay.classList.add('hidden');
+        if(assocBox) assocBox.style.display = 'none';
+        if(feedbackArea) feedbackArea.classList.add('hidden');
+        if(nextBtn) nextBtn.classList.add('hidden');
+
+        if(answerInput) {
+            answerInput.value = "";
+            answerInput.disabled = false;
+        }
+
         if (mode === 'contrareloj') this.startTimer(60);
 
-        // Score display
-        const scoreEl = document.getElementById('score-display');
-        scoreEl.style.display = (mode === 'estudio') ? 'none' : 'block';
+        if(scoreEl) scoreEl.style.display = (mode === 'estudio') ? 'none' : 'block';
+
+        // Ocultar audio en modo reverso
+        if(audioBtn) audioBtn.style.display = this.isReverse ? 'none' : 'block';
 
         this.updateUI();
         this.showWord();
-        
-        setTimeout(() => input.focus(), 100);
-        
-        input.onkeydown = (e) => {
-            if (e.key === 'Enter') {
-                if (this.awaitingNext) this.nextSlide();
-                else this.checkAnswer();
-            }
-        };
+
+        setTimeout(() => { if(answerInput) answerInput.focus(); }, 100);
+
+        // Limpiar eventos anteriores para evitar duplicados
+        if(answerInput) {
+            answerInput.onkeydown = null;
+            answerInput.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (this.awaitingNext) this.nextSlide();
+                    else this.checkAnswer();
+                }
+            };
+        }
     },
 
     startTimer(sec) {
         const display = document.getElementById('timer-display');
+        if(!display) return;
+
         display.classList.remove('hidden');
         let t = sec;
         display.textContent = t + 's';
@@ -3311,7 +3199,8 @@ const game = {
             display.textContent = t + 's';
             if(t <= 0) {
                 clearInterval(this.timer);
-                this.gameOver("⏰ ¡Tiempo agotado!");
+                alert("⏰ ¡Tiempo agotado!");
+                app.goHome();
             }
         }, 1000);
     },
@@ -3319,168 +3208,148 @@ const game = {
     stopTimer() { if(this.timer) clearInterval(this.timer); },
 
     updateUI() {
+        // CONTADOR FIJO EN 3000 para modo avanzado
         const prog = document.getElementById('progress-label');
-        prog.textContent = `${this.currentIndex + 1} / 3000`;
+        if(prog) {
+            if(app.currentLevel === 'oxford3000') {
+                // Modo avanzado: Mostrar siempre /3000
+                prog.textContent = `${this.currentIndex + 1} / 3000`;
+            } else {
+                // Modo básico: Mostrar total real
+                prog.textContent = `${this.currentIndex + 1} / ${this.words.length}`;
+            }
+        }
 
         const sc = document.getElementById('score-display');
-        sc.textContent = `Pts: ${this.score}`;
+        if(sc) sc.textContent = `Pts: ${this.score}`;
     },
-
-
 
     showWord() {
         if (this.currentIndex >= this.words.length) {
-            alert("🏆 ¡Sesión completada! Las palabras se reordenarán.");
+            alert("🏆 ¡Sesión completada! Las palabras se reordenarán para la próxima vez.");
             app.goHome();
             return;
         }
 
         const w = this.words[this.currentIndex];
         const input = document.getElementById('answer-input');
+        const feedbackArea = document.getElementById('feedback-area');
+        const nextBtn = document.getElementById('next-word-btn');
+        const assocBox = document.getElementById('assoc-box');
         const wEng = document.getElementById('w-english');
         const wPron = document.getElementById('w-pron');
-        const assocBox = document.getElementById('assoc-box');
-        const checkBtn = document.getElementById('check-btn');
-        const retryBtn = document.getElementById('retry-btn');
+        const wAssocText = document.getElementById('assoc-text');
 
-        input.value = "";
-        input.disabled = false;
-
-        document.getElementById('feedback-area').classList.add('hidden');
-        document.getElementById('next-word-btn').classList.add('hidden');
-        assocBox.style.display = 'none';
-
-        // MOSTRAR botón comprobar
-        checkBtn.classList.remove('hidden');
-        if (retryBtn) retryBtn.classList.add('hidden');
-
-        // Configurar onclick
-        checkBtn.onclick = () => this.checkAnswer();
-
-        // Resetear estado
-        this.awaitingNext = false;
-
-        if (this.direction === 'reverse') {
-            wEng.textContent = w.esp;
-            wPron.textContent = "???";
-            input.placeholder = "Escribe en inglés...";
-        } else {
-            wEng.textContent = w.eng;
-            wPron.textContent = `"${w.pron}"`;
-            input.placeholder = "Traducción al español...";
+        if(input) {
+            input.value = "";
+            input.disabled = false;
+            input.focus();
         }
 
-        this.updateUI();
+        if(feedbackArea) feedbackArea.classList.add('hidden');
+        if(nextBtn) nextBtn.classList.add('hidden');
+        if(assocBox) assocBox.style.display = 'none';
 
-        setTimeout(() => input.focus(), 100);
+        this.awaitingNext = false;
 
-        // Configurar Enter
-        input.onkeydown = (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                if (this.awaitingNext) {
-                    this.nextSlide();
-                } else {
-                    this.checkAnswer();
+        if (this.isReverse) {
+            if(wEng) wEng.textContent = w.esp;
+            if(wPron) wPron.textContent = "???";
+            if(input) input.placeholder = "Escribe en inglés...";
+        } else {
+            if(wEng) wEng.textContent = w.eng;
+            if(wPron) wPron.textContent = `"${w.pron}"`;
+            if(input) input.placeholder = "Traducción al español...";
+
+            if (this.mode === 'estudio') {
+                if(assocBox) {
+                    assocBox.style.display = 'block';
+                    if(wAssocText) wAssocText.textContent = w.assoc;
                 }
+                if(nextBtn) nextBtn.classList.remove('hidden');
+                this.awaitingNext = true;
             }
-        };
+        }
     },
 
-
-
     playAudio() {
-        if (this.direction === 'reverse') return; // No dar pistas en reverso
+        if(this.isReverse) return;
         const w = this.words[this.currentIndex];
-        const u = new SpeechSynthesisUtterance(w.eng);
-        u.lang = 'en-US';
-        speechSynthesis.speak(u);
+        if(w && w.eng) {
+            const u = new SpeechSynthesisUtterance(w.eng);
+            u.lang = 'en-US';
+            speechSynthesis.speak(u);
+        }
     },
 
     checkAnswer() {
         if(this.awaitingNext) return;
 
         const input = document.getElementById('answer-input');
+        if(!input) return;
+
         const val = normalizeText(input.value);
         const w = this.words[this.currentIndex];
-
-        const rawCorrect = this.direction === 'reverse' ? w.eng : w.esp;
-        const normalizedCorrect = normalizeText(rawCorrect);
-
-        // VALIDACIÓN FLEXIBLE
-        let isCorrect = (val === normalizedCorrect);
-
-        if (!isCorrect && rawCorrect.includes('/')) {
-            const options = rawCorrect.split('/').map(opt => normalizeText(opt));
-            if (options.includes(val)) {
-                isCorrect = true;
-            }
-        }
+        const correct = normalizeText(this.isReverse ? w.eng : w.esp);
 
         const fb = document.getElementById('feedback-area');
         const assocBox = document.getElementById('assoc-box');
-        const assocText = document.getElementById('assoc-text');
         const nextBtn = document.getElementById('next-word-btn');
-        const checkBtn = document.getElementById('check-btn');
+        const assocText = document.getElementById('assoc-text');
 
         input.disabled = true;
-        checkBtn.classList.add('hidden');
 
-        assocBox.style.display = 'block';
-        assocText.textContent = w.assoc;
+        if(assocBox) {
+            assocBox.style.display = 'block';
+            if(assocText) assocText.textContent = w.assoc;
+        }
 
-        if (isCorrect) {
+        if (val === correct) {
             this.score += 10;
             app.userData.stats.totalScore += 10;
-            fb.innerHTML = `<div class="feedback-area correct">✅ ¡CORRECTO! +10</div>`;
-            fb.classList.remove('hidden');
+            if(fb) {
+                fb.innerHTML = `<div class="feedback-correct">✅ ¡CORRECTO! +10</div>`;
+                fb.classList.remove('hidden');
+            }
         } else {
-            fb.innerHTML = `<div class="feedback-area wrong">❌ INCORRECTO<br>Tu respuesta: <strong>"${input.value}"</strong><br>Respuesta correcta: <strong>"${rawCorrect}"</strong></div>`;
-            fb.classList.remove('hidden');
+            if(fb) {
+                fb.innerHTML = `<div class="feedback-wrong">❌ INCORRECTO<br>Era: <strong>${this.isReverse ? w.eng : w.esp}</strong></div>`;
+                fb.classList.remove('hidden');
+            }
 
-            if (this.mode === 'supervivencia') {
-                this.gameOver("💀 Fin del juego - Modo Supervivencia");
+            if(this.mode === 'supervivencia') {
+                this.stopTimer();
+                alert("💀 Fin del juego - Modo Supervivencia");
+                app.goHome();
                 return;
             }
         }
 
+        // Guardar progreso local
         if(this.mode !== 'estudio') {
             app.userData.stats.wordsLearned++;
             app.saveProgress();
         }
 
         this.awaitingNext = true;
-        nextBtn.classList.remove('hidden');
-        nextBtn.focus();
+        if(nextBtn) {
+            nextBtn.classList.remove('hidden');
+            nextBtn.focus();
+        }
     },
-
-
 
     nextSlide() {
         this.currentIndex++;
         this.awaitingNext = false;
         this.updateUI();
         this.showWord();
-    },
-    
-    gameOver(msg) {
-        this.stopTimer();
-        const fb = document.getElementById('feedback-area');
-        fb.innerHTML = `<div class="feedback-area wrong" style="background:#0F172A; color:white; border:none;">${msg}</div>`;
-        fb.classList.remove('hidden');
-        
-        document.getElementById('next-word-btn').classList.add('hidden');
-        document.getElementById('retry-btn').classList.remove('hidden');
-    },
-    
-    retryGame() {
-        // Reinicia con los mismos parámetros
-        this.startGame(app.currentCategory, this.mode, this.direction);
     }
 };
 
 // Arrancar
 app.init();
+</script>
+
 </script>
 </body>
 </html>
