@@ -185,6 +185,21 @@ body {
     color: white;
 }
 
+.btn-sound.speaking {
+    animation: soundPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes soundPulse {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 0 rgba(0, 172, 193, 0.7); 
+    }
+    50% { 
+        transform: scale(1.1); 
+        box-shadow: 0 0 0 10px rgba(0, 172, 193, 0); 
+    }
+}
+
 select {
     width: 100%;
     padding: clamp(12px, 3vw, 15px);
@@ -368,6 +383,30 @@ select {
     50% { transform: scale(1.05); }
 }
 
+.audio-notice {
+    background: #E3F2FD;
+    border: 2px solid #2196F3;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin: 10px 0;
+    font-size: 0.85rem;
+    color: #1565C0;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.audio-notice.warning {
+    background: #FFF3E0;
+    border-color: #FF9800;
+    color: #E65100;
+}
+
+.audio-notice.success {
+    background: #E8F5E9;
+    border-color: #4CAF50;
+    color: #2E7D32;
+}
+
 @media (min-width: 768px) and (max-width: 1024px) {
     .container {
         max-width: 90%;
@@ -503,10 +542,11 @@ select {
 
         <div class="word-container">
             <div class="word-display" id="game-word">WORD</div>
-            <button class="btn-icon btn-sound" onclick="app.pronounce()" title="Pronunciar">🔊</button>
+            <button class="btn-icon btn-sound" id="sound-btn" onclick="app.pronounce()" title="Pronunciar">🔊</button>
         </div>
 
         <div class="pronunciation" id="game-pron">pronunciation</div>
+        <div id="audio-notice-container"></div>
         <div class="association hidden" id="game-assoc">Asociación...</div>
 
         <input type="text" class="input-answer" id="game-input" placeholder="Escribe tu respuesta..." autocomplete="off">
@@ -601,7 +641,23 @@ const app = {
         errorQueue: [],
         wordStats: {},
         navigationStack: [],
-        waitingForContinue: false
+        waitingForContinue: false,
+        // TTS Estado
+        ttsMethod: null,
+        ttsReady: false,
+        ttsVoices: [],
+        ttsUnlocked: false,
+        // Detección de navegador
+        browserInfo: {
+            isOpera: /Opera|OPR\//.test(navigator.userAgent),
+            isChrome: /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor),
+            isFirefox: /Firefox/.test(navigator.userAgent),
+            isSafari: /Safari/.test(navigator.userAgent) && /Apple/.test(navigator.vendor),
+            isEdge: /Edg/.test(navigator.userAgent),
+            isIOS: /iPhone|iPad|iPod/i.test(navigator.userAgent),
+            isAndroid: /Android/i.test(navigator.userAgent),
+            isMobile: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+        }
     },
 
     init() {
@@ -611,30 +667,20 @@ const app = {
 
             this.loadStats();
             this.initHistoryAPI();
+            this.detectAndInitTTS();
 
-            // CORREGIDO: Event listener GLOBAL para Enter
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     const gameScreen = document.getElementById('screen-game');
-                    // Solo actuar si estamos en pantalla de juego
                     if (!gameScreen.classList.contains('hidden')) {
                         if (this.state.waitingForContinue) {
-                            // Si está esperando, continuar
                             this.continueToNext();
                         } else {
-                            // Si no, verificar respuesta
                             this.checkAnswer();
                         }
                     }
                 }
             });
-
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.getVoices();
-                window.speechSynthesis.onvoiceschanged = () => {
-                    window.speechSynthesis.getVoices();
-                };
-            }
 
             const inputs = document.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
@@ -645,11 +691,288 @@ const app = {
                 });
             });
 
-            console.log('✅ Sistema iniciado - 5547 palabras reales');
+            console.log('✅ Sistema iniciado - TTS Universal Multi-Browser v3.0');
+            console.log('🌐 Navegador detectado:', this.getBrowserName());
         } catch (e) {
             alert('Error: ' + e.message);
         }
     },
+
+    // ==========================================
+    // DETECCIÓN Y SELECCIÓN DE MÉTODO TTS
+    // ==========================================
+
+    getBrowserName() {
+        const b = this.state.browserInfo;
+        if (b.isOpera) return 'Opera';
+        if (b.isEdge) return 'Microsoft Edge';
+        if (b.isChrome) return 'Chrome';
+        if (b.isFirefox) return 'Firefox';
+        if (b.isSafari) return 'Safari';
+        return 'Unknown';
+    },
+
+    detectAndInitTTS() {
+        const b = this.state.browserInfo;
+
+        console.log('🔍 Detectando soporte TTS...');
+        console.log('📱 Dispositivo:', b.isMobile ? 'Móvil' : 'Desktop');
+        console.log('🌐 Navegador:', this.getBrowserName());
+
+        // Verificar soporte de speechSynthesis
+        const hasSpeechSynthesis = 'speechSynthesis' in window;
+
+        // OPERA MÓVIL: Usar siempre Google Translate TTS (no soporta bien speechSynthesis)
+        if (b.isOpera && b.isMobile) {
+            console.log('🎯 Opera Mobile detectado - Usando Google Translate TTS');
+            this.state.ttsMethod = 'google';
+            this.state.ttsReady = true;
+            return;
+        }
+
+        // Intentar usar speechSynthesis nativo primero
+        if (hasSpeechSynthesis) {
+            this.initNativeTTS();
+
+            // Verificar si realmente funciona después de 1 segundo
+            setTimeout(() => {
+                const voices = window.speechSynthesis.getVoices();
+                if (voices.length === 0 && (b.isOpera || b.isAndroid)) {
+                    console.log('⚠️ SpeechSynthesis no tiene voces - Fallback a Google TTS');
+                    this.state.ttsMethod = 'google';
+                    this.state.ttsReady = true;
+                }
+            }, 1000);
+        } else {
+            // Fallback a Google Translate TTS
+            console.log('⚠️ SpeechSynthesis no soportado - Usando Google Translate TTS');
+            this.state.ttsMethod = 'google';
+            this.state.ttsReady = true;
+        }
+    },
+
+    initNativeTTS() {
+        console.log('🔊 Inicializando speechSynthesis nativo...');
+
+        const loadVoices = () => {
+            this.state.ttsVoices = window.speechSynthesis.getVoices();
+            if (this.state.ttsVoices.length > 0) {
+                this.state.ttsMethod = 'native';
+                this.state.ttsReady = true;
+                console.log('✅ SpeechSynthesis listo con', this.state.ttsVoices.length, 'voces');
+            }
+        };
+
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        loadVoices();
+
+        // iOS/Safari unlock
+        if (this.state.browserInfo.isIOS || this.state.browserInfo.isSafari) {
+            const unlock = () => {
+                if (!this.state.ttsUnlocked) {
+                    this.unlockIOSTTS();
+                }
+            };
+
+            document.addEventListener('touchstart', unlock, { once: true });
+            document.addEventListener('touchend', unlock, { once: true });
+            document.addEventListener('click', unlock, { once: true });
+        }
+    },
+
+    unlockIOSTTS() {
+        if (this.state.ttsUnlocked) return;
+
+        try {
+            const utterance = new SpeechSynthesisUtterance('');
+            utterance.volume = 0;
+            utterance.rate = 10;
+            utterance.pitch = 0.1;
+            window.speechSynthesis.speak(utterance);
+            this.state.ttsUnlocked = true;
+            console.log('✅ iOS TTS desbloqueado');
+        } catch (e) {
+            console.warn('⚠️ No se pudo desbloquear iOS TTS:', e);
+        }
+    },
+
+    // ==========================================
+    // PRONUNCIAR - MÉTODO UNIVERSAL
+    // ==========================================
+
+    pronounce() {
+        const item = this.state.vocab[this.state.currentIndex];
+        if (!item) return;
+
+        const word = item[1];
+        const soundBtn = document.getElementById('sound-btn');
+        const noticeContainer = document.getElementById('audio-notice-container');
+
+        noticeContainer.innerHTML = '';
+
+        console.log('🔊 Pronunciando:', word, '| Método:', this.state.ttsMethod || 'detectando...');
+
+        // Detección automática si no se ha determinado el método
+        if (!this.state.ttsMethod) {
+            setTimeout(() => this.pronounce(), 100);
+            return;
+        }
+
+        // Usar el método correspondiente
+        if (this.state.ttsMethod === 'google') {
+            this.pronounceWithGoogle(word, soundBtn, noticeContainer);
+        } else {
+            this.pronounceWithNative(word, soundBtn, noticeContainer);
+        }
+    },
+
+    // MÉTODO 1: Google Translate TTS (FUNCIONA EN TODOS LOS NAVEGADORES)
+    pronounceWithGoogle(word, soundBtn, noticeContainer) {
+        try {
+            soundBtn.classList.add('speaking');
+
+            // Crear elemento audio con Google Translate TTS
+            const audio = new Audio();
+            const encodedWord = encodeURIComponent(word);
+
+            // URL de Google Translate TTS (público y gratuito)
+            audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodedWord}`;
+
+            audio.onloadeddata = () => {
+                console.log('✅ Audio de Google cargado');
+            };
+
+            audio.onplay = () => {
+                console.log('🔊 Reproduciendo audio de Google');
+            };
+
+            audio.onended = () => {
+                soundBtn.classList.remove('speaking');
+                console.log('✅ Audio completado');
+            };
+
+            audio.onerror = (e) => {
+                soundBtn.classList.remove('speaking');
+                console.error('❌ Error Google TTS:', e);
+                noticeContainer.innerHTML = '<div class="audio-notice warning">⚠️ Error de conexión. Verifica tu internet.</div>';
+
+                // Fallback a speechSynthesis si Google falla
+                setTimeout(() => {
+                    console.log('🔄 Intentando con speechSynthesis como fallback...');
+                    this.state.ttsMethod = 'native';
+                    this.pronounce();
+                }, 500);
+            };
+
+            // Reproducir
+            audio.play().catch(err => {
+                console.error('❌ Error al reproducir:', err);
+                soundBtn.classList.remove('speaking');
+                noticeContainer.innerHTML = '<div class="audio-notice warning">⚠️ Error al reproducir. Toca el botón de nuevo.</div>';
+            });
+
+        } catch (error) {
+            console.error('❌ Error Google TTS:', error);
+            soundBtn.classList.remove('speaking');
+            noticeContainer.innerHTML = '<div class="audio-notice warning">⚠️ Error de audio.</div>';
+        }
+    },
+
+    // MÉTODO 2: SpeechSynthesis Nativo (OPTIMIZADO)
+    pronounceWithNative(word, soundBtn, noticeContainer) {
+        if (!('speechSynthesis' in window)) {
+            console.log('⚠️ SpeechSynthesis no disponible, usando Google TTS');
+            this.state.ttsMethod = 'google';
+            this.pronounceWithGoogle(word, soundBtn, noticeContainer);
+            return;
+        }
+
+        try {
+            // Cancelar cualquier speech anterior
+            window.speechSynthesis.cancel();
+
+            setTimeout(() => {
+                try {
+                    const utterance = new SpeechSynthesisUtterance(word);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.85;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 1.0;
+
+                    // Seleccionar mejor voz
+                    const voices = window.speechSynthesis.getVoices();
+
+                    if (voices.length === 0) {
+                        console.log('⚠️ No hay voces disponibles, usando Google TTS');
+                        this.state.ttsMethod = 'google';
+                        this.pronounceWithGoogle(word, soundBtn, noticeContainer);
+                        return;
+                    }
+
+                    let selectedVoice = voices.find(v => v.lang === 'en-US' && v.localService);
+                    if (!selectedVoice) selectedVoice = voices.find(v => v.lang === 'en-US');
+                    if (!selectedVoice) selectedVoice = voices.find(v => v.lang === 'en-GB');
+                    if (!selectedVoice) selectedVoice = voices.find(v => v.lang.startsWith('en'));
+
+                    if (selectedVoice) {
+                        utterance.voice = selectedVoice;
+                        console.log('🔊 Voz:', selectedVoice.name);
+                    }
+
+                    utterance.onstart = () => {
+                        soundBtn.classList.add('speaking');
+                        console.log('🔊 Reproduciendo (nativo):', word);
+                    };
+
+                    utterance.onend = () => {
+                        soundBtn.classList.remove('speaking');
+                        console.log('✅ Audio completado (nativo)');
+                    };
+
+                    utterance.onerror = (event) => {
+                        soundBtn.classList.remove('speaking');
+                        console.error('❌ Error nativo TTS:', event.error);
+
+                        // Fallback a Google TTS
+                        console.log('🔄 Fallback a Google TTS...');
+                        this.state.ttsMethod = 'google';
+                        setTimeout(() => this.pronounceWithGoogle(word, soundBtn, noticeContainer), 100);
+                    };
+
+                    window.speechSynthesis.speak(utterance);
+
+                    // Workaround Android Chrome
+                    if (this.state.browserInfo.isAndroid && this.state.browserInfo.isChrome) {
+                        setTimeout(() => {
+                            if (window.speechSynthesis.speaking) {
+                                window.speechSynthesis.pause();
+                                window.speechSynthesis.resume();
+                            }
+                        }, 100);
+                    }
+
+                } catch (innerError) {
+                    console.error('❌ Error interno nativo:', innerError);
+                    soundBtn.classList.remove('speaking');
+                    this.state.ttsMethod = 'google';
+                    this.pronounceWithGoogle(word, soundBtn, noticeContainer);
+                }
+            }, 50);
+
+        } catch (error) {
+            console.error('❌ Error nativo externo:', error);
+            soundBtn.classList.remove('speaking');
+            this.state.ttsMethod = 'google';
+            this.pronounceWithGoogle(word, soundBtn, noticeContainer);
+        }
+    },
+
+    // ==========================================
+    // RESTO DEL CÓDIGO (sin cambios)
+    // ==========================================
 
     initHistoryAPI() {
         history.replaceState({ screen: 'screen-level' }, '', '');
@@ -680,6 +1003,10 @@ const app = {
     },
 
     goBack() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+
         this.state.navigationStack.pop();
         let previousScreen = this.state.navigationStack[this.state.navigationStack.length - 1];
 
@@ -692,31 +1019,6 @@ const app = {
 
     goToScreen(screenId) {
         this.navigateToScreen(screenId, true);
-    },
-
-    pronounce() {
-        const item = this.state.vocab[this.state.currentIndex];
-        if (!item) return;
-
-        const word = item[1];
-
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.8;
-            utterance.pitch = 1;
-            utterance.volume = 1;
-
-            const voices = window.speechSynthesis.getVoices();
-            const englishVoice = voices.find(v => v.lang.startsWith('en'));
-            if (englishVoice) {
-                utterance.voice = englishVoice;
-            }
-
-            window.speechSynthesis.speak(utterance);
-        }
     },
 
     loadStats() {
@@ -957,6 +1259,8 @@ const app = {
         document.getElementById('game-assoc').textContent = item[4] || '';
         document.getElementById('game-assoc').classList.add('hidden');
 
+        document.getElementById('audio-notice-container').innerHTML = '';
+
         document.getElementById('game-input').value = '';
         document.getElementById('game-input').disabled = false;
         document.getElementById('game-input').focus();
@@ -1140,6 +1444,10 @@ const app = {
 
     showResult() {
         clearInterval(this.state.timer);
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
 
         const total = this.state.wordsAttempted || this.state.currentIndex;
         const percentage = total > 0 ? Math.round((this.state.correct / total) * 100) : 0;
