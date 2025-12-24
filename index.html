@@ -350,14 +350,30 @@ select {
     gap: clamp(8px, 2vw, 10px);
 }
 
-/* Tablets */
+.continue-section {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.btn-continue {
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+    color: white;
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    padding: clamp(16px, 4vw, 20px);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
 @media (min-width: 768px) and (max-width: 1024px) {
     .container {
         max-width: 90%;
     }
 }
 
-/* Landscape móvil */
 @media (max-height: 500px) and (orientation: landscape) {
     .header {
         padding: 15px;
@@ -376,7 +392,6 @@ select {
     }
 }
 
-/* Móviles pequeños */
 @media (max-width: 360px) {
     body {
         padding: 8px;
@@ -386,7 +401,6 @@ select {
     }
 }
 
-/* iPhone X y superiores (notch) */
 @supports (padding: max(0px)) {
     body {
         padding-left: max(10px, env(safe-area-inset-left));
@@ -394,7 +408,6 @@ select {
     }
 }
 
-/* Pantallas muy grandes */
 @media (min-width: 1400px) {
     .container {
         max-width: 1000px;
@@ -499,9 +512,17 @@ select {
         <input type="text" class="input-answer" id="game-input" placeholder="Escribe tu respuesta..." autocomplete="off">
         <div id="game-feedback" class="feedback hidden"></div>
 
-        <div class="btn-grid">
-            <button class="btn btn-primary" onclick="app.checkAnswer()">✓ Verificar</button>
-            <button class="btn btn-secondary" onclick="app.skip()">⏭️ Saltar</button>
+        <div id="game-buttons-verify">
+            <div class="btn-grid">
+                <button class="btn btn-primary" onclick="app.checkAnswer()">✓ Verificar</button>
+                <button class="btn btn-secondary" onclick="app.skip()">⏭️ Saltar</button>
+            </div>
+        </div>
+
+        <div id="game-buttons-continue" class="continue-section hidden">
+            <button class="btn btn-continue" onclick="app.continueToNext()">
+                ➜ Presiona ENTER o este botón para continuar
+            </button>
         </div>
 
         <button class="btn btn-outline" style="margin-top:10px" onclick="app.goBack()">⬅️ Volver al Menú</button>
@@ -579,7 +600,8 @@ const app = {
         wordsAttempted: 0,
         errorQueue: [],
         wordStats: {},
-        navigationStack: []
+        navigationStack: [],
+        waitingForContinue: false
     },
 
     init() {
@@ -590,8 +612,21 @@ const app = {
             this.loadStats();
             this.initHistoryAPI();
 
-            document.getElementById('game-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') this.checkAnswer();
+            // CORREGIDO: Event listener GLOBAL para Enter
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const gameScreen = document.getElementById('screen-game');
+                    // Solo actuar si estamos en pantalla de juego
+                    if (!gameScreen.classList.contains('hidden')) {
+                        if (this.state.waitingForContinue) {
+                            // Si está esperando, continuar
+                            this.continueToNext();
+                        } else {
+                            // Si no, verificar respuesta
+                            this.checkAnswer();
+                        }
+                    }
+                }
             });
 
             if ('speechSynthesis' in window) {
@@ -601,7 +636,6 @@ const app = {
                 };
             }
 
-            // Prevenir zoom en iOS al enfocar inputs
             const inputs = document.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
                 input.addEventListener('focus', () => {
@@ -611,62 +645,48 @@ const app = {
                 });
             });
 
-            console.log('✅ Sistema iniciado - Compatible con todos los dispositivos');
+            console.log('✅ Sistema iniciado - 5547 palabras reales');
         } catch (e) {
             alert('Error: ' + e.message);
         }
     },
 
-    // ============ HISTORY API PARA BOTÓN ATRÁS ============
     initHistoryAPI() {
-        // Estado inicial
         history.replaceState({ screen: 'screen-level' }, '', '');
         this.state.navigationStack = ['screen-level'];
 
-        // Listener para botón atrás del navegador/dispositivo
         window.addEventListener('popstate', (event) => {
             if (event.state && event.state.screen) {
                 this.navigateToScreen(event.state.screen, false);
             } else {
-                // Si no hay estado, volver al nivel
                 this.navigateToScreen('screen-level', false);
             }
         });
     },
 
     navigateToScreen(screenId, pushState = true) {
-        // Ocultar todas las pantallas
         document.querySelectorAll('.card').forEach(card => {
             if (card.id && card.id.startsWith('screen-')) {
                 card.classList.add('hidden');
             }
         });
 
-        // Mostrar pantalla solicitada
         document.getElementById(screenId).classList.remove('hidden');
-
-        // Actualizar stack
         this.state.navigationStack.push(screenId);
 
-        // Actualizar history API si es necesario
         if (pushState) {
             history.pushState({ screen: screenId }, '', '');
         }
     },
 
     goBack() {
-        // Remover pantalla actual
         this.state.navigationStack.pop();
-
-        // Obtener pantalla anterior
         let previousScreen = this.state.navigationStack[this.state.navigationStack.length - 1];
 
-        // Si no hay anterior, ir a nivel
         if (!previousScreen) {
             previousScreen = 'screen-level';
         }
 
-        // Navegar usando history.back() para que funcione con botón físico
         history.back();
     },
 
@@ -674,7 +694,6 @@ const app = {
         this.navigateToScreen(screenId, true);
     },
 
-    // ============ AUDIO ============
     pronounce() {
         const item = this.state.vocab[this.state.currentIndex];
         if (!item) return;
@@ -700,7 +719,6 @@ const app = {
         }
     },
 
-    // ============ PERSISTENCIA ============
     loadStats() {
         const saved = localStorage.getItem('vocabStats');
         if (saved) {
@@ -752,7 +770,6 @@ const app = {
         localStorage.setItem('globalStats', JSON.stringify(global));
     },
 
-    // ============ IA ============
     shuffleWithIA(words) {
         const arr = [...words];
         for (let i = arr.length - 1; i > 0; i--) {
@@ -784,7 +801,6 @@ const app = {
         return result;
     },
 
-    // ============ CORRECCIÓN INTELIGENTE ============
     normalizeText(text) {
         return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     },
@@ -834,7 +850,6 @@ const app = {
         return false;
     },
 
-    // ============ NAVEGACIÓN ============
     selectLevel(level) {
         this.state.level = level;
 
@@ -850,7 +865,6 @@ const app = {
         this.goToScreen('screen-modes');
     },
 
-    // ============ VOCABULARIO ============
     getVocabData() {
         let words = [];
 
@@ -884,7 +898,6 @@ const app = {
         return words;
     },
 
-    // ============ INICIAR JUEGO ============
     startGame(mode) {
         this.state.mode = mode;
         this.state.direction = document.getElementById('direction-select').value;
@@ -894,6 +907,7 @@ const app = {
         this.state.wrong = 0;
         this.state.wordsAttempted = 0;
         this.state.errorQueue = [];
+        this.state.waitingForContinue = false;
 
         if (mode === 'supervivencia') {
             this.state.lives = 1;
@@ -923,12 +937,13 @@ const app = {
         }
     },
 
-    // ============ RENDER ============
     renderGame() {
         if (this.state.currentIndex >= this.state.vocab.length) {
             this.showResult();
             return;
         }
+
+        this.state.waitingForContinue = false;
 
         const item = this.state.vocab[this.state.currentIndex];
         const isEnEs = this.state.direction === 'en-es';
@@ -943,8 +958,12 @@ const app = {
         document.getElementById('game-assoc').classList.add('hidden');
 
         document.getElementById('game-input').value = '';
+        document.getElementById('game-input').disabled = false;
         document.getElementById('game-input').focus();
         document.getElementById('game-feedback').classList.add('hidden');
+
+        document.getElementById('game-buttons-verify').classList.remove('hidden');
+        document.getElementById('game-buttons-continue').classList.add('hidden');
 
         const livesEl = document.getElementById('game-lives');
         if (this.state.mode === 'supervivencia') {
@@ -979,6 +998,8 @@ const app = {
     },
 
     checkAnswer() {
+        if (this.state.waitingForContinue) return;
+
         clearInterval(this.state.timer);
 
         const item = this.state.vocab[this.state.currentIndex];
@@ -989,6 +1010,8 @@ const app = {
         const feedbackEl = document.getElementById('game-feedback');
         const assocEl = document.getElementById('game-assoc');
         feedbackEl.classList.remove('hidden');
+
+        document.getElementById('game-input').disabled = true;
 
         if (!input) {
             feedbackEl.className = 'feedback feedback-bad';
@@ -1051,10 +1074,21 @@ const app = {
         this.state.wordsAttempted++;
         document.getElementById('stat-score').textContent = this.state.score;
 
-        setTimeout(() => {
-            this.state.currentIndex++;
-            this.renderGame();
-        }, 2000);
+        if (this.state.mode === 'contrareloj') {
+            setTimeout(() => {
+                this.state.currentIndex++;
+                this.renderGame();
+            }, 1500);
+        } else {
+            this.state.waitingForContinue = true;
+            document.getElementById('game-buttons-verify').classList.add('hidden');
+            document.getElementById('game-buttons-continue').classList.remove('hidden');
+        }
+    },
+
+    continueToNext() {
+        this.state.currentIndex++;
+        this.renderGame();
     },
 
     skip() {
